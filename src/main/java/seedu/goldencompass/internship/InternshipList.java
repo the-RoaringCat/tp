@@ -6,9 +6,8 @@ public class InternshipList {
 
     private final ArrayList<Internship> internships = new ArrayList<>();
 
-    public void add(Internship task) {
-        internships.add(task);
+    public void add(Internship x) {
+        internships.add(x);
     }
-
 
 }
