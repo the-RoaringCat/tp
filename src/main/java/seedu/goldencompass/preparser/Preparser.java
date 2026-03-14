@@ -58,7 +58,7 @@ public class Preparser {
      * @param text a string to be checked against.
      * @return {@code true} if {@code text} is a flag, and {@code false} if it is a parameter.
      * @throws GoldenCompassParsingException if {@code text} starts with {@code -}
-     * but not found in the Set of all flags.
+     *     but not found in the Set of all flags.
      */
     private static boolean isFlag(String text) throws GoldenCompassParsingException{
 
@@ -93,7 +93,7 @@ public class Preparser {
      * @param arguments a string array
      * @return a Map from a flag to a list of params pointed by this flag
      * @throws GoldenCompassParsingException if a non-recognizable flag is detected or a parameter
-     * is not identified by any flag.
+     *     is not identified by any flag.
      * @see Preparser#isFlag(String)
      */
     private static Map<String, List<String>> findFlags(String[] arguments) throws GoldenCompassParsingException {

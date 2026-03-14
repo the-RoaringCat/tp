@@ -32,8 +32,8 @@ public class GoldenCompass {
     }
 
     public static void main(String[] args) throws IOException {
-        // new GoldenCompass().run();
-        new GoldenCompass().testCommand();
+        new GoldenCompass().run();
+        //new GoldenCompass().testCommand();
 
     }
 
