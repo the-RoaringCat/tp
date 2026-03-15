@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static seedu.goldencompass.preparser.Config.DEFAULT_FLAG;
 
@@ -56,6 +57,12 @@ public class SetInterviewDeadlineCommand implements Executable {
     @Override
     public void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException {
         checkFlag(flagToParamMap, FLAGS);
+
+        for (Entry<String, List<String>> entry : flagToParamMap.entrySet()) {
+            if (!entry.getKey().equals(DEFAULT_FLAG) && entry.getValue().size() > 1) {
+                throw new GoldenCompassException("Error: Duplicate flag: " + entry.getKey());
+            }
+        }
 
         String indexParam = getParamsOf(DEFAULT_FLAG, flagToParamMap)[0].trim();
         String dateParam = getParamsOf(FLAG_DATE, flagToParamMap)[0].trim();
