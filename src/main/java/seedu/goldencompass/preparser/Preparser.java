@@ -103,6 +103,9 @@ public class Preparser {
 
         for(String argument : arguments) {
             if(isFlag(argument)) {
+                if (map.containsKey(argument) || flag.equals(argument)) {
+                    throw new GoldenCompassParsingException("Error: Duplicate flag: " + argument);
+                }
                 putToMap(map, flag, String.join(" ", params));
                 flag = argument;
                 params = new ArrayList<>();

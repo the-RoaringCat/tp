@@ -10,19 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static seedu.goldencompass.preparser.Config.DEFAULT_FLAG;
+
 /**
  * Sets the deadline date of an interview identified by its 1-based index in the interview list.
  * <p>
- * Command format: {@code set-deadline /i INDEX /d DATE}
+ * Command format: {@code set-deadline INDEX /d DATE}
  * </p>
  */
 public class SetInterviewDeadlineCommand implements Executable {
 
     public static final String COMMAND_WORD = "set-deadline";
 
-    private static final String FLAG_INDEX = "/i";
     private static final String FLAG_DATE = "/d";
-    private static final ArrayList<String> FLAGS = new ArrayList<>(Arrays.asList(FLAG_INDEX, FLAG_DATE));
+    private static final ArrayList<String> FLAGS = new ArrayList<>(Arrays.asList(FLAG_DATE));
 
     private final InterviewList interviewList;
 
@@ -53,7 +54,7 @@ public class SetInterviewDeadlineCommand implements Executable {
     public void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException {
         checkFlag(flagToParamMap, FLAGS);
 
-        String indexParam = getParamsOf(FLAG_INDEX, flagToParamMap)[0].trim();
+        String indexParam = getParamsOf(DEFAULT_FLAG, flagToParamMap)[0].trim();
         String date = getParamsOf(FLAG_DATE, flagToParamMap)[0].trim();
 
         int index;
