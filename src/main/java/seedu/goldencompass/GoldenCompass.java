@@ -2,7 +2,7 @@ package seedu.goldencompass;
 
 import seedu.goldencompass.command.ExampleCommand;
 import seedu.goldencompass.command.CommandRegistry;
-import seedu.goldencompass.command.Executable;
+import seedu.goldencompass.command.Command;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.internship.InterviewList;
@@ -57,8 +57,8 @@ public class GoldenCompass {
                 Map<String, List<String>> map = pp.getFlagToParameterMap();
 
                 //find the matching executable and execute it
-                Executable executable = CommandRegistry.getCommand(commandWord);
-                executable.execute(map);
+                Command command = CommandRegistry.getCommand(commandWord);
+                command.execute(map);
             } catch (GoldenCompassException e) {
                 ui.print(e.getMessage());
             }

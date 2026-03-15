@@ -12,7 +12,7 @@ import static seedu.goldencompass.preparser.Config.DEFAULT_FLAG;
 /**
  * All command should implement this interface in order to be executed.
  */
-public interface Executable {
+public interface Command {
     void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException;
 
     /**
