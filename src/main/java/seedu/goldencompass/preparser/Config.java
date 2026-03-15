@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Config {
-    public static final Set<String> ALL_FLAGS = new HashSet<>(Arrays.asList("/a", "/b", "/c"));
+    public static final Set<String> ALL_FLAGS = new HashSet<>(Arrays.asList("/a", "/b", "/c", "/d"));
     public static final Set<String> ALL_COMMANDS = new HashSet<>(Arrays.asList("example"));
     public static final int COMMAND_WORD_INDEX = 0;
     public static final String FLAG_INDICATOR = "/";
@@ -18,7 +18,7 @@ public class Config {
      *     if the entry is valid.
      * </P>
      * <P>
-     *     Dulplicated flag entry is ignored.
+     *     Duplicated flag entry is ignored.
      * </P>
      * @param flags a string array
      */

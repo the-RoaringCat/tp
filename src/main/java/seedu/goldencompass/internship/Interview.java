@@ -1,29 +1,31 @@
 package seedu.goldencompass.internship;
 
+import java.time.LocalDate;
+
 public class Interview {
 
     protected Internship internship;
-    protected String date;
+    protected LocalDate date;
     protected String comments;
 
-    public Interview(Internship internship, String date) {
+    public Interview(Internship internship, LocalDate date) {
         this.internship = internship;
         this.date = date;
     }
 
     /**
      * Sets the deadline date of this interview.
-     * @param date a string representing the new deadline date.
+     * @param date a {@code LocalDate} representing the new deadline date.
      */
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
     /**
      * Returns the deadline date of this interview.
-     * @return the deadline date as a string.
+     * @return the deadline date as a {@code LocalDate}.
      */
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -28,4 +28,13 @@ public class InterviewList {
         return interviews.size();
     }
 
+    /**
+     * Returns {@code true} if the given 1-based index is within the valid range.
+     * @param index 1-based index to check.
+     * @return {@code true} if index is valid, {@code false} otherwise.
+     */
+    public boolean isValidIndex(int index) {
+        return index >= 1 && index <= interviews.size();
+    }
+
 }
