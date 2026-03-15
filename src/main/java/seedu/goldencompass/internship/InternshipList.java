@@ -60,8 +60,4 @@ public class InternshipList {
             ui.print((i + 1) + ". " + intern.companyName + " - " + intern.title);
         }
     }
-
-    public void setUi(Ui ui) {
-        this.ui = ui;
-    }
 }

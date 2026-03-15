@@ -3,7 +3,8 @@ package seedu.goldencompass.command;
 import org.junit.jupiter.api.Test;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.InternshipList;
-import seedu.goldencompass.preparser.Config;
+import seedu.goldencompass.parser.Config;
+import seedu.goldencompass.ui.Ui;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,8 @@ public class AddInternshipCommandTest {
     @Test
     public void execute_validInput_addsInternshipSuccessfully() throws GoldenCompassException {
         // 1. Setup the environment
-        InternshipList internships = new InternshipList();
+        Ui ui = new Ui();
+        InternshipList internships = new InternshipList(ui);
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         // 2. Simulate what the Preparser does for: add Shopee /t Software Engineer
@@ -34,7 +36,8 @@ public class AddInternshipCommandTest {
 
     @Test
     public void execute_emptyCompanyName_throwsException() {
-        InternshipList internships = new InternshipList();
+        Ui ui = new Ui();
+        InternshipList internships = new InternshipList(ui);
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         Map<String, List<String>> parameters = new HashMap<>();
@@ -47,7 +50,8 @@ public class AddInternshipCommandTest {
 
     @Test
     public void execute_emptyTitle_throwsException() {
-        InternshipList internships = new InternshipList();
+        Ui ui = new Ui();
+        InternshipList internships = new InternshipList(ui);
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         Map<String, List<String>> parameters = new HashMap<>();

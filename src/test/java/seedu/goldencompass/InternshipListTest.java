@@ -25,8 +25,9 @@ public class InternshipListTest {
 
     @BeforeEach
     public void setUp() {
+        ui = new Ui();
         internshipList = new InternshipList(ui);
-        internshipList.setUi(new Ui());
+        //internshipList.setUi(new Ui());
         // Redirect System.out to capture output for testing
         System.setOut(new PrintStream(outputStream));
     }
