@@ -16,15 +16,6 @@ public class InternshipList {
     private Ui ui;
 
     /**
-     * Constructs an InternshipList with the specified UI.
-     *
-     * @param ui The UI object to use for printing
-     */
-    public InternshipList(Ui ui) {
-        this.ui = ui;
-    }
-
-    /**
      * Adds a new internship to the list.
      *
      * @param x The internship object to be added
@@ -49,6 +40,8 @@ public class InternshipList {
      * If the list is empty, displays a message indicating no internships.
      */
     public void list() {
+        Ui ui = new Ui();
+
         if (internships.isEmpty()) {
             System.out.println("No internships in the list.");
             return;

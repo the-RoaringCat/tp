@@ -19,7 +19,7 @@ public class AddInternshipCommandTest {
     public void execute_validInput_addsInternshipSuccessfully() throws GoldenCompassException {
         // 1. Setup the environment
         Ui ui = new Ui();
-        InternshipList internships = new InternshipList(ui);
+        InternshipList internships = new InternshipList();
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         // 2. Simulate what the Preparser does for: add Shopee /t Software Engineer
@@ -37,7 +37,7 @@ public class AddInternshipCommandTest {
     @Test
     public void execute_emptyCompanyName_throwsException() {
         Ui ui = new Ui();
-        InternshipList internships = new InternshipList(ui);
+        InternshipList internships = new InternshipList();
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         Map<String, List<String>> parameters = new HashMap<>();
@@ -51,7 +51,7 @@ public class AddInternshipCommandTest {
     @Test
     public void execute_emptyTitle_throwsException() {
         Ui ui = new Ui();
-        InternshipList internships = new InternshipList(ui);
+        InternshipList internships = new InternshipList();
         AddInternshipCommand addCommand = new AddInternshipCommand(internships);
 
         Map<String, List<String>> parameters = new HashMap<>();
