@@ -24,32 +24,23 @@ public class Preparser {
     private String commandWord;
     private Map<String, List<String>> flagToParameterMap;
 
-    /**
-     * Constructs a {@code Preparser} instance with a {@code userInput}.
-     * <p></p>
-     * User can get the information after parsing with getter methods.
-     * @param userInput a string
-     * @throws GoldenCompassParsingException if a command word or a flag is not recognizable.
-     * @see Preparser#getCommandWord()
-     * @see Preparser#getFlagToParameterMap()
-     */
-    public Preparser(String userInput) throws GoldenCompassException {
-        parse(userInput);
-        FlagValidator.checkFlag(flagToParameterMap.keySet(), Config.getCommandFlags(commandWord));
-    }
+
+
 
     /**
      * Parses the userInput
      * @param userInput a string to parse
      * @throws GoldenCompassParsingException if a command word or a flag is not recognizable
      */
-    private void parse(String userInput) throws GoldenCompassParsingException{
+    public void preparse(String userInput) throws GoldenCompassException {
         String[] userInputs = userInput.split("\\s+");
         String commandWord = userInputs[COMMAND_WORD_INDEX];
         String[] arguments = Arrays.copyOfRange(userInputs, 1, userInputs.length);
 
         this.commandWord = commandWord;
         this.flagToParameterMap = findFlags(arguments);
+
+        //FlagValidator.checkFlag(flagToParameterMap.keySet(), Config.getCommandFlags(commandWord));
     }
 
     /**
@@ -140,7 +131,6 @@ public class Preparser {
      *     It can only be called after a {@code Preparser} is instantiated without Exception.
      * </p>
      * @return the command word identified by the preparser instance.
-     * @see Preparser#Preparser(String) the constructor
      */
     public String getCommandWord() {
         return this.commandWord;
@@ -157,7 +147,6 @@ public class Preparser {
      *     It can only be called after a {@code Preparser} is instantiated without Exception.
      * </p>
      * @return a Map of flag to list of parameters identified by the preparser instance.
-     * @see Preparser#Preparser(String) the constructor
      */
     public Map<String, List<String>> getFlagToParameterMap() {
         return this.flagToParameterMap;

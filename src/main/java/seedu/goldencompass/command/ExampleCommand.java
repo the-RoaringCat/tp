@@ -2,6 +2,7 @@ package seedu.goldencompass.command;
 
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
+import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.parser.Parser;
 import seedu.goldencompass.parser.Config;
 
@@ -15,11 +16,11 @@ public class ExampleCommand implements Command {
 
 
     private final Parser parser;
-    private final List<Internship> internships;
+    private final InternshipList internships;
     private static final String COMMAND_KEY_WORD = "example";
     private static final Set<String> COMMAND_FLAGS = new HashSet<>(Arrays.asList("/eg", "/EG"));
 
-    public ExampleCommand(Parser parser, List<Internship> internships) {
+    public ExampleCommand(Parser parser, InternshipList internships) {
         this.parser = parser;
         this.internships = internships;
         Config.registerCommandFlag(COMMAND_KEY_WORD, COMMAND_FLAGS);

@@ -22,7 +22,7 @@ import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
  * Command format: {@code set-deadline INDEX /d DATE}
  * </p>
  */
-public class SetInterviewDeadlineCommand implements Executable {
+public class SetInterviewDeadlineCommand implements Command {
 
     public static final String COMMAND_WORD = "set-deadline";
 
