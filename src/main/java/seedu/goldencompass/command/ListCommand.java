@@ -2,7 +2,7 @@ package seedu.goldencompass.command;
 
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.InternshipList;
-import seedu.goldencompass.preparser.Config;
+//import seedu.goldencompass.preparser.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class ListCommand implements Executable {
      */
     public ListCommand(InternshipList internshipList) {
         this.internshipList = internshipList;
-        Config.registerFlag(FLAGS.toArray(new String[0]));
+        //Config.registerFlag(FLAGS.toArray(new String[0]));
     }
 
     /**
