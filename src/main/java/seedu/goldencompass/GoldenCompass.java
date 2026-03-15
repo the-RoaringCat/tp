@@ -7,7 +7,7 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
-import seedu.goldencompass.preparser.Preparser;
+import seedu.goldencompass.parser.Preparser;
 import seedu.goldencompass.ui.Ui;
 
 import java.io.IOException;

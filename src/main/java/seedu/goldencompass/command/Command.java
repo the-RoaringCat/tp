@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static seedu.goldencompass.preparser.Config.DEFAULT_FLAG;
+import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
 
 /**
  * All command should implement this interface in order to be executed.
