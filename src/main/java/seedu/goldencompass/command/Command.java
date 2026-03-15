@@ -13,7 +13,8 @@ import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
  * All command should implement this interface in order to be executed.
  */
 public interface Command {
-    void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException;
+    void execute() throws GoldenCompassException;
+    //void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException;
 
     /**
      * Checks for missing flag and flag not used by the command

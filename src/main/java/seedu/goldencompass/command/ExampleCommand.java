@@ -30,10 +30,10 @@ public class ExampleCommand implements Command {
     /**
      * Prints a list of legal flags with their respective parameters.
      * <P><B>Example Use</B></P>
-     * @param flagToParamMap a Map
      */
     @Override
-    public void execute(Map<String, List<String>> flagToParamMap) {
+    public void execute() {
+        Map<String, List<String>> flagToParamMap = parser.map;
         System.out.println("hi, I am ExampleCommand");
         for(String key : flagToParamMap.keySet()) {
             String[] params = getParamsOf(key, flagToParamMap);
