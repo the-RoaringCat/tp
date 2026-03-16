@@ -1,40 +1,40 @@
 package seedu.goldencompass.command;
 
 import seedu.goldencompass.exception.GoldenCompassException;
-import seedu.goldencompass.parser.Config;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
-import seedu.goldencompass.ui.Ui; // Import the UI class
+import seedu.goldencompass.parser.Parser;
+import seedu.goldencompass.ui.Ui;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Represents a command to add a new internship to the GoldenCompass tracker.
  */
-public class AddInternshipCommand implements Executable {
+public class AddInternshipCommand implements Command {
 
-    // 1. Roaring Cat says no need for DEFAULT_FLAG in the list, just the extra flags
-    private static final ArrayList<String> FLAGS = new ArrayList<>(List.of("/t"));
-
+    private final Ui ui;
+    private final Parser parser;
     private final InternshipList internshipList;
+    private Map<String, List<String>> flagToParamMap;
 
-    public AddInternshipCommand(InternshipList internshipList) {
+    public AddInternshipCommand(Parser parser, InternshipList internshipList) {
+        ui = new Ui();
+        this.parser = parser;
         this.internshipList = internshipList;
-        Config.registerFlag(FLAGS.toArray(new String[0]));
+        this.flagToParamMap = parser.getFlagToParamMap();
     }
 
     @Override
-    public void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException {
+    public void execute() throws GoldenCompassException {
 
-        // 2. Trust their checkFlag; it already throws "missing flags" errors
-        checkFlag(flagToParamMap, FLAGS);
+        String companyName = parser.getParamsOf("add").get(0);
+        String title = "";
 
-        // 3. Extract logic: DEFAULT_FLAG is used for the company (the first part)
-        // String.join handles multiple entries if the user repeats a flag
-        String companyName = String.join(" ", getParamsOf(Config.DEFAULT_FLAG, flagToParamMap)).trim();
-        String title = String.join(" ", getParamsOf("/t", flagToParamMap)).trim();
+        if (parser.getParamsOf("/t") != null) {
+            title = String.join(" ", parser.getParamsOf("/t")).trim();
+        }
 
         if (companyName.isEmpty() || title.isEmpty()) {
             throw new GoldenCompassException("Company name and title cannot be empty!");
@@ -43,7 +43,8 @@ public class AddInternshipCommand implements Executable {
         Internship newInternship = new Internship(title, companyName);
         internshipList.add(newInternship);
 
-        // 4. Use Ui.print instead of System.out.println
-        new Ui().print("Got it! I've added this internship to your compass:\n  " + newInternship);
+        ui.print("Got it! I've added this internship to your compass:\n  " + newInternship);
+
     }
+
 }

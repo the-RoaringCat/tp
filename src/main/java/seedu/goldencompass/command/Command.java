@@ -12,14 +12,15 @@ import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
 /**
  * All command should implement this interface in order to be executed.
  */
-public interface Executable {
-    void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException;
+public interface Command {
 
+    void execute() throws GoldenCompassException;
     /**
      * Checks for missing flag and flag not used by the command
      * @param flagToParamMap a Map
      * @param flags  a String array
      */
+
     default void checkFlag(Map<String, List<String>> flagToParamMap, ArrayList<String> flags)
             throws GoldenCompassException {
         //each input flag must map to a flag recognized by the command
@@ -49,8 +50,4 @@ public interface Executable {
         }
     }
 
-    default String[] getParamsOf(String flag, Map<String, List<String>> flagToParamMap) {
-        List<String> paramsList = flagToParamMap.get(flag);
-        return paramsList.toArray(String[]::new);
-    }
 }

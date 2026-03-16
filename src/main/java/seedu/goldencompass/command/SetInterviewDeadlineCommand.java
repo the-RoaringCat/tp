@@ -3,7 +3,7 @@ package seedu.goldencompass.command;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
-import seedu.goldencompass.parser.Config;
+import seedu.goldencompass.parser.Parser;
 import seedu.goldencompass.ui.Ui;
 
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
  * Command format: {@code set-deadline INDEX /d DATE}
  * </p>
  */
-public class SetInterviewDeadlineCommand implements Executable {
+public class SetInterviewDeadlineCommand implements Command {
 
     public static final String COMMAND_WORD = "set-deadline";
 
@@ -30,7 +30,9 @@ public class SetInterviewDeadlineCommand implements Executable {
     private static final ArrayList<String> FLAGS = new ArrayList<>(Arrays.asList(FLAG_DATE));
 
     private final InterviewList interviewList;
-    private final Ui ui = new Ui();
+    private final Ui ui;
+    private final Parser parser;
+    private Map<String, List<String>> flagToParamMap;
 
     /**
      * Constructs a {@code SetInterviewDeadlineCommand} with the given {@code InterviewList}.
@@ -39,9 +41,11 @@ public class SetInterviewDeadlineCommand implements Executable {
      * </p>
      * @param interviewList the list of interviews to operate on.
      */
-    public SetInterviewDeadlineCommand(InterviewList interviewList) {
+    public SetInterviewDeadlineCommand(Parser parser, InterviewList interviewList) {
+        ui = new Ui();
+        this.parser = parser;
         this.interviewList = interviewList;
-        Config.registerCommand(COMMAND_WORD);
+        this.flagToParamMap = parser.getFlagToParamMap();
     }
 
     /**
@@ -50,12 +54,11 @@ public class SetInterviewDeadlineCommand implements Executable {
      *     Expects a 1-based integer index as the default argument and {@code /d} with a date in
      *     ISO format (yyyy-MM-dd).
      * </p>
-     * @param flagToParamMap a map of flags to their parameter lists.
      * @throws GoldenCompassException if flags are invalid, the index is not a valid integer,
      *     the index is out of range, or the date format is invalid.
      */
     @Override
-    public void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException {
+    public void execute() throws GoldenCompassException {
         checkFlag(flagToParamMap, FLAGS);
 
         for (Entry<String, List<String>> entry : flagToParamMap.entrySet()) {
@@ -64,8 +67,8 @@ public class SetInterviewDeadlineCommand implements Executable {
             }
         }
 
-        String indexParam = getParamsOf(DEFAULT_FLAG, flagToParamMap)[0].trim();
-        String dateParam = getParamsOf(FLAG_DATE, flagToParamMap)[0].trim();
+        String indexParam = parser.getParamsOf(DEFAULT_FLAG).get(0).trim();
+        String dateParam = parser.getParamsOf(FLAG_DATE).get(0).trim();
 
         int index;
         try {
