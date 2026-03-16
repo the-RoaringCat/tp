@@ -8,14 +8,7 @@ import seedu.goldencompass.ui.Ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import static seedu.goldencompass.parser.Config.DEFAULT_FLAG;
-
 /**
  * Sets the deadline date of an interview identified by its 1-based index in the interview list.
  * <p>
@@ -27,12 +20,10 @@ public class SetInterviewDeadlineCommand implements Command {
     public static final String COMMAND_WORD = "set-deadline";
 
     private static final String FLAG_DATE = "/d";
-    private static final ArrayList<String> FLAGS = new ArrayList<>(Arrays.asList(FLAG_DATE));
 
     private final InterviewList interviewList;
     private final Ui ui;
     private final Parser parser;
-    private Map<String, List<String>> flagToParamMap;
 
     /**
      * Constructs a {@code SetInterviewDeadlineCommand} with the given {@code InterviewList}.
@@ -45,7 +36,6 @@ public class SetInterviewDeadlineCommand implements Command {
         ui = new Ui();
         this.parser = parser;
         this.interviewList = interviewList;
-        this.flagToParamMap = parser.getFlagToParamMap();
     }
 
     /**
@@ -59,16 +49,19 @@ public class SetInterviewDeadlineCommand implements Command {
      */
     @Override
     public void execute() throws GoldenCompassException {
-        checkFlag(flagToParamMap, FLAGS);
-
-        for (Entry<String, List<String>> entry : flagToParamMap.entrySet()) {
-            if (!entry.getKey().equals(DEFAULT_FLAG) && entry.getValue().size() > 1) {
-                throw new GoldenCompassException("Error: Duplicate flag: " + entry.getKey());
-            }
+        List<String> indexParams = parser.getParamsOf(COMMAND_WORD);
+        if (indexParams == null || indexParams.get(0).trim().isEmpty()) {
+            throw new GoldenCompassException("Error: Please provide the index of the interview. "
+                    + "Usage: set-deadline INDEX /d DATE");
         }
+        String indexParam = indexParams.get(0).trim();
 
-        String indexParam = parser.getParamsOf(DEFAULT_FLAG).get(0).trim();
-        String dateParam = parser.getParamsOf(FLAG_DATE).get(0).trim();
+        List<String> dateParams = parser.getParamsOf(FLAG_DATE);
+        if (dateParams == null || dateParams.get(0).trim().isEmpty()) {
+            throw new GoldenCompassException("Error: Please provide a date using the /d flag. "
+                    + "Usage: set-deadline INDEX /d DATE");
+        }
+        String dateParam = dateParams.get(0).trim();
 
         int index;
         try {

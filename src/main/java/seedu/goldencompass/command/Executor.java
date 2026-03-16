@@ -20,7 +20,9 @@ public class Executor {
                 "example", new ExampleCommand(parser, internshipList),
                 "add", new AddInternshipCommand(parser, internshipList),
                 "list", new ListCommand(internshipList),
-                "list-interview", new ListInterviewCommand(interviewList)
+                "list-interview", new ListInterviewCommand(interviewList),
+                "set-deadline", new SetInterviewDeadlineCommand(parser, interviewList),
+                "add-interview", new AddInterviewCommand(parser, internshipList, interviewList)
         );
 
     }

@@ -13,6 +13,11 @@ public class Interview {
         this.date = date;
     }
 
+    public Interview(Internship internship) {
+        this.internship = internship;
+        this.date = null;
+    }
+
     /**
      * Sets the deadline date of this interview.
      * @param date a {@code LocalDate} representing the new deadline date.
@@ -31,7 +36,7 @@ public class Interview {
 
     @Override
     public String toString() {
-        return internship.toString() + " @ " + date;
+        return internship.toString() + " @ " + (date != null ? date : "No date set");
     }
 
 }
