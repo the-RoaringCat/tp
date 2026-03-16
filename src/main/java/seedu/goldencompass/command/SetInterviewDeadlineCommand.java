@@ -45,7 +45,6 @@ public class SetInterviewDeadlineCommand implements Command {
         ui = new Ui();
         this.parser = parser;
         this.interviewList = interviewList;
-        this.flagToParamMap = parser.getFlagToParamMap();
     }
 
     /**
@@ -59,15 +58,7 @@ public class SetInterviewDeadlineCommand implements Command {
      */
     @Override
     public void execute() throws GoldenCompassException {
-        checkFlag(flagToParamMap, FLAGS);
-
-        for (Entry<String, List<String>> entry : flagToParamMap.entrySet()) {
-            if (!entry.getKey().equals(DEFAULT_FLAG) && entry.getValue().size() > 1) {
-                throw new GoldenCompassException("Error: Duplicate flag: " + entry.getKey());
-            }
-        }
-
-        String indexParam = parser.getParamsOf(DEFAULT_FLAG).get(0).trim();
+        String indexParam = parser.getParamsOf(COMMAND_WORD).get(0).trim();
         String dateParam = parser.getParamsOf(FLAG_DATE).get(0).trim();
 
         int index;
