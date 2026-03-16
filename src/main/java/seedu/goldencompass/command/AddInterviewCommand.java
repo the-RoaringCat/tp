@@ -19,7 +19,6 @@ public class AddInterviewCommand extends CommandClass {
 
     public static final String COMMAND_WORD = "add-interview";
 
-    private final Parser parser;
     private final InternshipList internshipList;
     private final InterviewList interviewList;
 
