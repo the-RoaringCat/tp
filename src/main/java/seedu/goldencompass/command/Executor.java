@@ -12,13 +12,14 @@ public class Executor {
     private final Map<String, Command> commands;
     private final Parser parser;
 
-    public Executor(Parser parser, InternshipList internships, InterviewList interviews) {
+    public Executor(Parser parser, InternshipList internshipList, InterviewList interviewList) {
 
         this.parser = parser;
 
         commands = Map.of(
-                "example", new ExampleCommand(parser, internships),
-                "add", new AddInternshipCommand(parser, internships)
+                "example", new ExampleCommand(parser, internshipList),
+                "add", new AddInternshipCommand(parser, internshipList),
+                "list", new ListCommand(parser, internshipList)
         );
 
     }

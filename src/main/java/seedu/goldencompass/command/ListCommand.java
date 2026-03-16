@@ -2,10 +2,9 @@ package seedu.goldencompass.command;
 
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.InternshipList;
-//import seedu.goldencompass.preparser.Config;
+import seedu.goldencompass.parser.Parser;
+import seedu.goldencompass.ui.Ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -14,20 +13,24 @@ import java.util.Map;
  * This command displays a numbered list of all internships with their company
  * names and job titles.
  */
-public class ListCommand implements Executable {
-    /** List of flags accepted by this command */
-    private static final ArrayList<String> FLAGS = new ArrayList<>(Arrays.asList("/list"));
+public class ListCommand implements Command {
 
     /** Reference to the internship list to display */
-    private InternshipList internshipList;
+    private final Ui ui;
+    private final Parser parser;
+    private final InternshipList internshipList;
+    private Map<String, List<String>> flagToParamMap;
 
     /**
      * Constructs a ListCommand with the specified internship list.
      *
      * @param internshipList The list of internships to be displayed
      */
-    public ListCommand(InternshipList internshipList) {
+    public ListCommand(Parser parser, InternshipList internshipList) {
+        ui = new Ui();
+        this.parser = parser;
         this.internshipList = internshipList;
+        flagToParamMap = parser.getFlagToParamMap();
         //Config.registerFlag(FLAGS.toArray(new String[0]));
     }
 
@@ -35,12 +38,11 @@ public class ListCommand implements Executable {
      * Executes the list command.
      * Checks for valid flags and displays all internships in the list.
      *
-     * @param flagToParamMap Map containing command flags and their parameters
      * @throws GoldenCompassException if invalid flags are provided
      */
     @Override
-    public void execute(Map<String, List<String>> flagToParamMap) throws GoldenCompassException {
-        checkFlag(flagToParamMap, FLAGS);
+    public void execute() throws GoldenCompassException {
+        // checkFlag(flagToParamMap, FLAGS);
         internshipList.list(); // Call the list method we just added
     }
 }
