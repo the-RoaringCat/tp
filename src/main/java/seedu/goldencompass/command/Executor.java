@@ -10,9 +10,11 @@ import java.util.Map;
 
 public class Executor {
 
+    private final static Map<String, String> aliasToCommandWordMap = new HashMap<>();
+
     private final Map<String, Command> commands;
     private final Parser parser;
-    private final static Map<String, String> aliasToCommandWordMap = new HashMap<>();
+
 
 
     public Executor(Parser parser, InternshipList internshipList, InterviewList interviewList) {
