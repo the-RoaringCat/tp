@@ -60,4 +60,8 @@ public class Executor {
         }
         ALIAS_MAP.put(alias, command);
     }
+
+    public static Map<String, String> getAliasMap() {
+        return ALIAS_MAP;
+    }
 }
