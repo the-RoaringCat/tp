@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StorageTest {
+public class InternshipStorageTest {
 
     private static final String TEST_FILE_PATH = "test_internships.txt";
-    private Storage storage;
+    private InternshipStorage internshipStorage;
     private InternshipList internshipList;
 
     @BeforeEach
     public void setUp() {
         // Run this before EVERY test to set up a fresh environment
-        storage = new Storage(TEST_FILE_PATH);
+        internshipStorage = new InternshipStorage(TEST_FILE_PATH);
         internshipList = new InternshipList();
     }
 
@@ -43,10 +43,10 @@ public class StorageTest {
         internshipList.add(new Internship("Data Analyst", "Shopee"));
 
         // 2. Save the data to the dummy file
-        storage.save(internshipList);
+        internshipStorage.save(internshipList);
 
         // 3. Load the data back out
-        ArrayList<Internship> loadedList = storage.load();
+        ArrayList<Internship> loadedList = internshipStorage.load();
 
         // 4. Assert that everything matches perfectly!
         assertEquals(2, loadedList.size());
@@ -59,10 +59,10 @@ public class StorageTest {
     @Test
     public void load_emptyFile_returnsEmptyList() {
         // Save a completely empty list
-        storage.save(internshipList);
+        internshipStorage.save(internshipList);
 
         // Load it back out
-        ArrayList<Internship> loadedList = storage.load();
+        ArrayList<Internship> loadedList = internshipStorage.load();
 
         // Assert it didn't magically create fake internships
         assertTrue(loadedList.isEmpty());
@@ -80,7 +80,7 @@ public class StorageTest {
         fw.close();
 
         // Load it out
-        ArrayList<Internship> loadedList = storage.load();
+        ArrayList<Internship> loadedList = internshipStorage.load();
 
         // Assert that it safely skipped the bad line and only loaded the 2 good ones
         assertEquals(2, loadedList.size());

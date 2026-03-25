@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 /**
  * Handles the loading and saving of internship data to a text file.
  */
-public class Storage {
+public class InternshipStorage {
 
-    private static final Logger logger = Logger.getLogger(Storage.class.getName());
+    private static final Logger logger = Logger.getLogger(InternshipStorage.class.getName());
     private final String filePath;
 
     /**
@@ -25,7 +25,7 @@ public class Storage {
      *
      * @param filePath The relative path to the text file (e.g., "data/internships.txt").
      */
-    public Storage(String filePath) {
+    public InternshipStorage(String filePath) {
         assert filePath != null && !filePath.trim().isEmpty() : "Storage file path cannot be null or empty";
         this.filePath = filePath;
     }
