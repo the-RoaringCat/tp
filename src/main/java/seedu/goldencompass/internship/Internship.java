@@ -59,7 +59,8 @@ public class Internship {
         assert this.companyName != null && !this.companyName.isEmpty() : "Company name should be set after construction";
         assert this.hasApplied : "hasApplied should be true after creation";
 
-        logger.info("Created internship: " + this.companyName + " - " + this.title);
+        logger.info("Created internship: " + this.companyName
+                + " - " + this.title);
     }
 
     /**
