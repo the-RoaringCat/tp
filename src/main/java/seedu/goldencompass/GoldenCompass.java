@@ -6,6 +6,8 @@ import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 import seedu.goldencompass.ui.Ui;
+import seedu.goldencompass.storage.InternshipStorage;
+import seedu.goldencompass.storage.InterviewStorage;
 
 import java.io.IOException;
 
@@ -18,12 +20,18 @@ public class GoldenCompass {
     private final InternshipList internships;
     private final InterviewList interviews;
     private final Executor executor;
+    private final InternshipStorage internshipStorage;
+    private final InterviewStorage interviewStorage;
 
     public GoldenCompass() throws GoldenCompassException {
         ui = new Ui();
         parser = new Parser();
-        internships = new InternshipList();
-        interviews = new InterviewList();
+        internshipStorage = new InternshipStorage("data/internships.txt");
+        internships = new InternshipList(internshipStorage.load());
+        internships.setUi(ui);
+        this.interviewStorage = new InterviewStorage("data/interviews.txt");
+        this.interviews = new InterviewList();
+        this.interviewStorage.load(interviews, internships);
         executor = new Executor(parser, internships, interviews);
     }
 
@@ -43,6 +51,8 @@ public class GoldenCompass {
                     break;
                 }
                 executor.execute();
+                internshipStorage.save(internships);
+                interviewStorage.save(interviews);
             } catch (GoldenCompassException e) {
                 ui.print(e.getMessage());
             }
