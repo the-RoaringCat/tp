@@ -176,6 +176,61 @@ The interface `Executable` provides `execute(Map)`, so it must be **overridden**
 Since preparser does not validate command specific flags, in the implementation of `execute(Map)`, `checkFlags()` must be 
 called first before anything.
 
+### Storage — Component Overview
+
+The following class diagram shows the structure of the `Storage` component and how it interacts with the `Logic` and `Model` layers.
+
+![Storage Class Diagram](diagrams/StorageClassDiagram.png)
+
+The `Storage` component:
+* Saves `InternshipList`, `InterviewList`, and the `ALIAS_MAP` into separate text files.
+* Loads data from these files upon application startup.
+* Uses a "linked loading" approach: `InterviewStorage` references the `InternshipList` to rebuild the object associations between interviews and their respective companies using the `findInternshipByCompany` helper method.
+
+### Implementation: Persistence
+
+#### Overview
+
+The storage system is implemented through three main classes: `InternshipStorage`, `InterviewStorage`, and `AliasStorage`. These classes handle the conversion of Java objects into a pipe-delimited (`|`) text format to ensure data persists across sessions.
+
+**Data File Locations:**
+* `data/internships.txt`: Stores company names and job titles.
+* `data/interviews.txt`: Stores interview dates and the linked company names.
+* `data/aliases.txt`: Stores user-defined command shortcuts.
+
+#### Execution Flow
+
+When the application starts, `GoldenCompass` initializes the storage classes and triggers the `load()` sequence in a specific order to maintain data integrity:
+
+1.  **Internship Loading**: `InternshipStorage` reads `internships.txt` and populates the `InternshipList`.
+2.  **Interview Loading**: `InterviewStorage` reads `interviews.txt`. For each entry, it searches the `InternshipList` for the matching `Internship` object before adding the `Interview` to the `InterviewList`.
+3.  **Alias Loading**: `AliasStorage` reads `aliases.txt` and updates the `ALIAS_MAP` in the `Executor`.
+
+The following sequence diagram illustrates the loading process during startup:
+
+![Storage Loading Sequence Diagram](diagrams/StorageLoadingSequenceDiagram.png)
+
+#### Design Considerations
+
+**Aspect: Data Format for Persistence**
+
+* **Alternative 1 (current choice):** Custom Pipe-Delimited Text Format (e.g., `Google | Software Engineer`).
+  * **Pros:** Human-readable, easy to debug by opening the file in a text editor, and lightweight without needing external libraries.
+  * **Cons:** Requires manual parsing logic and careful handling of the delimiter character if it appears in user input.
+
+* **Alternative 2:** JSON or XML.
+  * **Pros:** Standardized format, handles nested data structures easily.
+  * **Cons:** Increases project complexity and file size; requires adding external dependencies which may conflict with the project's "no-third-party-library" constraints.
+
+**Aspect: Timing of Save Operations**
+
+* **Alternative 1 (current choice):** Save on Exit.
+  * **Pros:** Efficient; only performs Disk I/O operations once per session, reducing performance overhead.
+  * **Cons:** Risk of data loss if the application crashes or the terminal is force-closed without using the `bye` command.
+
+* **Alternative 2:** Auto-save after every modification.
+  * **Pros:** Maximum data safety; changes are committed immediately.
+  * **Cons:** High disk I/O overhead; might lead to minor lag during command execution if the data lists become very large.
 
 ## Product scope
 ### Target user profile
