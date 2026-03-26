@@ -49,4 +49,32 @@ public class AddInternshipCommandTest {
         assertThrows(GoldenCompassException.class, addInternshipCommand::execute);
 
     }
+
+    // Wrong flag used
+    @Test
+    public void execute_invalidFlag_throwsException() throws GoldenCompassException {
+        parser.parse("add Shopee /c Software Engineer");
+        assertThrows(GoldenCompassException.class, addInternshipCommand::execute);
+    }
+
+    // Missing flag
+    @Test
+    public void execute_missingTitleFlag_throwsException() throws GoldenCompassException {
+        parser.parse("add Shopee");
+        assertThrows(GoldenCompassException.class, addInternshipCommand::execute);
+    }
+
+    // Company name completely missing before the flag
+    @Test
+    public void execute_missingCompanyName_throwsException() throws GoldenCompassException {
+        parser.parse("add /t Software Engineer");
+        assertThrows(GoldenCompassException.class, addInternshipCommand::execute);
+    }
+
+    // Just typing "add" with absolutely nothing else
+    @Test
+    public void execute_bareAddCommand_throwsException() throws GoldenCompassException {
+        parser.parse("add");
+        assertThrows(GoldenCompassException.class, addInternshipCommand::execute);
+    }
 }

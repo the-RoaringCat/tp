@@ -5,6 +5,7 @@ import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Represents a command to list all internship applications in the system.
@@ -12,6 +13,8 @@ import java.util.List;
  * names and job titles.
  */
 public class ListCommand extends CommandClass {
+
+    private static final Logger logger = Logger.getLogger(ListCommand.class.getName());
 
     /** Reference to the internship list to display */
     private final InternshipList internshipList;
@@ -22,7 +25,17 @@ public class ListCommand extends CommandClass {
      * @param internshipList The list of internships to be displayed
      */
     public ListCommand(InternshipList internshipList) {
+        // Defensive check: internshipList cannot be null
+        if (internshipList == null) {
+            logger.severe("Attempted to create ListCommand with null InternshipList");
+            throw new IllegalArgumentException("InternshipList cannot be null");
+        }
+
         this.internshipList = internshipList;
+        logger.info("ListCommand initialized");
+
+        // Assertion to verify state
+        assert this.internshipList != null : "InternshipList should be set";
     }
 
     /**
@@ -36,20 +49,59 @@ public class ListCommand extends CommandClass {
      */
     @Override
     public void execute() throws GoldenCompassException {
+        logger.info("Executing ListCommand");
 
-        List<Internship> internships = internshipList.getInternships();
+        try {
+            // Defensive check: ensure internshipList is valid
+            if (internshipList == null) {
+                logger.severe("InternshipList is null during execution");
+                throw new GoldenCompassException("System error: Internship list not initialized");
+            }
 
-        if (internships.isEmpty()) {
-            ui.print("No internships in the list.");
-            return;
+            // Get internships list
+            List<Internship> internships = internshipList.getInternships();
+
+            // Defensive check: internships list should not be null
+            if (internships == null) {
+                logger.severe("getInternships() returned null");
+                throw new GoldenCompassException("System error: Unable to retrieve internship list");
+            }
+
+            //Check if list is empty
+            if (internships.isEmpty()) {
+                ui.print("No internships in the list.");
+                logger.fine("List is empty, displayed message");
+                return;
+            }
+
+            // Display header
+            ui.print("Here are the internships you have added:");
+            logger.finer("Displaying " + internships.size() + " internships");
+
+            // Display each internship
+            for (int i = 0; i < internships.size(); i++) {
+                Internship intern = internships.get(i);
+
+                // Defensive check: each internship should not be null
+                if (intern == null) {
+                    logger.warning("Null internship found at index " + i);
+                    ui.print((i + 1) + ". [Error: Invalid internship data]");
+                } else {
+                    ui.print((i + 1) + ". " + intern.getCompanyName() +
+                            " - " + intern.getTitle());
+                }
+            }
+
+            logger.info("ListCommand executed successfully, displayed " + internships.size() +
+                    " internships");
+
+        } catch (GoldenCompassException e) {
+            // Re-throw GoldenCompassException
+            throw e;
+        } catch (Exception e) {
+            // Catch any other unexpected exceptions
+            logger.severe("Unexpected error in ListCommand: " + e.getMessage());
+            throw new GoldenCompassException("Error displaying internships: " + e.getMessage());
         }
-
-        ui.print("Here are the internships you have added:");
-
-        for (int i = 0; i < internships.size(); i++) {
-            Internship intern = internships.get(i);
-            ui.print((i + 1) + ". " + intern.getCompanyName() + " - " + intern.getTitle());
-        }
-
     }
 }

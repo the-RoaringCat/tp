@@ -39,6 +39,10 @@ public class Executor {
     public void execute() throws GoldenCompassException {
 
         String inputAlias = parser.getCommand();
+        // Check if the alias exists at all
+        if (!ALIAS_MAP.containsKey(inputAlias)) {
+            throw new GoldenCompassException("Error: unknown command: " + inputAlias);
+        }
         String commandWord = ALIAS_MAP.get(inputAlias);
         Command cmd = commands.get(commandWord);
 
@@ -55,5 +59,9 @@ public class Executor {
             throw new GoldenCompassException("Error: Cannot add alias to \"" + command + " since it does not exist.");
         }
         ALIAS_MAP.put(alias, command);
+    }
+
+    public static Map<String, String> getAliasMap() {
+        return ALIAS_MAP;
     }
 }

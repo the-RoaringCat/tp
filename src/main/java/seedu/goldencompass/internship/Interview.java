@@ -43,4 +43,8 @@ public class Interview {
         return internship.toString() + " @ " + (date != null ? date : "No date set");
     }
 
+    public Internship getInternship() {
+        return this.internship;
+    }
+
 }

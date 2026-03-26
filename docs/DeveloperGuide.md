@@ -8,6 +8,167 @@
 
 {Describe the design and implementation of the product. Use UML diagrams and short code snippets where applicable.}
 
+### Internship Management — Class Overview
+
+The following class diagram shows the key classes involved in internship management and their relationships.
+
+Each `AddInternshipCommand` holds a reference to the `Parser` and the `InternshipList`.
+The command relies on the `Parser` to extract user inputs and writes the newly created `Internship` directly to the `InternshipList`.
+
+### Add Internship Feature
+
+#### Overview
+
+The `add` command allows the user to create a new internship application in the tracker.
+The user specifies the company name and the role title, and the system creates an `Internship` object
+and adds it to the `InternshipList`.
+
+**Command format:** `add COMPANY_NAME /t ROLE_TITLE`
+
+**Example:** `add Grab /t Software Engineer` creates an internship at Grab for a Software Engineer role.
+
+#### Implementation
+
+The feature is implemented in `AddInternshipCommand`, which implements the `Command` interface.
+When `execute()` is called, it performs the following steps:
+
+1. Retrieves the company name parameter from the `Parser` using `getParamsOf("add")`.
+2. Retrieves the role title parameter from the `Parser` using `getParamsOf("/t")`.
+3. Validates that the company name parameter is present and not an empty string.
+4. Validates that the `/t` flag is present and that the title text is not empty.
+5. Throws a `GoldenCompassException` with an accumulated error message if any validation steps fail.
+6. Creates a new `Internship` object using the validated company name and title.
+7. Adds the newly created `Internship` to the `InternshipList`.
+8. Prints a confirmation message to the user via the `Ui`.
+
+![Add Internship Sequence Diagram](diagrams/AddInternshipCommandSequenceDiagram.png)
+
+#### Design Considerations
+
+**Aspect: Input Validation and Error Handling Strategy**
+
+* **Alternative 1 (Current Implementation): Error Accumulation**
+  * **Description:** The command checks all potential failure points (missing company name, missing `/t` flag, empty title) and collects all error messages into a single `StringBuilder`. If the builder is not empty at the end of the checks, it throws one consolidated `GoldenCompassException`.
+  * **Pros:** Significantly improves User Experience (UX). If a user makes multiple syntax mistakes, they are informed of all of them at once, rather than having to fix one error just to be immediately hit by another.
+  * **Cons:** Slightly more verbose code, as it requires setting up a `StringBuilder` and using `if` blocks that don't immediately return.
+
+* **Alternative 2: Fail-Fast Validation**
+  * **Description:** The command throws a `GoldenCompassException` immediately upon encountering the very first invalid input and halts execution.
+  * **Pros:** Simpler and shorter code. Execution stops immediately, saving minor amounts of processing time.
+  * **Cons:** Frustrating UX. A user who forgets both the company name and the `/t` flag will only see the "missing company name" error. After fixing it and pressing enter, they will be hit with the "missing flag" error, creating an annoying "whack-a-mole" experience.
+
+### Interview Management — Class Overview
+
+The following class diagram shows the key classes involved in interview management and their relationships.
+
+![Interview Class Diagram](diagrams/InterviewClassDiagram.png)
+
+Each `Interview` holds a reference to the `Internship` it is associated with.
+`AddInterviewCommand` bridges the two lists — it reads from `InternshipList` and writes to `InterviewList`.
+`SetInterviewDeadlineCommand` only needs access to `InterviewList` since it modifies an existing interview.
+
+### Add Interview Feature
+
+#### Overview
+
+The `add-interview` command allows the user to create an interview linked to an existing internship.
+The user specifies the 1-based index of the internship, and the system creates an `Interview` object
+referencing that `Internship` and adds it to the `InterviewList`.
+
+**Command format:** `add-interview INDEX`
+
+**Example:** `add-interview 2` creates an interview for the 2nd internship in the list.
+
+#### Implementation
+
+The feature is implemented in `AddInterviewCommand`, which extends `CommandClass`.
+When `execute()` is called, it performs the following steps:
+
+1. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
+2. Validates that the parameter is present and is a valid integer.
+3. Checks that the index is within the range `[1, internshipList.getSize()]`.
+4. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
+5. Creates a new `Interview` object linked to that `Internship`.
+6. Adds the `Interview` to the `InterviewList`.
+7. Prints a confirmation message to the user.
+
+The following sequence diagram illustrates the execution flow when the user enters `add-interview 2`:
+
+![Add Interview Sequence Diagram](diagrams/AddInterviewSequenceDiagram.png)
+
+#### Design Considerations
+
+**Aspect: How to link an Interview to an Internship**
+
+- **Alternative 1 (current choice):** Store a reference to the `Internship` object inside `Interview`.
+    - Pros: Simple, direct access to internship details (e.g., company name, title) without extra lookups.
+    - Cons: If the `Internship` object is modified or removed, the `Interview` still holds the old reference.
+
+- **Alternative 2:** Store only the internship index and look it up when needed.
+    - Pros: Always reads the latest internship data.
+    - Cons: Fragile if the internship list is reordered or items are deleted, since the stored index may become invalid.
+
+**Aspect: Whether Interview requires a date at creation**
+
+- **Alternative 1 (current choice):** Allow `Interview` to be created without a date (date defaults to `null`).
+    - Pros: More flexible — the user can add an interview first and set the deadline later via `set-deadline`.
+    - Cons: Need to handle the case where date is `null` when displaying.
+
+- **Alternative 2:** Require a date at creation time.
+    - Pros: Every interview always has a date, simplifying display logic.
+    - Cons: Less flexible — the user may not know the interview date yet when adding it.
+
+### Set Interview Deadline Feature
+
+#### Overview
+
+The `set-deadline` command allows the user to set or update the deadline date of an existing interview.
+The user specifies the 1-based index of the interview and a date in `yyyy-MM-dd` format.
+
+**Command format:** `set-deadline INDEX /d DATE`
+
+**Example:** `set-deadline 1 /d 2025-04-15` sets the deadline of the 1st interview to April 15, 2025.
+
+#### Implementation
+
+The feature is implemented in `SetInterviewDeadlineCommand`, which implements the `Command` interface.
+When `execute()` is called, it performs the following steps:
+
+1. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
+2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
+3. Validates that both parameters are present and non-empty.
+4. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
+5. Parses the date string into a `LocalDate` object.
+6. Retrieves the `Interview` at the 0-based position `(index - 1)` from `InterviewList`.
+7. Calls `interview.setDate(date)` to update the deadline.
+8. Prints a confirmation message to the user.
+
+The following sequence diagram illustrates the execution flow when the user enters `set-deadline 1 /d 2025-04-15`:
+
+![Set Deadline Sequence Diagram](diagrams/SetDeadlineSequenceDiagram.png)
+
+#### Design Considerations
+
+**Aspect: How to identify which interview to update**
+
+- **Alternative 1 (current choice):** Use a 1-based index from the displayed interview list.
+    - Pros: Consistent with other commands (e.g., `add-interview` uses an index). Simple for the user to type.
+    - Cons: The user must run `list-interview` first to know the index.
+
+- **Alternative 2:** Identify by internship name or interview description.
+    - Pros: More intuitive — the user does not need to memorise or look up an index.
+    - Cons: Ambiguous if multiple interviews share the same internship name. Requires more complex matching logic.
+
+**Aspect: How to accept the date input**
+
+- **Alternative 1 (current choice):** Use a `/d` flag to separate the date from the index parameter.
+    - Pros: Consistent with the existing flag-based command framework. Clear separation of arguments.
+    - Cons: Slightly more verbose for the user.
+
+- **Alternative 2:** Accept the date as a positional argument (e.g., `set-deadline 1 2025-04-15`).
+    - Pros: Shorter command for the user.
+    - Cons: Breaks the flag-based convention used by other commands, making the parser inconsistent.
+
 ### Command Framework
 All command classes implement `Executable`, which provides `execute(Map)` and a default method `checkFlags()` to check the 
 validity of flags. 

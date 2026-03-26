@@ -1,0 +1,54 @@
+@startuml
+hide circle
+
+class Internship {
+    - title : String
+    - companyName : String
+    + getTitle() : String
+    + getCompanyName() : String
+    + toString() : String
+}
+
+class Interview {
+    - internship : Internship
+    - date : LocalDate
+    + Interview(internship : Internship)
+    + Interview(internship : Internship, date : LocalDate)
+    + setDate(date : LocalDate) : void
+    + getDate() : LocalDate
+    + toString() : String
+}
+
+class InternshipList {
+    - internships : List<Internship>
+    + add(x : Internship) : void
+    + getInternships() : List<Internship>
+    + getSize() : int
+}
+
+class InterviewList {
+    - interviews : List<Interview>
+    + add(x : Interview) : void
+    + get(index : int) : Interview
+    + size() : int
+    + isValidIndex(index : int) : boolean
+}
+
+class AddInterviewCommand {
+    - internshipList : InternshipList
+    - interviewList : InterviewList
+    + execute() : void
+}
+
+class SetInterviewDeadlineCommand {
+    - interviewList : InterviewList
+    + execute() : void
+}
+
+Interview --> "1" Internship : references
+InterviewList o--> "*" Interview : contains
+InternshipList o--> "*" Internship : contains
+AddInterviewCommand --> InternshipList : reads from
+AddInterviewCommand --> InterviewList : adds to
+SetInterviewDeadlineCommand --> InterviewList : modifies
+@enduml

@@ -1,0 +1,61 @@
+@startuml
+actor User
+participant ":Ui" as Ui
+participant ":GoldenCompass" as GC
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":AddInterviewCommand" as AIC
+participant ":InternshipList" as IL
+participant ":InterviewList" as IVL
+
+User -> Ui : "add-interview 2"
+activate Ui
+Ui --> GC : returns input
+deactivate Ui
+
+GC -> Parser : parse("add-interview 2")
+activate Parser
+Parser --> GC
+deactivate Parser
+
+GC -> Executor : execute()
+activate Executor
+Executor -> AIC : execute()
+activate AIC
+
+AIC -> Parser : getParamsOf("add-interview")
+activate Parser
+Parser --> AIC : ["2"]
+deactivate Parser
+
+AIC -> IL : getSize()
+activate IL
+IL --> AIC : size
+deactivate IL
+
+AIC -> IL : getInternships()
+activate IL
+IL --> AIC : internships
+deactivate IL
+
+note right of AIC : Retrieves Internship at index 1 (0-based)
+
+create "iv:Interview" as IV
+AIC -> IV : new Interview(internship)
+activate IV
+IV --> AIC
+deactivate IV
+
+AIC -> IVL : add(iv)
+activate IVL
+IVL --> AIC
+deactivate IVL
+
+AIC -> Ui : print("Got it! I've added an interview for: ...")
+activate Ui
+Ui --> AIC
+deactivate Ui
+
+deactivate AIC
+deactivate Executor
+@enduml
