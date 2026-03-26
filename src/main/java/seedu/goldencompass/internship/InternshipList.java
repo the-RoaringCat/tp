@@ -27,6 +27,18 @@ public class InternshipList {
     }
 
     /**
+     * Constructs an InternshipList loaded with existing data from storage.
+     *
+     * @param loadedInternships The list of internships loaded from the save file.
+     */
+    public InternshipList(List<Internship> loadedInternships) {
+        if (loadedInternships != null) {
+            this.internships.addAll(loadedInternships);
+        }
+        logger.info("InternshipList loaded with " + this.internships.size() + " existing records.");
+    }
+
+    /**
      * Sets the UI instance for displaying messages.
      *
      * @param ui The UI instance to use
@@ -133,5 +145,14 @@ public class InternshipList {
         }
 
         logger.info("Displayed " + internships.size() + " internships");
+    }
+
+    public Internship findInternshipByCompany(String companyName) {
+        for (Internship i : internships) {
+            if (i.getCompanyName().equalsIgnoreCase(companyName)) {
+                return i;
+            }
+        }
+        return null;
     }
 }
