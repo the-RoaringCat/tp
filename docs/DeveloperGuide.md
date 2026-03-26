@@ -169,6 +169,24 @@ The following sequence diagram illustrates the execution flow when the user ente
     - Pros: Shorter command for the user.
     - Cons: Breaks the flag-based convention used by other commands, making the parser inconsistent.
 
+### Feature: Listing All Interviews
+
+#### Overview
+
+The user can list all interviews in increasing order of dates such that the earliest interview is shown at the top.
+
+**Command format:** `list-interview`
+
+#### Implementation
+
+The feature is implemented in `ListInterviewCommand`, the relationship of which to other classes is shown in the following class diagram 
+
+![List Interview Class Diagram](diagrams/ListInterviewClassDiagram.png)
+
+The following sequence diagram illustrates `ListInterviewCommand::execute()`
+
+![List Interview Sequence Diagram](diagrams/ListInterviewSequenceDiagram.png)
+
 ### Command Framework
 All command classes implement `Executable`, which provides `execute(Map)` and a default method `checkFlags()` to check the 
 validity of flags. 
