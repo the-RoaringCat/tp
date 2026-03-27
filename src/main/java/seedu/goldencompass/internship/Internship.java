@@ -86,6 +86,27 @@ public class Internship {
         return companyName;
     }
 
+    /**
+     * Gets the interview associated with this internship.
+     *
+     * @return The interview, or null if no interview scheduled
+     */
+    public Interview getInterview() {
+        return interview;
+    }
+
+    /**
+     * Deletes the interview associated with this internship.
+     */
+    public void deleteInterview() {
+        if (interview != null) {
+            logger.info("Deleting interview for: " + companyName + " - " + title);
+            this.interview = null;
+        } else {
+            logger.fine("No interview to delete for: " + companyName);
+        }
+    }
+
     @Override
     public String toString() {
         String offerStatus = isOfferReceived ? " [OFFER RECEIVED] 🏆" : "";
