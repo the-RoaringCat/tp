@@ -4,9 +4,9 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.parser.Parser;
 
 public class RemoveAliasCommand extends CommandClass{
-    //default + /a
-    private static final int PARAM_LENGTH = 2;
-
+    //default
+    private static final int PARAM_LENGTH = 1;
+    private static final String KEYWORD = "remove-alias";
     private final Executor executor;
 
     public RemoveAliasCommand(Parser parser, Executor executor) {
@@ -19,7 +19,7 @@ public class RemoveAliasCommand extends CommandClass{
         if(parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             throw new GoldenCompassException("Error: Expecting only one argument.");
         }
-        String alias = parser.getParamsOf("/a").get(0);
+        String alias = parser.getParamsOf(KEYWORD).get(0);
 
         executor.removeAlias(alias);
         ui.print("Alias: \"" + alias + "\" is now removed.");
