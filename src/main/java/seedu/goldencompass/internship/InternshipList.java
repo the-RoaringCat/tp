@@ -84,6 +84,29 @@ public class InternshipList {
     }
 
     /**
+     * Deletes an internship at the specified index.
+     *
+     * @param index The index of the internship to delete (0-based)
+     * @return The deleted internship
+     * @throws IndexOutOfBoundsException if index is invalid
+     */
+    public Internship delete(int index) {
+        assert internships != null : "Internships list should not be null";
+
+        if (index < 0 || index >= internships.size()) {
+            logger.warning("Attempted to delete invalid index: " + index);
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + internships.size());
+        }
+
+        Internship deletedInternship = internships.remove(index);
+        logger.info("Deleted internship: " + deletedInternship.getCompanyName()
+                + " - " + deletedInternship.getTitle());
+        assert internships.size() >= 0 : "List size should not be negative after deletion";
+
+        return deletedInternship;
+    }
+
+    /**
      * Returns the number of internships in the list.
      *
      * @return The size of the internship list

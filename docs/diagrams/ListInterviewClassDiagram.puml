@@ -1,0 +1,72 @@
+@startuml
+
+class GoldenCompass {
+    - InternshipList internships
+    - InternshipStorage internshipStorage
+    - InterviewStorage interviewStorage
+    - AliasStorage aliasStorage
+    + run()
+}
+
+class Executor {
+    - Map<String, Command> commands
+    + execute()
+    + addAlias(command, alias)
+    + getAliasMap()
+}
+
+interface Command {
+    + execute()
+}
+
+class CommandClass {
+    + execute()
+}
+
+class ListInterviewCommand {
+    + ListInterviewCommand(interviewList)
+    + execute()
+}
+
+class InterviewList {
+    + getInterviews()
+}
+
+class Interview {
+    - Internship internship;
+    - LocalDate date;
+    + setDate()
+    + getDate()
+    + toString()
+    + getInternship()
+}
+
+class Ui {
+    + print(message : String)
+    + greet()
+    + read()
+}
+
+class Parser {
+    + parse(input)
+    + getCommand()
+}
+
+GoldenCompass --> "1" Executor
+GoldenCompass --> "1" InterviewList
+GoldenCompass --> "1" Ui
+GoldenCompass --> "1" Parser
+
+Executor -.> Command
+Executor --> "1" Parser
+
+CommandClass --|> Command
+ListInterviewCommand --|> CommandClass
+
+ListInterviewCommand --> "1" InterviewList
+InterviewList o--> "*" Interview
+
+CommandClass --> "1" Ui
+CommandClass --> "1" Parser
+
+@enduml
