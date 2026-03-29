@@ -32,14 +32,14 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_validIndexAndDate_setsDeadlineSuccessfully() throws GoldenCompassException {
-        parser.parse("set-deadline 1 /d 2028-09-08");
+        parser.parse("update-date 1 /d 2028-09-08");
         setDeadlineCommand.execute();
         assertEquals(LocalDate.parse("2028-09-08"), interviewList.get(0).getDate());
     }
 
     @Test
     public void execute_nonIntegerIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline abc /d 2028-09-08");
+        parser.parse("update-date abc /d 2028-09-08");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -50,7 +50,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_indexOutOfRangeHigh_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline 99 /d 2028-09-08");
+        parser.parse("update-date 99 /d 2028-09-08");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -62,7 +62,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_indexOutOfRangeZero_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline 0 /d 2028-09-08");
+        parser.parse("update-date 0 /d 2028-09-08");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -74,7 +74,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_invalidDateFormat_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline 1 /d 2028");
+        parser.parse("update-date 1 /d 2028");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -86,37 +86,37 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_missingDateFlag_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline 1");
+        parser.parse("update-date 1");
         try {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
             assertEquals("Error: Please provide a date using the /d flag. "
-                    + "Usage: set-deadline INDEX /d DATE", e.getMessage());
+                    + "Usage: update-date INDEX /d DATE", e.getMessage());
         }
     }
 
     @Test
     public void execute_wrongFlag_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline 1 /by 2028-09-08");
+        parser.parse("update-date 1 /by 2028-09-08");
         try {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
             assertEquals("Error: Please provide a date using the /d flag. "
-                    + "Usage: set-deadline INDEX /d DATE", e.getMessage());
+                    + "Usage: update-date INDEX /d DATE", e.getMessage());
         }
     }
 
     @Test
     public void execute_missingIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("set-deadline /d 2028-09-08");
+        parser.parse("update-date /d 2028-09-08");
         try {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
             assertEquals("Error: Please provide the index of the interview. "
-                    + "Usage: set-deadline INDEX /d DATE", e.getMessage());
+                    + "Usage: update-date INDEX /d DATE", e.getMessage());
         }
     }
 }

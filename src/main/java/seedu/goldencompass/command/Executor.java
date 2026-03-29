@@ -26,7 +26,7 @@ public class Executor {
                 "add", new AddInternshipCommand(parser, internshipList),
                 "list", new ListCommand(internshipList),
                 "list-interview", new ListInterviewCommand(interviewList),
-                "set-deadline", new SetInterviewDeadlineCommand(parser, interviewList),
+                "update-date", new SetInterviewDeadlineCommand(parser, interviewList),
                 "add-interview", new AddInterviewCommand(parser, internshipList, interviewList),
                 "alias", new AddAliasCommand(parser, this),
                 "remove-alias", new RemoveAliasCommand(parser, this),

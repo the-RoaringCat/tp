@@ -8,16 +8,17 @@ import seedu.goldencompass.ui.Ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.List;
 /**
  * Sets the deadline date of an interview identified by its 1-based index in the interview list.
  * <p>
- * Command format: {@code set-deadline INDEX /d DATE}
+ * Command format: {@code update-date INDEX /d DATE}
  * </p>
  */
 public class SetInterviewDeadlineCommand implements Command {
 
-    public static final String COMMAND_WORD = "set-deadline";
+    public static final String COMMAND_WORD = "update-date";
 
     private static final String FLAG_DATE = "/d";
 
@@ -55,7 +56,7 @@ public class SetInterviewDeadlineCommand implements Command {
         List<String> indexParams = parser.getParamsOf(COMMAND_WORD);
         if (indexParams == null || indexParams.get(0).trim().isEmpty()) {
             throw new GoldenCompassException("Error: Please provide the index of the interview. "
-                    + "Usage: set-deadline INDEX /d DATE");
+                    + "Usage: update-date INDEX /d DATE");
         }
         String indexParam = indexParams.get(0).trim();
         assert !indexParam.isEmpty() : "Index parameter should not be empty after validation";
@@ -63,7 +64,7 @@ public class SetInterviewDeadlineCommand implements Command {
         List<String> dateParams = parser.getParamsOf(FLAG_DATE);
         if (dateParams == null || dateParams.get(0).trim().isEmpty()) {
             throw new GoldenCompassException("Error: Please provide a date using the /d flag. "
-                    + "Usage: set-deadline INDEX /d DATE");
+                    + "Usage: update-date INDEX /d DATE");
         }
         String dateParam = dateParams.get(0).trim();
         assert !dateParam.isEmpty() : "Date parameter should not be empty after validation";
@@ -91,7 +92,10 @@ public class SetInterviewDeadlineCommand implements Command {
 
         assert date != null : "Parsed date should not be null";
 
-        Interview interview = interviewList.get(index - 1);
+        List<Interview> sortedInterviews = interviewList.getInterviews().stream()
+                .sorted(Comparator.comparing(Interview::getDate))
+                .toList();
+        Interview interview = sortedInterviews.get(index - 1);
         assert interview != null : "Retrieved interview should not be null";
 
         interview.setDate(date);
