@@ -4,7 +4,6 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
-import seedu.goldencompass.ui.Ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -16,15 +15,13 @@ import java.util.List;
  * Command format: {@code update-date INDEX /d DATE}
  * </p>
  */
-public class SetInterviewDeadlineCommand implements Command {
+public class SetInterviewDeadlineCommand extends CommandClass {
 
     public static final String COMMAND_WORD = "update-date";
 
     private static final String FLAG_DATE = "/d";
 
     private final InterviewList interviewList;
-    private final Ui ui;
-    private final Parser parser;
 
     /**
      * Constructs a {@code SetInterviewDeadlineCommand} with the given {@code InterviewList}.
@@ -34,7 +31,6 @@ public class SetInterviewDeadlineCommand implements Command {
      * @param interviewList the list of interviews to operate on.
      */
     public SetInterviewDeadlineCommand(Parser parser, InterviewList interviewList) {
-        ui = new Ui();
         this.parser = parser;
         this.interviewList = interviewList;
     }

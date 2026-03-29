@@ -26,7 +26,7 @@ public class Executor {
                 Map.entry("add", new AddInternshipCommand(parser, internshipList)),
                 Map.entry("list", new ListCommand(internshipList)),
                 Map.entry("list-interview", new ListInterviewCommand(interviewList)),
-                Map.entry("set-deadline", new SetInterviewDeadlineCommand(parser, interviewList)),
+                Map.entry("update-date", new SetInterviewDeadlineCommand(parser, interviewList)),
                 Map.entry("add-interview", new AddInterviewCommand(parser, internshipList, interviewList)),
                 Map.entry("alias", new AddAliasCommand(parser, this)),
                 Map.entry("remove-alias", new RemoveAliasCommand(parser, this)),
