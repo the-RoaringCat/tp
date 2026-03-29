@@ -7,17 +7,20 @@ import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
  * Adds an interview linked to an existing internship.
  * <p>
- * Command format: {@code add-interview INDEX}
+ * Command format: {@code add-interview INDEX /d DATE}
  * </p>
  */
 public class AddInterviewCommand extends CommandClass {
 
     public static final String COMMAND_WORD = "add-interview";
+    private static final String FLAG_DATE = "/d";
 
     private final InternshipList internshipList;
     private final InterviewList interviewList;
@@ -36,12 +39,21 @@ public class AddInterviewCommand extends CommandClass {
 
         List<String> params = parser.getParamsOf(COMMAND_WORD);
 
-        if (params == null || params.get(0).trim().isEmpty()) {
-            throw new GoldenCompassException("Error: Please provide the index of the internship.");
+        if (params == null || params.get(0).isBlank()) {
+            throw new GoldenCompassException("Error: Please provide the index of the internship. "
+                    + "Usage: add-interview INDEX /d DATE");
         }
 
         String indexParam = params.get(0).trim();
         assert !indexParam.isEmpty() : "Index parameter should not be empty after validation";
+
+        List<String> dateParams = parser.getParamsOf(FLAG_DATE);
+        if (dateParams == null || dateParams.get(0).isBlank()) {
+            throw new GoldenCompassException("Error: Please provide a date using the /d flag. "
+                    + "Usage: add-interview INDEX /d DATE");
+        }
+        String dateParam = dateParams.get(0).trim();
+        assert !dateParam.isEmpty() : "Date parameter should not be empty after validation";
 
         int index;
         try {
@@ -58,12 +70,21 @@ public class AddInterviewCommand extends CommandClass {
 
         assert index >= 1 && index <= internshipList.getSize() : "Index should be within valid range";
 
+        LocalDate date;
+        try {
+            date = LocalDate.parse(dateParam);
+        } catch (DateTimeParseException e) {
+            throw new GoldenCompassException("Error: Invalid date format, expected yyyy-MM-dd, got: " + dateParam);
+        }
+
+        assert date != null : "Parsed date should not be null";
+
         Internship internship = internshipList.getInternships().get(index - 1);
         assert internship != null : "Retrieved internship should not be null";
 
-        Interview interview = new Interview(internship);
+        Interview interview = new Interview(internship, date);
         interviewList.add(interview);
 
-        ui.print("Got it! I've added an interview for: " + internship);
+        ui.print("Got it! I've added an interview on " + date + " for: " + internship);
     }
 }

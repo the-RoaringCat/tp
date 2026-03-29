@@ -4,7 +4,6 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.parser.Parser;
-import seedu.goldencompass.ui.Ui;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,19 +12,18 @@ import java.util.logging.Level;
 /**
  * Represents a command to add a new internship to the GoldenCompass tracker.
  */
-public class AddInternshipCommand implements Command {
+public class AddInternshipCommand extends CommandClass {
     // LOGGING: Create the logger for this specific class
     private static final Logger logger = Logger.getLogger(AddInternshipCommand.class.getName());
-    private final Ui ui;
-    private final Parser parser;
     private final InternshipList internshipList;
 
     public AddInternshipCommand(Parser parser, InternshipList internshipList) {
+        // Let CommandClass initialize 'ui' and 'parser' for us
+        super(parser);
+
         // ASSERTIONS: Fail fast if another part of the program accidentally passes null data
         assert parser != null : "Parser passed to AddInternshipCommand cannot be null";
         assert internshipList != null : "InternshipList passed to AddInternshipCommand cannot be null";
-        ui = new Ui();
-        this.parser = parser;
         this.internshipList = internshipList;
     }
     /**
