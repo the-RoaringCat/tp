@@ -4,7 +4,6 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.parser.Parser;
-import seedu.goldencompass.ui.Ui;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,17 +12,16 @@ import java.util.logging.Level;
 /**
  * Represents a command to mark an existing internship as "Offer Received".
  */
-public class MarkOfferCommand implements Command {
+public class MarkOfferCommand extends CommandClass {
     private static final Logger logger = Logger.getLogger(MarkOfferCommand.class.getName());
-    private final Ui ui;
-    private final Parser parser;
     private final InternshipList internshipList;
 
     public MarkOfferCommand(Parser parser, InternshipList internshipList) {
+        // Pass the parser up to CommandClass to initialize 'ui' and 'parser' for us
+        super(parser);
+
         assert parser != null : "Parser passed to MarkOfferCommand cannot be null";
         assert internshipList != null : "InternshipList passed to MarkOfferCommand cannot be null";
-        ui = new Ui();
-        this.parser = parser;
         this.internshipList = internshipList;
     }
 
