@@ -31,7 +31,7 @@ public class SetInterviewDeadlineCommand extends CommandClass {
      * @param interviewList the list of interviews to operate on.
      */
     public SetInterviewDeadlineCommand(Parser parser, InterviewList interviewList) {
-        this.parser = parser;
+        super(parser);
         this.interviewList = interviewList;
     }
 
