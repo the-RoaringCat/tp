@@ -187,6 +187,67 @@ The following sequence diagram illustrates `ListInterviewCommand::execute()`
 
 ![List Interview Sequence Diagram](diagrams/ListInterviewSequenceDiagram.png)
 
+### Delete Internship Feature
+
+#### Overview
+
+The `delete` command allows the user to remove an existing internship application from the tracker.
+The user specifies the 1-based index of the internship to delete, and the system removes the corresponding `Internship` object from the `InternshipList`.
+
+**Command format:** `delete INDEX`
+
+**Example:** `delete 2` removes the 2nd internship from the list.
+
+#### Implementation
+
+The feature is implemented in `DeleteInternshipCommand`, which implements the `Command` interface.
+When `execute()` is called, it performs the following steps:
+
+1. Retrieves the index parameter from the `Parser` using `getParamsOf("delete")`.
+2. Validates that the parameter is present and not empty.
+3. Checks that the parameter is a valid integer.
+4. Validates that the index is within the range `[1, internshipList.getSize()]`.
+5. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
+6. Calls `internshipList.delete(index - 1)` to remove the internship.
+7. Logs the deletion with details of the removed internship.
+8. Prints a confirmation message to the user via the `Ui`.
+
+The following class diagram shows the main components involved in the delete internship feature:
+
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+class DeleteInternshipCommand {
+    - InternshipList internshipList
+    - Parser parser
+    + DeleteInternshipCommand(parser, internshipList)
+    + execute()
+}
+
+class InternshipList {
+    - List<Internship> internships
+    + delete(index)
+    + getSize()
+    + get(index)
+}
+
+class Internship {
+    - String title
+    - String companyName
+    + getCompanyName()
+    + getTitle()
+}
+
+DeleteInternshipCommand --> InternshipList
+InternshipList o--> Internship
+@enduml
+
+The following sequence diagram illustrates the execution flow when the user enters delete 2:
+
+![Delete Internship Sequence Diagram](diagrams/DeleteInternshipCommandSequenceDiagram.png)
+
 ### Command Framework
 All command classes implement `Executable`, which provides `execute(Map)` and a default method `checkFlags()` to check the 
 validity of flags. 

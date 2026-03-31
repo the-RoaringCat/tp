@@ -1,0 +1,58 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":GoldenCompass" as GC
+participant ":Executor" as Exec
+participant ":DeleteInternshipCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
+
+User -> Parser : "delete 2"
+activate Parser
+Parser --> GC : returns parsed command
+deactivate Parser
+
+GC -> Exec : execute()
+activate Exec
+
+Exec -> Cmd : create DeleteInternshipCommand
+Exec -> Cmd : execute()
+activate Cmd
+
+Cmd -> Parser : getParamsOf("delete")
+activate Parser
+Parser --> Cmd : ["2"]
+deactivate Parser
+
+Cmd -> Cmd : validate index
+note right of Cmd : • Check index exists\n• Validate is number\n• Check range
+
+Cmd -> List : getSize()
+activate List
+List --> Cmd : size
+deactivate List
+
+alt index out of range
+    Cmd -> Cmd : throw GoldenCompassException
+    Cmd -> User : "Invalid index!"
+else index valid
+    Cmd -> List : get(index - 1)
+    activate List
+    List --> Cmd : Internship
+    deactivate List
+
+    Cmd -> List : delete(index - 1)
+    activate List
+    List -> List : remove at index
+    List --> Cmd : deleted internship
+    deactivate List
+
+    Cmd -> Cmd : format success message
+    Cmd -> Cmd : log deletion
+
+    Cmd -> User : "✓ Deleted internship: Google - SE"
+end
+
+deactivate Cmd
+deactivate Exec
+@enduml
