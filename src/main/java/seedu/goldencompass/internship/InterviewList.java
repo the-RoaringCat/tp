@@ -8,6 +8,16 @@ public class InterviewList {
 
     private final List<Interview> interviews = new ArrayList<>();
 
+    public InterviewList() {
+
+    }
+
+    public InterviewList(InterviewList other) {
+        this.interviews.clear();
+        this.interviews.addAll(other.interviews);
+    }
+
+
     public List<Interview> getInterviews() {
         return interviews;
     }
@@ -27,6 +37,11 @@ public class InterviewList {
     public Interview get(int index) {
         assert index >= 0 && index < interviews.size() : "Index should be within valid range";
         return interviews.get(index);
+    }
+
+    public void setInterviews(List<Interview> interviews) {
+        this.interviews.clear();
+        this.interviews.addAll(interviews);
     }
 
     /**

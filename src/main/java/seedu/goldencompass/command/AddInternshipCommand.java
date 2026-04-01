@@ -37,7 +37,7 @@ public class AddInternshipCommand extends Command {
         // LOGGING: Track when the command actually starts running
         logger.log(Level.INFO, "Starting execution of AddInternshipCommand...");
 
-        List<String> addParams = parser.getParamsOf("add");
+        List<String> addParams = parser.getParamsOf(parser.getCommand());
         List<String> titleParams = parser.getParamsOf("/t");
 
         // Create a "bucket" to collect all our error messages

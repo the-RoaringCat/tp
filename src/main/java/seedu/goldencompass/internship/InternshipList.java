@@ -26,6 +26,12 @@ public class InternshipList {
         logger.info("InternshipList created");
     }
 
+    public InternshipList(InternshipList other) {
+        this.internships.clear();
+        this.internships.addAll(other.internships);
+        this.ui = new Ui();
+    }
+
     /**
      * Constructs an InternshipList loaded with existing data from storage.
      *
@@ -57,6 +63,11 @@ public class InternshipList {
         assert internships != null : "Internships list should not be null";
         logger.finer("Returning internships list, size: " + internships.size());
         return internships;
+    }
+
+    public void setInternships(List<Internship> internships) {
+        this.internships.clear();
+        this.internships.addAll(internships);
     }
 
     /**

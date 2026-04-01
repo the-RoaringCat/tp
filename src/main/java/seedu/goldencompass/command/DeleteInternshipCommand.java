@@ -38,7 +38,7 @@ public class DeleteInternshipCommand extends Command {
         logger.log(Level.INFO, "Starting execution of DeleteInternshipCommand...");
 
         // Get the parameters for the "delete" command
-        List<String> params = parser.getParamsOf("delete");
+        List<String> params = parser.getParamsOf(parser.getCommand());
 
         // 1. DEFENSIVE CHECK: Missing index
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {

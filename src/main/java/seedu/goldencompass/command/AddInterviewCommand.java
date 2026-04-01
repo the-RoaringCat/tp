@@ -37,7 +37,7 @@ public class AddInterviewCommand extends Command {
         assert internshipList != null : "InternshipList should not be null";
         assert interviewList != null : "InterviewList should not be null";
 
-        List<String> params = parser.getParamsOf(COMMAND_WORD);
+        List<String> params = parser.getParamsOf(parser.getCommand());
 
         if (params == null || params.get(0).isBlank()) {
             throw new GoldenCompassException("Error: Please provide the index of the internship. "
