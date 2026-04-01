@@ -3,7 +3,7 @@ package seedu.goldencompass.command;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.parser.Parser;
 
-public class RemoveAliasCommand extends CommandClass{
+public class RemoveAliasCommand extends Command {
     //default
     private static final int PARAM_LENGTH = 1;
     private static final String KEYWORD = "remove-alias";

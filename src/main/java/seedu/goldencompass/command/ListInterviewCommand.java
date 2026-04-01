@@ -7,7 +7,7 @@ import seedu.goldencompass.internship.InterviewList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ListInterviewCommand extends CommandClass {
+public class ListInterviewCommand extends Command {
 
     private final InterviewList interviewList;
 

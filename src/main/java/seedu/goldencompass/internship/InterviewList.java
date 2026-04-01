@@ -1,6 +1,7 @@
 package seedu.goldencompass.internship;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class InterviewList {
@@ -14,6 +15,7 @@ public class InterviewList {
     public void add(Interview x) {
         assert x != null : "Interview to add should not be null";
         interviews.add(x);
+        interviews.sort(Comparator.comparing(Interview::getDate));
     }
 
     /**

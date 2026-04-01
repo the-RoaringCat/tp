@@ -8,7 +8,7 @@ import seedu.goldencompass.ui.Ui;
 import java.util.List;
 import java.util.Map;
 
-public class ExampleCommand implements Command {
+public class ExampleCommand implements Executable {
 
     private final Ui ui;
     private final Parser parser;

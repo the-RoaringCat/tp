@@ -1,5 +1,0 @@
-y | x
-y | x
-b | a
-j | i
-n | m

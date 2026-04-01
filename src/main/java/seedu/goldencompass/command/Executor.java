@@ -12,7 +12,7 @@ public class Executor {
 
     private final Map<String, String> aliasMap = new HashMap<>();
 
-    private final Map<String, Command> commands;
+    private final Map<String, Executable> commands;
     private final Parser parser;
 
 
@@ -21,18 +21,19 @@ public class Executor {
 
         this.parser = parser;
 
-        commands = Map.of(
-                "example", new ExampleCommand(parser, internshipList),
-                "add", new AddInternshipCommand(parser, internshipList),
-                "list", new ListCommand(internshipList),
-                "list-interview", new ListInterviewCommand(interviewList),
-                "set-deadline", new SetInterviewDeadlineCommand(parser, interviewList),
-                "add-interview", new AddInterviewCommand(parser, internshipList, interviewList),
-                "alias", new AddAliasCommand(parser, this),
-                "remove-alias", new RemoveAliasCommand(parser, this),
-                "mark", new MarkOfferCommand(parser, internshipList),
-                "delete", new DeleteInternshipCommand(parser, internshipList)
-                //"delete-interview", new DeleteInterviewCommand(parser, internshipList, interviewList)
+        commands = Map.ofEntries(
+                Map.entry("example", new ExampleCommand(parser, internshipList)),
+                Map.entry("add", new AddInternshipCommand(parser, internshipList)),
+                Map.entry("list", new ListCommand(internshipList)),
+                Map.entry("list-interview", new ListInterviewCommand(interviewList)),
+                Map.entry("update-date", new SetInterviewDeadlineCommand(parser, interviewList)),
+                Map.entry("add-interview", new AddInterviewCommand(parser, internshipList, interviewList)),
+                Map.entry("alias", new AddAliasCommand(parser, this)),
+                Map.entry("remove-alias", new RemoveAliasCommand(parser, this)),
+                Map.entry("mark", new MarkOfferCommand(parser, internshipList)),
+                Map.entry("delete", new DeleteInternshipCommand(parser, internshipList)),
+                Map.entry("reject", new RejectOfferCommand(parser, internshipList)),
+                Map.entry("search-interview", new SearchInterviewCommand(parser, interviewList))
         );
 
         //copy the key of commands into alias map
@@ -48,7 +49,7 @@ public class Executor {
             throw new GoldenCompassException("Error: unknown command: " + inputAlias);
         }
         String commandWord = aliasMap.get(inputAlias);
-        Command cmd = commands.get(commandWord);
+        Executable cmd = commands.get(commandWord);
 
         if (cmd == null) {
             throw new GoldenCompassException("Error: unknown command: " + parser.getCommand());

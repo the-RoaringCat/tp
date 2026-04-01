@@ -61,10 +61,17 @@ public class InternshipStorage {
             ensureFileExists();
             FileWriter fw = new FileWriter(filePath);
 
-            // Use your teammate's getInternships() method to loop through everything!
             for (Internship intern : internshipList.getInternships()) {
-                // Format: Title | CompanyName
-                String saveLine = intern.getTitle() + " | " + intern.getCompanyName() + "\n";
+                // Determine the status to save
+                String status = "PENDING";
+                if (intern.hasOffer()) {
+                    status = "OFFER";
+                } else if (intern.isRejected()) {
+                    status = "REJECTED";
+                }
+
+                // Format: Title | CompanyName | Status
+                String saveLine = intern.getTitle() + " | " + intern.getCompanyName() + " | " + status + "\n";
                 fw.write(saveLine);
             }
 
@@ -93,18 +100,48 @@ public class InternshipStorage {
             while (s.hasNext()) {
                 String line = s.nextLine();
                 if (line.trim().isEmpty()) {
-                    continue; // Skip empty lines
+                    continue;
                 }
 
-                // Split by the " | " delimiter we used during save
                 String[] parts = line.split(" \\| ");
 
-                if (parts.length == 2) {
+                if (parts.length == 2 || parts.length == 3) {
                     String title = parts[0].trim();
                     String company = parts[1].trim();
-                    loadedList.add(new Internship(title, company));
+
+                    if (title.isEmpty() || company.isEmpty()) {
+                        logger.log(Level.WARNING, "Skipped line with empty title or company: " + line);
+                        continue;
+                    }
+
+                    // 1. Create it and hold it in a variable
+                    Internship loadedInternship = new Internship(title, company);
+
+                    // 2. Update the status if a 3rd column exists
+                    if (parts.length == 3) {
+                        String status = parts[2].trim().toUpperCase();
+
+                        switch (status) {
+                        case "OFFER":
+                            loadedInternship.markAsOffer();
+                            break;
+                        case "REJECTED":
+                            loadedInternship.markAsRejected();
+                            break;
+                        case "PENDING":
+                            break;
+                        default:
+                            // This handles cases where the text file might be corrupted
+                            logger.warning("Unknown status found in file: " + status);
+                            break;
+                        }
+                    }
+
+                    // 3. ONLY ADD ONCE at the very end
+                    loadedList.add(loadedInternship);
+
                 } else {
-                    logger.log(Level.WARNING, "Skipped corrupted line in save file: " + line);
+                    logger.log(Level.WARNING, "Skipped corrupted line: " + line);
                 }
             }
             s.close();

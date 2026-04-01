@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * This command displays a numbered list of all internships with their company
  * names and job titles.
  */
-public class ListCommand extends CommandClass {
+public class ListCommand extends Command {
 
     private static final Logger logger = Logger.getLogger(ListCommand.class.getName());
 
@@ -87,9 +87,7 @@ public class ListCommand extends CommandClass {
                     logger.warning("Null internship found at index " + i);
                     ui.print((i + 1) + ". [Error: Invalid internship data]");
                 } else {
-                    String offerTag = intern.hasOffer() ? " [OFFER RECEIVED] 🏆" : "";
-                    ui.print((i + 1) + ". " + intern.getCompanyName() +
-                            " - " + intern.getTitle() + offerTag);
+                    ui.print((i + 1) + ". " + intern);
                 }
             }
 

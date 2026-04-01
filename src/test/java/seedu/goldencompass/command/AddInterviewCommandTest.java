@@ -31,21 +31,21 @@ public class AddInterviewCommandTest {
 
     @Test
     public void execute_validIndex_addsInterviewSuccessfully() throws GoldenCompassException {
-        parser.parse("add-interview 1");
+        parser.parse("add-interview 1 /d 2026-04-01");
         addInterviewCommand.execute();
         assertEquals(1, interviewList.size());
     }
 
     @Test
     public void execute_validIndexSecondInternship_addsInterviewSuccessfully() throws GoldenCompassException {
-        parser.parse("add-interview 2");
+        parser.parse("add-interview 2 /d 2026-05-15");
         addInterviewCommand.execute();
         assertEquals(1, interviewList.size());
     }
 
     @Test
     public void execute_nonIntegerIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("add-interview abc");
+        parser.parse("add-interview abc /d 2026-04-01");
         try {
             addInterviewCommand.execute();
             fail();
@@ -56,7 +56,7 @@ public class AddInterviewCommandTest {
 
     @Test
     public void execute_indexOutOfRangeHigh_exceptionThrown() throws GoldenCompassException {
-        parser.parse("add-interview 99");
+        parser.parse("add-interview 99 /d 2026-04-01");
         try {
             addInterviewCommand.execute();
             fail();
@@ -68,7 +68,7 @@ public class AddInterviewCommandTest {
 
     @Test
     public void execute_indexOutOfRangeZero_exceptionThrown() throws GoldenCompassException {
-        parser.parse("add-interview 0");
+        parser.parse("add-interview 0 /d 2026-04-01");
         try {
             addInterviewCommand.execute();
             fail();
@@ -80,7 +80,7 @@ public class AddInterviewCommandTest {
 
     @Test
     public void execute_negativeIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("add-interview -1");
+        parser.parse("add-interview -1 /d 2026-04-01");
         try {
             addInterviewCommand.execute();
             fail();
@@ -97,7 +97,8 @@ public class AddInterviewCommandTest {
             addInterviewCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
-            assertEquals("Error: Please provide the index of the internship.", e.getMessage());
+            assertEquals("Error: Please provide the index of the internship. "
+                    + "Usage: add-interview INDEX /d DATE", e.getMessage());
         }
     }
 }

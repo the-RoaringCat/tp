@@ -11,14 +11,16 @@ public class Internship {
 
     private static final Logger logger = Logger.getLogger(Internship.class.getName());
 
+    // 1. Group all PROTECTED variables together
     protected String title;
     protected String companyName;
     protected String comments;
     protected String link;
     protected boolean hasApplied;
-    protected boolean hasReceivedOffer;
     protected Interview interview;
-    private boolean isOfferReceived = false;
+
+    // 2. Group all PRIVATE variables together
+    private ApplicationStatus status;
 
 
     /**
@@ -53,7 +55,7 @@ public class Internship {
         this.title = title.trim();
         this.companyName = companyName.trim();
         this.hasApplied = true;
-        this.hasReceivedOffer = false;
+        this.status = ApplicationStatus.PENDING;
 
         // Assertions to verify invariants
         assert this.title != null && !this.title.isEmpty()
@@ -107,17 +109,40 @@ public class Internship {
         }
     }
 
-    @Override
-    public String toString() {
-        String offerStatus = isOfferReceived ? " [OFFER RECEIVED] 🏆" : "";
-        return companyName + " - " + title + offerStatus;
+    public void markAsOffer() {
+        this.status = ApplicationStatus.OFFER;
     }
 
-    public void markAsOffer() {
-        this.isOfferReceived = true;
+    public void markAsRejected() {
+        this.status = ApplicationStatus.REJECTED;
     }
 
     public boolean hasOffer() {
-        return isOfferReceived;
+        return this.status == ApplicationStatus.OFFER;
+    }
+
+    public boolean isRejected() {
+        return this.status == ApplicationStatus.REJECTED;
+    }
+
+    @Override
+    public String toString() {
+        String tag = "";
+        // Your teammate's suggested switch statement!
+        switch (status) {
+        case OFFER:
+            tag = " [OFFER RECEIVED] 🏆";
+            break;
+        case REJECTED:
+            tag = " [REJECTED] ❌";
+            break;
+        case PENDING:
+            tag = "";
+            break;
+        default:
+            tag = " ";
+            break;
+        }
+        return companyName + " - " + title + tag;
     }
 }

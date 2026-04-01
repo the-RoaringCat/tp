@@ -4,7 +4,6 @@ import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
 import seedu.goldencompass.parser.Parser;
-import seedu.goldencompass.ui.Ui;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -14,18 +13,16 @@ import java.util.logging.Level;
  * Represents a command to delete an internship application from the system.
  * This command removes an internship by its index number.
  */
-public class DeleteInternshipCommand implements Command {
+public class DeleteInternshipCommand extends Command {
 
     private static final Logger logger = Logger.getLogger(DeleteInternshipCommand.class.getName());
-    private final Ui ui;
-    private final Parser parser;
     private final InternshipList internshipList;
 
     public DeleteInternshipCommand(Parser parser, InternshipList internshipList) {
-        assert parser != null : "Parser passed to DeleteInternshipCommand cannot be null";
+        super(parser);
+        //assert parser != null : "Parser passed to DeleteInternshipCommand cannot be null";
         assert internshipList != null : "InternshipList passed to DeleteInternshipCommand cannot be null";
-        this.ui = new Ui();
-        this.parser = parser;
+
         this.internshipList = internshipList;
         logger.log(Level.INFO, "DeleteInternshipCommand initialized");
     }
