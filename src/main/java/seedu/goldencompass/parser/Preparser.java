@@ -36,6 +36,12 @@ public class Preparser {
      * </p>
      *
      * <p>
+     * This method guarantees that the returned map contains an entry for the command
+     * itself, even when no parameters are provided, in which case the parameter list
+     * contains a single empty string.
+     * </p>
+     *
+     * <p>
      * Example:
      * <pre>
      * Input:  "add Google SWE /date 2026-04-03"
@@ -52,11 +58,6 @@ public class Preparser {
      * @param message the raw command string entered by the user
      * @return a map where each key is a command or flag and the value is a list of
      *         parameters associated with that flag
-     *
-     * @implNote
-     * This method guarantees that the returned map contains an entry for the command
-     * itself, even when no parameters are provided, in which case the parameter list
-     * contains a single empty string.
      */
     public Map<String, List<String>> preparse(String message) {
 
