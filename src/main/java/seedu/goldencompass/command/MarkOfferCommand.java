@@ -35,7 +35,7 @@ public class MarkOfferCommand extends Command {
         logger.log(Level.INFO, "Starting execution of MarkOfferCommand...");
 
         // Note: Change "mark-offer" if your team uses a different command word (e.g., "mark")
-        List<String> params = parser.getParamsOf("mark");
+        List<String> params = parser.getParamsOf(parser.getCommand());
 
         // 1. DEFENSIVE CHECK: Missing index
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {

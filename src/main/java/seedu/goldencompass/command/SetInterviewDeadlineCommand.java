@@ -49,7 +49,7 @@ public class SetInterviewDeadlineCommand extends Command {
         assert parser != null : "Parser should not be null";
         assert interviewList != null : "InterviewList should not be null";
 
-        List<String> indexParams = parser.getParamsOf(COMMAND_WORD);
+        List<String> indexParams = parser.getParamsOf(parser.getCommand());
         if (indexParams == null || indexParams.get(0).isBlank()) {
             throw new GoldenCompassException("Error: Please provide the index of the interview. "
                     + "Usage: update-date INDEX /d DATE");
