@@ -105,20 +105,35 @@ public class InternshipStorage {
 
                 String[] parts = line.split(" \\| ");
 
-                if (parts.length >= 2) {
+                if (parts.length == 2 || parts.length == 3) {
                     String title = parts[0].trim();
                     String company = parts[1].trim();
+
+                    if (title.isEmpty() || company.isEmpty()) {
+                        logger.log(Level.WARNING, "Skipped line with empty title or company: " + line);
+                        continue;
+                    }
 
                     // 1. Create it and hold it in a variable
                     Internship loadedInternship = new Internship(title, company);
 
                     // 2. Update the status if a 3rd column exists
                     if (parts.length == 3) {
-                        String status = parts[2].trim();
-                        if (status.equals("OFFER")) {
+                        String status = parts[2].trim().toUpperCase();
+
+                        switch (status) {
+                        case "OFFER":
                             loadedInternship.markAsOffer();
-                        } else if (status.equals("REJECTED")) {
+                            break;
+                        case "REJECTED":
                             loadedInternship.markAsRejected();
+                            break;
+                        case "PENDING":
+                            break;
+                        default:
+                            // This handles cases where the text file might be corrupted
+                            logger.warning("Unknown status found in file: " + status);
+                            break;
                         }
                     }
 

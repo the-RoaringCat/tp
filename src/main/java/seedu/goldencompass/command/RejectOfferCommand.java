@@ -17,7 +17,6 @@ public class RejectOfferCommand extends Command {
     private final InternshipList internshipList;
 
     public RejectOfferCommand(Parser parser, InternshipList internshipList) {
-        // Pass the parser up to CommandClass to initialize 'ui' and 'parser' for us
         super(parser);
 
         assert parser != null : "Parser passed to RejectCommand cannot be null";

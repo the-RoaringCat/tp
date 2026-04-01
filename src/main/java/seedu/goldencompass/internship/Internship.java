@@ -136,8 +136,11 @@ public class Internship {
         case REJECTED:
             tag = " [REJECTED] ❌";
             break;
+        case PENDING:
+            tag = "";
+            break;
         default:
-            tag = ""; // PENDING has no tag
+            tag = " ";
             break;
         }
         return companyName + " - " + title + tag;
