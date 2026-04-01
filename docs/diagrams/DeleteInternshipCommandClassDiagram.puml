@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+class DeleteInternshipCommand {
+    - InternshipList internshipList
+    - Parser parser
+    + DeleteInternshipCommand(parser, internshipList)
+    + execute()
+}
+
+class InternshipList {
+    - List<Internship> internships
+    + delete(index)
+    + getSize()
+    + get(index)
+}
+
+class Internship {
+    - String title
+    - String companyName
+    + getCompanyName()
+    + getTitle()
+}
+
+class Executor {
+    - Map<String, Command> commands
+    + execute()
+}
+
+Executor --> DeleteInternshipCommand : retrieves from map
+DeleteInternshipCommand --> InternshipList
+InternshipList o--> Internship
+@enduml

@@ -187,6 +187,131 @@ The following sequence diagram illustrates `ListInterviewCommand::execute()`
 
 ![List Interview Sequence Diagram](diagrams/ListInterviewSequenceDiagram.png)
 
+### Delete Internship Feature
+
+#### Overview
+
+The `delete` command allows the user to remove an existing internship application from the tracker.
+The user specifies the 1-based index of the internship to delete, and the system removes the corresponding `Internship` object from the `InternshipList`.
+
+**Command format:** `delete INDEX`
+
+**Example:** `delete 2` removes the 2nd internship from the list.
+
+#### Implementation
+
+The delete feature is implemented in `DeleteInternshipCommand`, which extends `CommandClass`. The command is pre-registered in the `Executor`'s command lookup map during application initialization.
+
+When the user enters `delete 2`, the execution flow is as follows:
+
+1. The `Parser` parses the user input, extracting the command word "delete" and the argument "2".
+2. The `Executor` retrieves the command word and looks up the corresponding `Command` instance from its internal `Map<String, Command>` using `commands.get("delete")`.
+3. The `Executor` calls `execute()` on the retrieved `DeleteInternshipCommand` instance (no new command object is created).
+4. `DeleteInternshipCommand` retrieves the index parameter from the `Parser` using `getParamsOf("delete")`.
+5. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
+6. The command retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList` for logging purposes.
+7. The command calls `internshipList.delete(index - 1)` to permanently remove the internship.
+8. The command logs the deletion with details of the removed internship.
+9. The command prints a confirmation message to the user via the `Ui`.
+
+**Note:** The `Executor` does not instantiate a new command for each execution. Instead, it uses a pre-registered command instance from the lookup map, following the Command Pattern. This design promotes reusability and centralizes command management.
+
+The following class diagram shows the main components involved in the delete internship feature:
+
+![Delete Internship Class Diagram](diagrams/DeleteInternshipCommandClassDiagram.png)
+
+The following sequence diagram illustrates the execution flow when the user enters `delete 2`:
+
+![Delete Internship Sequence Diagram](diagrams/DeleteInternshipCommandSequenceDiagram.png)
+
+#### Input Validation
+
+The command implements multiple layers of validation to ensure robustness:
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete! (e.g., delete 1)" |
+| **Type Check** | Ensures the index is a valid integer | "The index must be a number! (e.g., delete 1)" |
+| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and 3" |
+
+#### Defensive Programming Features
+
+The implementation includes several defensive programming measures:
+
+**1. Assertions**: Verify internal state invariants
+assert internships != null : "Internships list should not be null";
+assert size >= 0 : "List size should never be negative";
+
+**2. Logging**: Track execution flow and errors
+logger.info("Executing DeleteInternshipCommand");
+logger.warning("Invalid index: " + index);
+logger.info("Deleted internship at index " + index);
+
+**3. Bounds Checking**: Validate array indices before access
+if (index < 0 || index >= internships.size()) {
+throw new IndexOutOfBoundsException("Index: " + index);
+}
+
+
+**4. Null Checks**: Prevent NullPointerException
+if (internshipList == null) {
+throw new IllegalArgumentException("InternshipList cannot be null");
+}
+
+#### Design Considerations
+
+**Aspect: Indexing Scheme**
+
+- **Alternative 1 (current choice):** Use 1-based indexing for user input, convert to 0-based internally.
+  - **Pros:** More intuitive for users who think of list positions starting from 1.
+  - **Cons:** Requires conversion logic and careful handling.
+
+- **Alternative 2:** Use 0-based indexing directly.
+  - **Pros:** Matches internal representation, no conversion needed.
+  - **Cons:** Less intuitive for users; first item is "0" not "1".
+
+**Aspect: Deletion Strategy**
+
+- **Alternative 1 (current choice):** Immediate permanent deletion.
+  - **Pros:** Simple to implement, matches user expectation for "delete" command.
+  - **Cons:** No recovery option if user deletes accidentally.
+
+- **Alternative 2:** Soft delete (mark as deleted but keep in storage).
+  - **Pros:** Allows undo functionality, data can be recovered.
+  - **Cons:** Adds complexity to data model and queries.
+
+**Aspect: Error Handling Strategy**
+
+- **Alternative 1 (current choice):** Fail-fast validation with specific error messages.
+  - **Pros:** Clear immediate feedback to users.
+  - **Cons:** May require multiple attempts if user makes multiple mistakes.
+
+- **Alternative 2:** Accumulate all validation errors before throwing.
+  - **Pros:** User sees all errors at once.
+  - **Cons:** More complex error handling logic.
+
+#### Test Coverage
+
+The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTest`:
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `delete_firstInternship_removesCorrectly` | Delete index 1 from list of 3 | List size decreases to 2, remaining items shift |
+| `delete_middleInternship_removesCorrectly` | Delete index 2 from list of 3 | List size decreases to 2, items reorder correctly |
+| `delete_lastInternship_removesCorrectly` | Delete index 3 from list of 3 | List size decreases to 2, last item removed |
+| `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws IndexOutOfBoundsException |
+| `delete_emptyList_throwsException` | Delete from empty list | Throws IndexOutOfBoundsException |
+
+#### Future Enhancements
+
+Potential improvements for future versions:
+
+1. **Batch deletion**: Support multiple indices (e.g., `delete 1,3,5`)
+2. **Range deletion**: Delete a range of internships (e.g., `delete 1-5`)
+3. **Undo capability**: Allow users to restore recently deleted internships
+4. **Confirmation prompt**: Ask for confirmation before deleting to prevent accidents
+5. **Archive feature**: Move deleted internships to an archive instead of permanent deletion
+        
 ### Command Framework
 All command classes implement `Executable`, which provides `execute(Map)` and a default method `checkFlags()` to check the 
 validity of flags. 

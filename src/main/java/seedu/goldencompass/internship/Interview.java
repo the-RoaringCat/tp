@@ -46,4 +46,28 @@ public class Interview {
         return this.internship;
     }
 
+    /**
+     * Returns {@code true} if this interview matches all non-null criteria.
+     * Text matching is case-insensitive substring matching.
+     *
+     * @param company the company name to match, or {@code null} to skip.
+     * @param title   the role/title to match, or {@code null} to skip.
+     * @param date    the date to match exactly, or {@code null} to skip.
+     * @return {@code true} if all non-null criteria match.
+     */
+    public boolean matches(String company, String title, LocalDate date) {
+        if (company != null
+                && !internship.companyName.toLowerCase().contains(company.toLowerCase())) {
+            return false;
+        }
+        if (title != null
+                && !internship.title.toLowerCase().contains(title.toLowerCase())) {
+            return false;
+        }
+        if (date != null && (this.date == null || !this.date.equals(date))) {
+            return false;
+        }
+        return true;
+    }
+
 }

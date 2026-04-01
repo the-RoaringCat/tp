@@ -1,0 +1,53 @@
+```plantuml
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":GoldenCompass" as GC
+participant ":Executor" as Exec
+participant ":Map<String, Command>" as CommandMap
+participant ":DeleteInternshipCommand" as Cmd
+participant ":InternshipList" as List
+
+User -> Parser : "delete 2"
+activate Parser
+Parser --> GC : returns parsed command
+deactivate Parser
+
+GC -> Exec : execute()
+activate Exec
+
+Exec -> CommandMap : get("delete")
+activate CommandMap
+CommandMap --> Exec : DeleteInternshipCommand instance
+deactivate CommandMap
+
+Exec -> Cmd : execute()
+activate Cmd
+
+Cmd -> Parser : getParamsOf("delete")
+activate Parser
+Parser --> Cmd : ["2"]
+deactivate Parser
+
+Cmd -> Cmd : validate index
+note right of Cmd : • Check index exists\n• Validate is number\n• Check range (1-3)
+
+Cmd -> List : getSize()
+activate List
+List --> Cmd : 3
+deactivate List
+
+alt index valid
+    Cmd -> List : delete(1)
+    activate List
+    List -> List : remove at index
+    deactivate List
+
+    Cmd -> User : "✓ Deleted internship: Google - SE"
+else index invalid
+    Cmd -> User : "Invalid index!"
+end
+
+deactivate Cmd
+deactivate Exec
+@enduml

@@ -37,6 +37,7 @@ public class Executor {
                 Map.entry("mark", new MarkOfferCommand(parser, internshipList)),
                 Map.entry("delete", new DeleteInternshipCommand(parser, internshipList)),
                 Map.entry("reject", new RejectOfferCommand(parser, internshipList)),
+                Map.entry("search-interview", new SearchInterviewCommand(parser, interviewList))
                 Map.entry("undo", new UndoCommand(parser, this, internshipList, interviewList,
                         operationHistory)),
                 Map.entry("redo", new RedoCommand(parser, this, internshipList, interviewList,
