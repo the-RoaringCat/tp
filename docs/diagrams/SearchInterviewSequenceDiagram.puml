@@ -1,0 +1,60 @@
+@startuml
+actor User
+participant ":Ui" as Ui
+participant ":GoldenCompass" as GC
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":SearchInterviewCommand" as SIC
+participant ":InterviewList" as IVL
+participant "iv:Interview" as IV
+
+User -> Ui : "search-interview /c Google"
+activate Ui
+Ui --> GC : returns input
+deactivate Ui
+
+GC -> Parser : parse("search-interview /c Google")
+activate Parser
+Parser --> GC
+deactivate Parser
+
+GC -> Executor : execute()
+activate Executor
+Executor -> SIC : execute()
+activate SIC
+
+SIC -> Parser : getParamsOf("/c")
+activate Parser
+Parser --> SIC : ["Google"]
+deactivate Parser
+
+SIC -> Parser : getParamsOf("/t")
+activate Parser
+Parser --> SIC : null
+deactivate Parser
+
+SIC -> Parser : getParamsOf("/d")
+activate Parser
+Parser --> SIC : null
+deactivate Parser
+
+SIC -> IVL : getInterviews()
+activate IVL
+IVL --> SIC : interviews
+deactivate IVL
+
+loop for each interview
+    SIC -> IV : matches("Google", null, null)
+    activate IV
+    IV --> SIC : true/false
+    deactivate IV
+end
+
+SIC -> Ui : print("Found N interview(s): ...")
+activate Ui
+Ui --> SIC
+deactivate Ui
+
+deactivate SIC
+deactivate Executor
+@enduml

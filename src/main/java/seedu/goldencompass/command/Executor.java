@@ -28,7 +28,7 @@ public class Executor {
         commands = Map.ofEntries(
                 Map.entry("example", new ExampleCommand(parser, internshipList)),
                 Map.entry("add", new AddInternshipCommand(parser, internshipList)),
-                Map.entry("list", new ListCommand(internshipList)),
+                Map.entry("list", new ListCommand(parser, internshipList)),
                 Map.entry("list-interview", new ListInterviewCommand(interviewList)),
                 Map.entry("update-date", new SetInterviewDeadlineCommand(parser, interviewList)),
                 Map.entry("add-interview", new AddInterviewCommand(parser, internshipList, interviewList)),
@@ -38,6 +38,7 @@ public class Executor {
                 Map.entry("delete", new DeleteInternshipCommand(parser, internshipList, interviewList)),
                 Map.entry("delete-interview", new DeleteInterviewCommand(parser, internshipList, interviewList)),
                 Map.entry("reject", new RejectOfferCommand(parser, internshipList)),
+                Map.entry("clear-rejected", new ClearRejectedCommand(internshipList)),
                 Map.entry("search", new SearchInternshipCommand(parser, internshipList)),
                 Map.entry("search-interview", new SearchInterviewCommand(parser, interviewList)),
                 Map.entry("upcoming", new UpcomingCommand(parser, interviewList)),

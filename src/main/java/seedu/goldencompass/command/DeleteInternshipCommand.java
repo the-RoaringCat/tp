@@ -39,12 +39,23 @@ public class DeleteInternshipCommand extends Command {
 
     @Override
     public void execute() throws GoldenCompassException {
+        // Check for /help flag first
+        if (checkHelpFlag(
+                "Deletes an internship application from the tracker.",
+                "Format: delete INDEX\n"
+                        + "Example: delete 2\n\n"
+                        + "Note: When an internship is deleted, " +
+                        "its corresponding interview will also be deleted automatically."
+        )) {
+            return;
+        }
         logger.log(Level.INFO, "Starting execution of DeleteInternshipCommand...");
 
         List<String> params = parser.getParamsOf(parser.getCommand());
 
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {
-            throw new GoldenCompassException("Please provide the index of the internship to delete! (e.g., delete 1)");
+            throw new GoldenCompassException(
+                    "Please provide the index of the internship to delete! (e.g., delete 1)");
         }
 
         int index;

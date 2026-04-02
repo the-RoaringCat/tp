@@ -2,20 +2,21 @@
 hide circle
 
 class Internship {
-    - title : String
-    - companyName : String
+    # title : String
+    # companyName : String
     + getTitle() : String
     + getCompanyName() : String
+    + isRejected() : boolean
     + toString() : String
 }
 
 class Interview {
-    - internship : Internship
-    - date : LocalDate
-    + Interview(internship : Internship)
-    + Interview(internship : Internship, date : LocalDate)
-    + setDate(date : LocalDate) : void
-    + getDate() : LocalDate
+    # internship : Internship
+    # dateTime : LocalDateTime
+    + Interview(internship, date)
+    + setDate(date : LocalDateTime) : void
+    + getDate() : LocalDateTime
+    + matches(company, title, date) : boolean
     + toString() : String
 }
 
@@ -45,10 +46,22 @@ class SetInterviewDeadlineCommand {
     + execute() : void
 }
 
+class SearchInterviewCommand {
+    - interviewList : InterviewList
+    + execute() : void
+}
+
+class ClearRejectedCommand {
+    - internshipList : InternshipList
+    + execute() : void
+}
+
 Interview --> "1" Internship : references
 InterviewList o--> "*" Interview : contains
 InternshipList o--> "*" Internship : contains
 AddInterviewCommand --> InternshipList : reads from
 AddInterviewCommand --> InterviewList : adds to
 SetInterviewDeadlineCommand --> InterviewList : modifies
+SearchInterviewCommand --> InterviewList : searches
+ClearRejectedCommand --> InternshipList : removes from
 @enduml

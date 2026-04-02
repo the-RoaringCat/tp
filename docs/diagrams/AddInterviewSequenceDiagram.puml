@@ -8,12 +8,12 @@ participant ":AddInterviewCommand" as AIC
 participant ":InternshipList" as IL
 participant ":InterviewList" as IVL
 
-User -> Ui : "add-interview 2"
+User -> Ui : "add-interview 2 /d 2025-06-15 10:00"
 activate Ui
 Ui --> GC : returns input
 deactivate Ui
 
-GC -> Parser : parse("add-interview 2")
+GC -> Parser : parse("add-interview 2 /d 2025-06-15 10:00")
 activate Parser
 Parser --> GC
 deactivate Parser
@@ -28,6 +28,11 @@ activate Parser
 Parser --> AIC : ["2"]
 deactivate Parser
 
+AIC -> Parser : getParamsOf("/d")
+activate Parser
+Parser --> AIC : ["2025-06-15 10:00"]
+deactivate Parser
+
 AIC -> IL : getSize()
 activate IL
 IL --> AIC : size
@@ -38,10 +43,10 @@ activate IL
 IL --> AIC : internships
 deactivate IL
 
-note right of AIC : Retrieves Internship at index 1 (0-based)
+note right of AIC : Parses "2025-06-15 10:00" into LocalDateTime\nRetrieves Internship at index 1 (0-based)
 
 create "iv:Interview" as IV
-AIC -> IV : new Interview(internship)
+AIC -> IV : new Interview(internship, date)
 activate IV
 IV --> AIC
 deactivate IV
@@ -51,7 +56,7 @@ activate IVL
 IVL --> AIC
 deactivate IVL
 
-AIC -> Ui : print("Got it! I've added an interview for: ...")
+AIC -> Ui : print("Got it! I've added an interview...")
 activate Ui
 Ui --> AIC
 deactivate Ui

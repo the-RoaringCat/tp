@@ -72,27 +72,32 @@ Each `Interview` holds a reference to the `Internship` it is associated with.
 #### Overview
 
 The `add-interview` command allows the user to create an interview linked to an existing internship.
-The user specifies the 1-based index of the internship, and the system creates an `Interview` object
-referencing that `Internship` and adds it to the `InterviewList`.
+The user specifies the 1-based index of the internship and a date-time, and the system creates an
+`Interview` object referencing that `Internship` and adds it to the `InterviewList`.
 
-**Command format:** `add-interview INDEX`
+**Command format:** `add-interview INDEX /d DATE`
 
-**Example:** `add-interview 2` creates an interview for the 2nd internship in the list.
+**Example:** `add-interview 2 /d 2025-06-15 10:00` creates an interview on 15 Jun 2025 at 10:00
+for the 2nd internship in the list.
 
 #### Implementation
 
-The feature is implemented in `AddInterviewCommand`, which extends `CommandClass`.
+The feature is implemented in `AddInterviewCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
-1. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
-2. Validates that the parameter is present and is a valid integer.
-3. Checks that the index is within the range `[1, internshipList.getSize()]`.
-4. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
-5. Creates a new `Interview` object linked to that `Internship`.
-6. Adds the `Interview` to the `InterviewList`.
-7. Prints a confirmation message to the user.
+1. Checks if the `/help` flag is present — if so, prints usage information and returns.
+2. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
+3. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
+4. Validates that both parameters are present and non-empty.
+5. Parses the index as an integer and checks it is within the range `[1, internshipList.getSize()]`.
+6. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+7. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
+8. Creates a new `Interview` object linked to that `Internship` with the given date-time.
+9. Adds the `Interview` to the `InterviewList`.
+10. Prints a confirmation message to the user.
 
-The following sequence diagram illustrates the execution flow when the user enters `add-interview 2`:
+The following sequence diagram illustrates the execution flow when the user enters
+`add-interview 2 /d 2025-06-15 10:00`:
 
 ![Add Interview Sequence Diagram](diagrams/AddInterviewSequenceDiagram.png)
 
@@ -108,42 +113,45 @@ The following sequence diagram illustrates the execution flow when the user ente
     - Pros: Always reads the latest internship data.
     - Cons: Fragile if the internship list is reordered or items are deleted, since the stored index may become invalid.
 
-**Aspect: Whether Interview requires a date at creation**
+**Aspect: Date-time format**
 
-- **Alternative 1 (current choice):** Allow `Interview` to be created without a date (date defaults to `null`).
-    - Pros: More flexible — the user can add an interview first and set the deadline later via `set-deadline`.
-    - Cons: Need to handle the case where date is `null` when displaying.
+- **Alternative 1 (current choice):** Use `yyyy-MM-dd HH:mm` format with `LocalDateTime`.
+    - Pros: Includes both date and time, giving users precise scheduling control.
+    - Cons: Longer input required from the user.
 
-- **Alternative 2:** Require a date at creation time.
-    - Pros: Every interview always has a date, simplifying display logic.
-    - Cons: Less flexible — the user may not know the interview date yet when adding it.
+- **Alternative 2:** Use `yyyy-MM-dd` format with `LocalDate` (date only).
+    - Pros: Shorter input.
+    - Cons: Cannot differentiate between interviews on the same day at different times.
 
-### Set Interview Deadline Feature
+### Update Interview Date Feature
 
 #### Overview
 
-The `set-deadline` command allows the user to set or update the deadline date of an existing interview.
-The user specifies the 1-based index of the interview and a date in `yyyy-MM-dd` format.
+The `update-date` command allows the user to set or update the date and time of an existing interview.
+The user specifies the 1-based index of the interview and a date-time in `yyyy-MM-dd HH:mm` format.
 
-**Command format:** `set-deadline INDEX /d DATE`
+**Command format:** `update-date INDEX /d DATE`
 
-**Example:** `set-deadline 1 /d 2025-04-15` sets the deadline of the 1st interview to April 15, 2025.
+**Example:** `update-date 1 /d 2025-04-15 14:00` sets the date of the 1st interview to
+April 15, 2025 at 14:00.
 
 #### Implementation
 
-The feature is implemented in `SetInterviewDeadlineCommand`, which implements the `Command` interface.
+The feature is implemented in `SetInterviewDeadlineCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
-1. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
-2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
-3. Validates that both parameters are present and non-empty.
-4. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
-5. Parses the date string into a `LocalDate` object.
-6. Retrieves the `Interview` at the 0-based position `(index - 1)` from `InterviewList`.
-7. Calls `interview.setDate(date)` to update the deadline.
-8. Prints a confirmation message to the user.
+1. Checks if the `/help` flag is present — if so, prints usage information and returns.
+2. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
+3. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
+4. Validates that both parameters are present and non-empty.
+5. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
+6. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+7. Sorts the interview list and retrieves the `Interview` at the 0-based position `(index - 1)`.
+8. Calls `interview.setDate(date)` to update the date-time.
+9. Prints a confirmation message to the user.
 
-The following sequence diagram illustrates the execution flow when the user enters `set-deadline 1 /d 2025-04-15`:
+The following sequence diagram illustrates the execution flow when the user enters
+`update-date 1 /d 2025-04-15 14:00`:
 
 ![Set Deadline Sequence Diagram](diagrams/SetDeadlineSequenceDiagram.png)
 
@@ -165,9 +173,103 @@ The following sequence diagram illustrates the execution flow when the user ente
     - Pros: Consistent with the existing flag-based command framework. Clear separation of arguments.
     - Cons: Slightly more verbose for the user.
 
-- **Alternative 2:** Accept the date as a positional argument (e.g., `set-deadline 1 2025-04-15`).
+- **Alternative 2:** Accept the date as a positional argument (e.g., `update-date 1 2025-04-15 14:00`).
     - Pros: Shorter command for the user.
     - Cons: Breaks the flag-based convention used by other commands, making the parser inconsistent.
+
+### Search Interview Feature
+
+#### Overview
+
+The `search-interview` command allows the user to search for interviews by company name, role,
+and/or date. Multiple flags narrow the results using AND logic. Text matching is case-insensitive
+substring matching, while date matching is an exact match on the date portion.
+
+**Command format:** `search-interview [/c COMPANY] [/t ROLE] [/d DATE]`
+
+**Example:** `search-interview /c Google /d 2025-06-15` finds all interviews at companies
+containing "Google" on 15 Jun 2025.
+
+#### Implementation
+
+The feature is implemented in `SearchInterviewCommand`, which extends `Command`.
+When `execute()` is called, it performs the following steps:
+
+1. Checks if the `/help` flag is present — if so, prints usage information and returns.
+2. Retrieves the optional parameters for `/c`, `/t`, and `/d` from the `Parser`.
+3. Extracts each keyword, treating blank or missing values as `null`.
+4. Validates that at least one search flag is provided.
+5. If a `/d` value is provided, parses it into a `LocalDate` (format `yyyy-MM-dd`).
+6. Filters the interview list using `Interview.matches(company, title, date)`, which applies
+   AND logic across all non-null criteria.
+7. Prints the matching results, or a "no results" message if none match.
+
+The filtering relies on the `matches()` method in `Interview`, which uses direct field access
+to `internship.companyName` and `internship.title` for case-insensitive substring matching,
+and compares dates via `dateTime.toLocalDate().equals(date)`.
+
+The following sequence diagram illustrates the execution flow when the user enters
+`search-interview /c Google`:
+
+![Search Interview Sequence Diagram](diagrams/SearchInterviewSequenceDiagram.png)
+
+#### Design Considerations
+
+**Aspect: Single filter vs. combined filters**
+
+- **Alternative 1 (current choice):** Support multiple optional flags with AND logic.
+    - Pros: Flexible — users can narrow results progressively. One command handles all search needs.
+    - Cons: Slightly more complex parsing and validation logic.
+
+- **Alternative 2:** Separate commands for each search type (e.g., `search-by-company`, `search-by-date`).
+    - Pros: Each command is simpler.
+    - Cons: More commands to learn. Cannot combine filters without chaining commands.
+
+**Aspect: Where to place the filtering logic**
+
+- **Alternative 1 (current choice):** Delegate filtering to `Interview.matches()`.
+    - Pros: Encapsulates matching logic in the domain object. The command class stays clean
+      and focused on orchestration.
+    - Cons: The `Interview` class takes on matching responsibility.
+
+- **Alternative 2:** Perform all filtering inline in the command class.
+    - Pros: All logic in one place.
+    - Cons: Harder to reuse the matching logic from other commands.
+
+### Clear Rejected Feature
+
+#### Overview
+
+The `clear-rejected` command removes all internships that have been marked as rejected from the
+tracker. This helps users declutter their list by removing entries they no longer need to track.
+
+**Command format:** `clear-rejected`
+
+**Example:** `clear-rejected` removes all rejected internships and prints a summary of what was removed.
+
+#### Implementation
+
+The feature is implemented in `ClearRejectedCommand`, which extends `Command`.
+When `execute()` is called, it performs the following steps:
+
+1. Retrieves the full internship list from `InternshipList`.
+2. Filters the list to find all internships where `isRejected()` returns `true`.
+3. If no rejected internships are found, prints a message and returns.
+4. Removes all rejected internships from the list using `removeAll()`.
+5. Prints a summary showing how many were cleared and their details.
+
+#### Design Considerations
+
+**Aspect: Clearing strategy**
+
+- **Alternative 1 (current choice):** Remove all rejected internships at once.
+    - Pros: Simple one-step cleanup. No need for the user to identify individual entries.
+    - Cons: No selective removal — it is all-or-nothing.
+
+- **Alternative 2:** Allow the user to specify which rejected internships to clear.
+    - Pros: More granular control.
+    - Cons: Adds unnecessary complexity — if the user wants to keep a rejected entry,
+      they likely would not have rejected it in the first place.
 
 ### Feature: Listing All Interviews
 
@@ -450,16 +552,66 @@ The following sequence diagram illustrates the loading process during startup:
 |Version| As a ... | I want to ... | So that I can ...|
 |--------|----------|---------------|------------------|
 |v1.0|new user|see usage instructions|refer to them when I forget how to use the application|
-|v2.0|user|find a to-do item by name|locate a to-do without having to go through the entire list|
+|v1.0|user|add an interview linked to an internship|track my upcoming interviews alongside my applications|
+|v1.0|user|set a date and time for an interview|remember when each interview is scheduled|
+|v2.0|user|search interviews by company, role, or date|quickly find specific interviews without scrolling the full list|
+|v2.0|user|clear all rejected internships at once|declutter my list and focus on active applications|
+|v2.0|user|update the date of an existing interview|correct or reschedule an interview without deleting and re-adding it|
 
 ## Non-Functional Requirements
 
-{Give non-functional requirements}
+1. Should work on any mainstream OS (Windows, macOS, Linux) as long as Java 17 or above is installed.
+2. A user with above-average typing speed should be able to accomplish most tasks faster than using a GUI-based application.
+3. The application should respond to any command within 1 second on a typical modern computer.
+4. Data files should be human-readable plain text so that advanced users can inspect or edit them manually.
 
 ## Glossary
 
-* *glossary item* - Definition
+* *Internship* - A tracked internship application, consisting of a company name and role title.
+* *Interview* - A scheduled interview linked to an internship, with an optional date and time.
+* *Flag* - A command parameter prefix starting with `/` (e.g., `/d`, `/c`, `/t`).
+* *Index* - A 1-based position number referring to an item in the displayed list.
 
 ## Instructions for manual testing
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+### Adding an interview
+
+1. Prerequisites: At least one internship exists. Run `add Google /t SWE` to create one.
+2. Test case: `add-interview 1 /d 2025-06-15 10:00`
+   Expected: Interview added for the 1st internship with the given date-time.
+3. Test case: `add-interview 0 /d 2025-06-15 10:00`
+   Expected: Error message indicating the index is out of range.
+4. Test case: `add-interview 1 /d bad-date`
+   Expected: Error message indicating invalid date format.
+5. Test case: `add-interview`
+   Expected: Error message asking for the index.
+
+### Updating interview date
+
+1. Prerequisites: At least one interview exists. Use `list-interview` to verify.
+2. Test case: `update-date 1 /d 2025-07-01 09:30`
+   Expected: Date of the 1st interview updated to the new date-time.
+3. Test case: `update-date 1 /d 2025-13-01 10:00`
+   Expected: Error message indicating invalid date format.
+4. Test case: `update-date 999 /d 2025-07-01 09:30`
+   Expected: Error message indicating the index is out of range.
+
+### Searching interviews
+
+1. Prerequisites: Multiple interviews exist with different companies and dates.
+2. Test case: `search-interview /c Google`
+   Expected: Lists all interviews whose company name contains "Google" (case-insensitive).
+3. Test case: `search-interview /t Engineer /d 2025-06-15`
+   Expected: Lists interviews matching both the role and date criteria.
+4. Test case: `search-interview /c NonExistentCompany`
+   Expected: Message indicating no interviews found.
+5. Test case: `search-interview`
+   Expected: Error message asking for at least one search flag.
+
+### Clearing rejected internships
+
+1. Prerequisites: Mark at least one internship as rejected using `reject INDEX`.
+2. Test case: `clear-rejected`
+   Expected: All rejected internships are removed. A summary is printed.
+3. Test case: Run `clear-rejected` again when no rejected internships remain.
+   Expected: Message indicating nothing to clear.

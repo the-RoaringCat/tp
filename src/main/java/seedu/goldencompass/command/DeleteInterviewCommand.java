@@ -35,6 +35,16 @@ public class DeleteInterviewCommand extends Command {
 
     @Override
     public void execute() throws GoldenCompassException {
+        // Check for /help flag first
+        if (checkHelpFlag(
+                "Deletes an interview from an internship application.",
+                "Format: delete-interview INDEX\n"
+                        + "Example: delete-interview 1\n\n"
+                        + "Note: Only the interview is deleted. The internship remains in your list."
+        )) {
+            return;
+        }
+
         List<String> params = parser.getParamsOf(parser.getCommand());
 
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {

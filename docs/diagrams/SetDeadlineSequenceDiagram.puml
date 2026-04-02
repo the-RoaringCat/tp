@@ -8,12 +8,12 @@ participant ":SetInterviewDeadlineCommand" as SDC
 participant ":InterviewList" as IVL
 participant "iv:Interview" as IV
 
-User -> Ui : "set-deadline 1 /d 2025-04-15"
+User -> Ui : "update-date 1 /d 2025-04-15 14:00"
 activate Ui
 Ui --> GC : returns input
 deactivate Ui
 
-GC -> Parser : parse("set-deadline 1 /d 2025-04-15")
+GC -> Parser : parse("update-date 1 /d 2025-04-15 14:00")
 activate Parser
 Parser --> GC
 deactivate Parser
@@ -23,14 +23,14 @@ activate Executor
 Executor -> SDC : execute()
 activate SDC
 
-SDC -> Parser : getParamsOf("set-deadline")
+SDC -> Parser : getParamsOf("update-date")
 activate Parser
 Parser --> SDC : ["1"]
 deactivate Parser
 
 SDC -> Parser : getParamsOf("/d")
 activate Parser
-Parser --> SDC : ["2025-04-15"]
+Parser --> SDC : ["2025-04-15 14:00"]
 deactivate Parser
 
 SDC -> IVL : isValidIndex(1)
@@ -38,19 +38,21 @@ activate IVL
 IVL --> SDC : true
 deactivate IVL
 
-note right of SDC : Parses "2025-04-15" into LocalDate
+note right of SDC : Parses "2025-04-15 14:00" into LocalDateTime
 
-SDC -> IVL : get(0)
+SDC -> IVL : getInterviews()
 activate IVL
-IVL --> SDC : iv
+IVL --> SDC : interviews
 deactivate IVL
 
-SDC -> IV : setDate(2025-04-15)
+note right of SDC : Sorts interviews by date,\nretrieves interview at index 0
+
+SDC -> IV : setDate(2025-04-15T14:00)
 activate IV
 IV --> SDC
 deactivate IV
 
-SDC -> Ui : print("Deadline set for interview 1: 2025-04-15")
+SDC -> Ui : print("Deadline set for interview 1: ...")
 activate Ui
 Ui --> SDC
 deactivate Ui

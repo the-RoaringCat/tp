@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
+import seedu.goldencompass.parser.Parser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -24,9 +25,11 @@ public class InternshipListTest {
     private final PrintStream originalOut = System.out;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception{
         internshipList = new InternshipList();
-        listCommand = new ListCommand(internshipList);
+        Parser parser = new Parser();
+        parser.parse("list");
+        listCommand = new ListCommand(parser, internshipList);
         //internshipList.setUi(new Ui());
         // Redirect System.out to capture output for testing
         System.setOut(new PrintStream(outputStream));
