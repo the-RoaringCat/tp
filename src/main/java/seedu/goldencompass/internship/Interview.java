@@ -12,12 +12,14 @@ public class Interview {
         assert date != null : "Date should not be null when provided";
         this.internship = internship;
         this.date = date;
+        internship.setInterview(this);
     }
 
     public Interview(Internship internship) {
         assert internship != null : "Internship should not be null";
         this.internship = internship;
         this.date = null;
+        internship.setInterview(this);
     }
 
     /**

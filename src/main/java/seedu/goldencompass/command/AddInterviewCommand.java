@@ -83,6 +83,7 @@ public class AddInterviewCommand extends Command {
         assert internship != null : "Retrieved internship should not be null";
 
         Interview interview = new Interview(internship, date);
+        internship.setInterview(interview);
         interviewList.add(interview);
 
         ui.print("Got it! I've added an interview on " + date + " for: " + internship);

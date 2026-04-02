@@ -98,6 +98,18 @@ public class Internship {
     }
 
     /**
+     * Sets the interview for this internship.
+     *
+     * @param interview The interview to associate with this internship
+     */
+    public void setInterview(Interview interview) {
+        this.interview = interview;
+        if (interview != null) {
+            logger.info("Interview set for: " + companyName + " - " + title);
+        }
+    }
+
+    /**
      * Deletes the interview associated with this internship.
      */
     public void deleteInterview() {

@@ -3,8 +3,11 @@ package seedu.goldencompass.internship;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class InterviewList {
+
+    private static final Logger logger = Logger.getLogger(InternshipList.class.getName());
 
     private final List<Interview> interviews = new ArrayList<>();
 
@@ -26,6 +29,25 @@ public class InterviewList {
         assert x != null : "Interview to add should not be null";
         interviews.add(x);
         interviews.sort(Comparator.comparing(Interview::getDate));
+    }
+
+    /**
+     * Deletes an interview by internship reference.
+     *
+     * @param internship The internship whose interview to delete
+     */
+    public void deleteByInternship(Internship internship) {
+        if (internship == null) {
+            logger.warning("Attempted to delete interview for null internship");
+            return;
+        }
+
+        boolean removed = interviews.removeIf(interview ->
+                interview.getInternship() != null && interview.getInternship().equals(internship));
+
+        if (removed) {
+            logger.info("Removed interview from InterviewList for: " + internship.getCompanyName());
+        }
     }
 
     /**
