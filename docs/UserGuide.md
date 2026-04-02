@@ -85,6 +85,55 @@ Format: `clear-rejected`
 Example:
 - `clear-rejected`
 
+### Listing all interviews: `list-interview`
+
+Lists all interviews in ascending order of dates.
+
+Format: `list-interview`
+
+Example:
+```
+list-interview
+Here are the interview invitations:
+NUS - Bus Driver @ 2026-03-25 11:00
+Meta - Frontend Developer @ 2026-03-25 14:00
+Google - Software Engineer @ 2026-03-27 10:00
+Amazon - Backend Developer @ 2026-04-01 09:00
+```
+If no interview has been added:
+```
+list-interview
+You don't have any interviews!
+```
+
+### Listing upcoming interviews: `upcoming`
+
+Lists upcoming interviews within a specific number of days.
+
+Format: `upcoming [N]`, where `[N]` is an optional integer.
+
+- If no integer is supplied after `upcoming`, a default of `5` days will be used.
+
+Example:
+
+If now is `2026-03-25 12:00`
+```
+upcoming
+Meta - Frontend Developer @ 2026-03-25 14:00
+Google - Software Engineer @ 2026-03-27 10:00
+upcoming 7
+Meta - Frontend Developer @ 2026-03-25 14:00
+Google - Software Engineer @ 2026-03-27 10:00
+Amazon - Backend Developer @ 2026-04-01 09:00
+```
+If now is `2026-03-19 12:00`:
+```
+upcoming
+You don't have any upcoming interviews.
+upcoming 6
+NUS - Bus Driver @ 2026-03-25 11:00
+```
+
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?
@@ -103,9 +152,11 @@ same location on the other computer.
 
 ## Command Summary
 
-| Action | Format | Example |
-|---|---|---|
-| Add interview | `add-interview INDEX /d DATE` | `add-interview 1 /d 2025-06-15 10:00` |
-| Update interview date | `update-date INDEX /d DATE` | `update-date 1 /d 2025-06-20 09:00` |
-| Search interviews | `search-interview [/c COMPANY] [/t ROLE] [/d DATE]` | `search-interview /d 2025-06-15` |
-| Clear rejected | `clear-rejected` | `clear-rejected` |
+| Action                   | Format                                              | Example                               |
+|--------------------------|-----------------------------------------------------|---------------------------------------|
+| Add interview            | `add-interview INDEX /d DATE`                       | `add-interview 1 /d 2025-06-15 10:00` |
+| Update interview date    | `update-date INDEX /d DATE`                         | `update-date 1 /d 2025-06-20 09:00`   |
+| Search interviews        | `search-interview [/c COMPANY] [/t ROLE] [/d DATE]` | `search-interview /d 2025-06-15`      |
+| Clear rejected           | `clear-rejected`                                    | `clear-rejected`                      |
+| List interviews          | `list-interview`                                    | `list-interview`                      |
+| List upcoming interviews | `upcoming [N]`                                      | `upcoming` / `upcoming 3`             |
