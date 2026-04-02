@@ -67,7 +67,7 @@ public class Executor {
             throw new GoldenCompassException("Error: unknown command: " + parser.getCommand());
         }
 
-        if (cmd.needHelp()) {
+        if (parser.isFlagExist("/help")) {
             cmd.printHelp();
             return;
         }

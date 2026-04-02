@@ -24,31 +24,24 @@ public class SearchInternshipCommand extends Command {
 
     @Override
     public String getCommandDescription() {
-        return "";
+        return "Searches for internships by company name and/or title.";
     }
 
     @Override
     public String getFlagDescription() {
-        return "";
+        return "Format: search [/c COMPANY] [/t TITLE]\n\n"
+                + "Flags:\n"
+                + "  /c - search by company name (case-insensitive, partial match)\n"
+                + "  /t - search by job title (case-insensitive, partial match)\n\n"
+                + "Examples:\n"
+                + "  search /c Google\n"
+                + "  search /t Engineer\n"
+                + "  search /c Google /t Software\n\n"
+                + "Note: At least one search criterion must be provided.";
     }
 
     @Override
     public void execute() throws GoldenCompassException {
-        // Check for /help flag first
-        if (checkHelpFlag(
-                "Searches for internships by company name and/or title.",
-                "Format: search [/c COMPANY] [/t TITLE]\n\n"
-                        + "Flags:\n"
-                        + "  /c - search by company name (case-insensitive, partial match)\n"
-                        + "  /t - search by job title (case-insensitive, partial match)\n\n"
-                        + "Examples:\n"
-                        + "  search /c Google\n"
-                        + "  search /t Engineer\n"
-                        + "  search /c Google /t Software\n\n"
-                        + "Note: At least one search criterion must be provided."
-        )) {
-            return;
-        }
 
         logger.info("Executing SearchInternshipCommand");
 

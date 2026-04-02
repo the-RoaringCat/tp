@@ -42,4 +42,14 @@ public class ClearRejectedCommand extends Command {
             ui.print("  - " + internship);
         }
     }
+
+    @Override
+    protected String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return "";
+    }
 }

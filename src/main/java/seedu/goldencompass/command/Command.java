@@ -31,10 +31,6 @@ public abstract class Command implements Executable {
         ui.print(getCommandDescription(), getFlagDescription());
     }
 
-    protected boolean needHelp() {
-        return parser.isFlagExist("/help");
-    }
-
     protected void checkFlagPresence(String... flags) throws GoldenCompassException {
         StringBuilder errorMessage = new StringBuilder();
 

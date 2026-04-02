@@ -32,6 +32,13 @@ public class UpcomingCommand extends Command {
 
     private static final Logger logger = Logger.getLogger(UpcomingCommand.class.getName());
     private static final int DEFAULT_DAYS = 5;
+    private static final String COMMAND_DESCRIPTION =
+            "The command lists upcoming interviews within a specified number of days.";
+    private static final String FORMAT_DESCRIPTION = "Command format: upcoming [days]" + System.lineSeparator()
+            + "If the optional parameter [days] is not supplied, a default of 5 days will be used."
+            + System.lineSeparator() + "Example usage:" + System.lineSeparator()
+            + "\tupcoming → shows interviews in the next 5 days" + System.lineSeparator()
+            + "\tupcoming 3 → shows interviews in the next 3 days";
 
     private final InterviewList interviewList;
 
@@ -43,16 +50,6 @@ public class UpcomingCommand extends Command {
         this.parser = parser;
         this.interviewList = interviewList;
 
-    }
-
-    @Override
-    public String getCommandDescription() {
-        return "";
-    }
-
-    @Override
-    public String getFlagDescription() {
-        return "";
     }
 
     @Override
@@ -112,6 +109,16 @@ public class UpcomingCommand extends Command {
 
         logger.log(Level.INFO, "UpcomingCommand execution completed");
 
+    }
+
+    @Override
+    protected String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return FORMAT_DESCRIPTION;
     }
 
 }

@@ -45,12 +45,12 @@ public class ListCommand extends Command {
 
     @Override
     public String getCommandDescription() {
-        return "";
+        return "Lists all internships in the tracker.";
     }
 
     @Override
     public String getFlagDescription() {
-        return "";
+        return "Format: list";
     }
 
     /**
@@ -64,14 +64,6 @@ public class ListCommand extends Command {
      */
     @Override
     public void execute() throws GoldenCompassException {
-
-        // Check for /help flag first
-        if (checkHelpFlag(
-                "Lists all internships in the tracker.",
-                "Format: list"
-        )) {
-            return;
-        }
 
         logger.info("Executing ListCommand");
 
