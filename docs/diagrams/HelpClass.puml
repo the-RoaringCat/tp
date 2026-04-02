@@ -1,0 +1,62 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+interface Executable {
+    + execute()
+}
+
+abstract class Command {
+    # parser
+    # ui
+
+    + getCommandDescription() : String
+    + getFlagDescription() : String
+    + needHelp() : boolean
+    + printHelp()
+    + execute()
+}
+
+class AddAliasCommand extends Command {
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+class RemoveAliasCommand extends Command {
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+class ListCommand extends Command {
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+class UndoCommand extends Command {
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+class RedoCommand extends Command {
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+interface DataHistory {
+    + modifyDataWith(...)
+}
+
+Cmd <|.. AddAliasCommand
+Cmd <|-- RemoveAliasCommand
+Cmd <|-- ListCommand
+Cmd <|-- UndoCommand
+Cmd <|-- RedoCommand
+
+Command o-- DataHistory
+
+@enduml

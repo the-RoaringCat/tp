@@ -8,7 +8,7 @@ import seedu.goldencompass.ui.Ui;
 import java.util.List;
 import java.util.Map;
 
-public class ExampleCommand implements Executable {
+public class ExampleCommand extends Command {
 
     private final Ui ui;
     private final Parser parser;
@@ -32,5 +32,17 @@ public class ExampleCommand implements Executable {
             ui.print("I have this flag " + key + " with params: " + params);
         }
 
+    }
+
+
+
+    @Override
+    protected String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return "";
     }
 }

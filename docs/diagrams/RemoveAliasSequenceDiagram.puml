@@ -1,0 +1,22 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":RemoveAliasCommand" as RemoveAliasCmd
+participant ":Ui" as Ui
+
+User -> Parser : parse("remove-alias ls")
+Parser --> Executor : command = "remove-alias"
+
+Executor -> RemoveAliasCmd : execute()
+activate RemoveAliasCmd
+
+RemoveAliasCmd -> Parser : getParamsOf("remove-alias")
+Parser --> RemoveAliasCmd : "ls"
+
+RemoveAliasCmd -> Executor : removeAlias("ls")
+Executor --> RemoveAliasCmd
+
+RemoveAliasCmd -> Ui : print("Alias: \"ls\" is now removed.")
+deactivate RemoveAliasCmd
+@enduml

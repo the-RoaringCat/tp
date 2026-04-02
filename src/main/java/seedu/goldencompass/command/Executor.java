@@ -14,7 +14,7 @@ public class Executor {
 
     private final Map<String, String> aliasMap = new HashMap<>();
 
-    private final Map<String, Executable> commands;
+    private final Map<String, Command> commands;
     private final Parser parser;
     private final Set<String> undoable=Set.of("add", "update-date", "add-interview", "alias", "remove-alias", "mark",
             "delete", "reject");
@@ -60,21 +60,25 @@ public class Executor {
             throw new GoldenCompassException("Error: unknown command: " + inputAlias);
         }
         String commandWord = aliasMap.get(inputAlias);
-        Executable cmd = commands.get(commandWord);
+        Command cmd = commands.get(commandWord);
 
         if (cmd == null) {
             throw new GoldenCompassException("Error: unknown command: " + parser.getCommand());
         }
 
-        cmd.execute();
+        if (cmd.needHelp()) {
+            cmd.printHelp();
+            return;
+        }
 
+        cmd.execute();
     }
 
     public void addAlias(String command, String alias) throws GoldenCompassException {
-        if(aliasMap.get(command) == null) {
+        if (aliasMap.get(command) == null) {
             throw new GoldenCompassException("Error: Cannot add alias to \"" + command + " since it does not exist.");
         }
-        if(aliasMap.containsKey(alias)) {
+        if (aliasMap.containsKey(alias)) {
             throw new GoldenCompassException("Error: Alias \"" + alias + "\" already exists.");
         }
         aliasMap.put(alias, command);
@@ -82,12 +86,12 @@ public class Executor {
 
     public void removeAlias(String alias) throws GoldenCompassException{
         //alias does not exist
-        if(!aliasMap.containsKey(alias)) {
+        if (!aliasMap.containsKey(alias)) {
             throw new GoldenCompassException("Error: Alias: \"" + alias +"\" does not exist.");
         }
 
         //cannot remove default command
-        if(commands.containsKey(alias)) {
+        if (commands.containsKey(alias)) {
             throw new GoldenCompassException("Error: Cannot remove default command: \"" + alias +"\"");
         }
 

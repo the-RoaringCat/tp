@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":RedoCommand" as RedoCmd
+participant ":OperationHistory" as History
+participant ":OperationSnapshot" as Snapshot
+participant ":Ui" as Ui
+
+User -> Parser : parse("redo")
+Parser --> Executor : command = "redo"
+
+Executor -> RedoCmd : execute()
+activate RedoCmd
+
+RedoCmd -> History : getRedo()
+History --> RedoCmd : futureSnapshot
+
+RedoCmd -> RedoCmd : modifyDataWith(futureSnapshot,...)
+
+RedoCmd -> Snapshot : getCommand()
+Snapshot --> RedoCmd : commandWord
+
+RedoCmd -> Ui : print("Redo " + commandWord + " successfully")
+deactivate RedoCmd
+@enduml

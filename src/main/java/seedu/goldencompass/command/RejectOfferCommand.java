@@ -24,6 +24,16 @@ public class RejectOfferCommand extends Command {
         this.internshipList = internshipList;
     }
 
+    @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
     /**
      * Executes the command to mark an internship as rejected.
      * Extracts the index from the parsed user input and updates the corresponding Internship.

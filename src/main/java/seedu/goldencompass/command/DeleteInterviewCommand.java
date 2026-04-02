@@ -24,6 +24,16 @@ public class DeleteInterviewCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
         List<String> params = parser.getParamsOf(parser.getCommand());
 

@@ -23,6 +23,16 @@ public class SearchInternshipCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
         logger.info("Executing SearchInternshipCommand");
 

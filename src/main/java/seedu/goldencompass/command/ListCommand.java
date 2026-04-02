@@ -38,6 +38,16 @@ public class ListCommand extends Command {
         assert this.internshipList != null : "InternshipList should be set";
     }
 
+    @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
     /**
      * Displays all internships in the list with their index numbers.
      * Shows company name and job title for each internship.

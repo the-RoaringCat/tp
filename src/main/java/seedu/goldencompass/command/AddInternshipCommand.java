@@ -26,6 +26,16 @@ public class AddInternshipCommand extends Command {
         assert internshipList != null : "InternshipList passed to AddInternshipCommand cannot be null";
         this.internshipList = internshipList;
     }
+
+    @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
     /**
      * Executes the command to add a new internship to the tracker.
      * Extracts and validates the company name and the internship title from the parsed user input.

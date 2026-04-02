@@ -1,0 +1,94 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+interface Executable {
+    + execute()
+}
+
+class Command {
+    # parser
+    # ui
+    + execute()
+}
+
+class AddAliasCommand {
+    - executor
+    + execute()
+}
+
+class RemoveAliasCommand {
+    - executor
+    + execute()
+}
+
+class UndoCommand {
+    - executor
+    - internshipList
+    - interviewList
+    - operationHistory
+    + execute()
+}
+
+class RedoCommand {
+    - executor
+    - internshipList
+    - interviewList
+    - operationHistory
+    + execute()
+}
+
+interface DataHistory {
+    + modifyDataWith(...)
+}
+
+class Executor {
+    - aliasMap
+    + execute()
+    + addAlias(command, alias)
+    + removeAlias(alias)
+    + setAliasMap(aliasMap)
+}
+
+class OperationHistory {
+    + getUndo()
+    + getRedo()
+    + getUndoneCommand()
+}
+
+class OperationSnapshot {
+    + getCommand()
+    + getAliasMapCopy()
+    + getInternshipListCopy()
+    + getInterviewListCopy()
+}
+
+class InternshipList {
+    + setInternships(...)
+}
+
+class InterviewList {
+    + setInterviews(...)
+}
+
+Executable <|.. Command
+Command <|-- AddAliasCommand
+Command <|-- RemoveAliasCommand
+Command <|-- UndoCommand
+Command <|-- RedoCommand
+
+DataHistory <|.. UndoCommand
+DataHistory <|.. RedoCommand
+
+AddAliasCommand --> Executor
+RemoveAliasCommand --> Executor
+UndoCommand --> Executor
+RedoCommand --> Executor
+UndoCommand --> OperationHistory
+RedoCommand --> OperationHistory
+UndoCommand --> InternshipList
+UndoCommand --> InterviewList
+RedoCommand --> InternshipList
+RedoCommand --> InterviewList
+OperationHistory --> OperationSnapshot
+@enduml

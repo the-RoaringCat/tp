@@ -39,14 +39,20 @@ public class AddInterviewCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
         assert parser != null : "Parser should not be null";
         assert internshipList != null : "InternshipList should not be null";
         assert interviewList != null : "InterviewList should not be null";
-
-        if (checkHelpFlag(COMMAND_DESCRIPTION, FLAG_DESCRIPTION)) {
-            return;
-        }
 
         List<String> params = parser.getParamsOf(parser.getCommand());
 

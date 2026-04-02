@@ -26,6 +26,16 @@ public class RedoCommand extends Command implements DataHistory{
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
         if(parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             throw new GoldenCompassException("Error: expecting no variable");

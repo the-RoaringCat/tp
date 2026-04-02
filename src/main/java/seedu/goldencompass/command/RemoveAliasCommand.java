@@ -15,6 +15,16 @@ public class RemoveAliasCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
         if(parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             throw new GoldenCompassException("Error: Expecting only one argument.");

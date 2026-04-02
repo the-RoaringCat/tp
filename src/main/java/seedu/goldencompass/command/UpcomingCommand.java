@@ -53,6 +53,16 @@ public class UpcomingCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
 
         logger.log(Level.INFO, "Executing UpcomingCommand");

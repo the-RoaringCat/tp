@@ -27,6 +27,17 @@ public class DeleteInternshipCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+
+    @Override
     public void execute() throws GoldenCompassException {
         logger.log(Level.INFO, "Starting execution of DeleteInternshipCommand...");
 

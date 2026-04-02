@@ -1,0 +1,25 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":AddAliasCommand" as AliasCmd
+participant ":Ui" as Ui
+
+User -> Parser : parse("alias /c list /a ls")
+Parser --> Executor : command = "alias"
+
+Executor -> AliasCmd : execute()
+activate AliasCmd
+
+AliasCmd -> Parser : getParamsOf("/c")
+Parser --> AliasCmd : "list"
+
+AliasCmd -> Parser : getParamsOf("/a")
+Parser --> AliasCmd : "ls"
+
+AliasCmd -> Executor : addAlias("list", "ls")
+Executor --> AliasCmd
+
+AliasCmd -> Ui : print("Command: \"list\" now has a new alias: \"ls\"")
+deactivate AliasCmd
+@enduml

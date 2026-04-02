@@ -1,0 +1,19 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Command" as Cmd
+participant ":Ui" as Ui
+
+User -> Parser : parse("alias /c list /a ls /help")
+Parser --> Cmd : command = "alias"
+
+alt contains "/help"
+    Cmd -> Cmd : needHelp() -> true
+    Cmd -> Ui : printHelp()   // invokes getCommandDescription & getFlagDescription
+
+else
+    Cmd -> Cmd : needHelp() -> false
+    Cmd -> Cmd : execute()  // proceed normally
+end
+
+@enduml

@@ -16,6 +16,16 @@ public class ListInterviewCommand extends Command {
     }
 
     @Override
+    public String getCommandDescription() {
+        return "";
+    }
+
+    @Override
+    public String getFlagDescription() {
+        return "";
+    }
+
+    @Override
     public void execute() throws GoldenCompassException {
 
         List<Interview> interviews = interviewList.getInterviews();

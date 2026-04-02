@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":UndoCommand" as UndoCmd
+participant ":OperationHistory" as History
+participant ":OperationSnapshot" as Snapshot
+participant ":Ui" as Ui
+
+User -> Parser : parse("undo")
+Parser --> Executor : command = "undo"
+
+Executor -> UndoCmd : execute()
+activate UndoCmd
+
+UndoCmd -> History : getUndo()
+History --> UndoCmd : pastSnapshot
+
+UndoCmd -> UndoCmd : modifyDataWith(pastSnapshot,...)
+
+UndoCmd -> History : getUndoneCommand()
+History --> UndoCmd : commandWord
+
+UndoCmd -> Ui : print("Undo " + commandWord + " successfully")
+deactivate UndoCmd
+@enduml

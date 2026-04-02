@@ -302,71 +302,83 @@ The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTe
 | `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws IndexOutOfBoundsException |
 | `delete_emptyList_throwsException` | Delete from empty list | Throws IndexOutOfBoundsException |
 
-#### Future Enhancements
+### Alias
+#### Overview 
+
+The `alias` command allows user to add an alias to the default set of command words, while the `remove-alias` command
+allows user to remove an existing alias.
+
+#### Command format
+
+`alias /c COMMAND /a ALIAS`
+
+`remove-alias ALIAS`
+
+#### Implementation
+
+These two commands uses `Map`. There is a `Map<String, String>` that maps the set of alias to the set of default command
+keyword. For example, alias `"ls"` is mapped to command `"list"`. The output of this map is then mapped to command 
+classes as explained above.
+
+`alias` would create a new mapping, while `remove-alias` would remove such a mapping. This is internally achieved
+via `executor.addAlias(commandWord, alias)` and `executor.removeAlias(alias)`.
+
+Defensive validation of the user input would be carried out before calling the above methods. This includes the 
+**number** of the parameters, and the expected **flags**. 
+
+This is add alias sequence diagram:
+
+![](diagrams/AddAliasDigram.png)
+
+This is remove alias sequence diagram:
+
+![](diagrams/RemoveAliasDigram.png)
+### Data History
+
+#### Overview
+
+The `undo` command allows user to undo an action that modifies the state of the app, i.e, the recorded data, while
+the `redo` command allows user to redo an action that has been undone by `undo`. 
+User can `undo` for a maximum of `10` times.
+
+#### Command format
+`undo`
+
+`redo`
+
+#### Implementation
+
+The mechanism uses the idea of a timeline. A copy of the data is "snapshot" and recorded by `OperationSnapshot` class. 
+A container class, `OperationHistory` would store this snapshot via stack. There are `2` stacks: **undo stack** 
+and **redo stack**. The undo stack's top is always the **current** data version. The redo stack's top is always the
+latest data version that has been **undone**.
+
+After each action (command) that is **undoable**, a snapshot would be taken, and pushed into undo stack. The redo
+stack would be **cleared** at the same time. This is because conflict of data history would arise when trying to redo 
+after new changes.
+
+To undo an action, the top snapshot in undo stack would be popped into the redo stack, and the new top in undo stack
+gets peeked by returning its reference. Then, the current data in the app would be replaced by the data copies in that
+reference.
+
+To redo an action, the top snapshot in redo stack is popped into the undo stack and its reference is also returned.
+The current data of the app would be replaced by the data copies in that reference.
+
+This is undo sequence diagram:
+![UndoSequenceDiagram.png](diagrams/UndoSequenceDiagram.png)
+
+This is redo sequence diagram:
+![RedoSequenceDigram.png](diagrams/RedoSequenceDigram.png)
+
+### Future Enhancements
 
 Potential improvements for future versions:
 
 1. **Batch deletion**: Support multiple indices (e.g., `delete 1,3,5`)
 2. **Range deletion**: Delete a range of internships (e.g., `delete 1-5`)
-3. **Undo capability**: Allow users to restore recently deleted internships
-4. **Confirmation prompt**: Ask for confirmation before deleting to prevent accidents
-5. **Archive feature**: Move deleted internships to an archive instead of permanent deletion
-        
-### Command Framework
-All command classes implement `Executable`, which provides `execute(Map)` and a default method `checkFlags()` to check the 
-validity of flags. 
+3. **Confirmation prompt**: Ask for confirmation before deleting to prevent accidents
+4. **Archive feature**: Move deleted internships to an archive instead of permanent deletion
 
-Each command class must provide a static `ArrayList<String>` of flags that the command recognizes.
-
-#### Command Format
-`keyword [P...] [F P...] [F] `<br> where `[]` is optional, `P` is a parameter word, `F` is a flag, and `...` means any number of .
-
-The first block of parameters have no flag because they belong to the default flag `/default` which every command should have.
-
-Duplicated flags are allowed.
-
-For example:<br>
-`add abc /a flag a0 /b /a flag a1` means `/default`'s parameter is `abc`, `/a`'s parameter is `flag a0, flag a1` and `/b` has no parameter.
-
-#### Keyword Mapping
-Each keyword is mapped to an instance of that command, while each keyword also has its own alias as defined by the user.<br> In general, each command can have 
-any number of keywords.
-
-For example: `add <-> AddCommand` `ad <-> AddCommand` where `ad` is an alias of `add`.
-
-#### Flags
-Each flag has the format: `/FLAG` where `FLAG` is to be replaced by the actual flag.
-
-Each command has its own recognizable flags.
-
-There is a global **set** that stores all recognizable flags of the app.
-
-The **constructor** of each command must update the set with its recognizable flags.
-
-#### Preparser
-Preparser only sees the **global** set of all flags. It would parse user input into `2` components: keyword and a Map.
-
-The Map maps each flag to a `List<String>` of its parameters.
-
-For example: `User input > add add abc /a flag a0 /b /a flag a1`<br>
-`keyword: add`<br>
-```
-Map:
-/default <-> [abc]
-/a <-> [flag a0, flag a1]
-/b <-> []
-```
-> **Note**
-> 
-> Preparser only keeps track of the global set of all flags.<br> 
-> So, it does not check if a command recognize every flag in the input. 
-
-#### Execute Command
-The interface `Executable` provides `execute(Map)`, so it must be **overridden** in each command class. <br>
-`execute(Map)` should takes in a map of flags to parameters.
-
-Since preparser does not validate command specific flags, in the implementation of `execute(Map)`, `checkFlags()` must be 
-called first before anything.
 
 ### Storage — Component Overview
 
