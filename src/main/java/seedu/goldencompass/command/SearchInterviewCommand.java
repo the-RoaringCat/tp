@@ -55,10 +55,6 @@ public class SearchInterviewCommand extends Command {
         assert parser != null : "Parser should not be null";
         assert interviewList != null : "InterviewList should not be null";
 
-        if (needHelp()) {
-            return;
-        }
-
         List<String> companyParams = parser.getParamsOf(FLAG_COMPANY);
         List<String> titleParams = parser.getParamsOf(FLAG_TITLE);
         List<String> dateParams = parser.getParamsOf(FLAG_DATE);
