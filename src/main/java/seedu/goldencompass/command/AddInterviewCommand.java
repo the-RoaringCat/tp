@@ -22,6 +22,12 @@ public class AddInterviewCommand extends Command {
 
     public static final String COMMAND_WORD = "add-interview";
     private static final String FLAG_DATE = "/d";
+    private static final String COMMAND_DESCRIPTION =
+            "Adds an interview linked to an existing internship.\n"
+            + "Format: add-interview INDEX /d DATE";
+    private static final String FLAG_DESCRIPTION =
+            "Flags:\n"
+            + "/d - specifies the interview date (yyyy-MM-dd).";
 
     private final InternshipList internshipList;
     private final InterviewList interviewList;
@@ -37,6 +43,10 @@ public class AddInterviewCommand extends Command {
         assert parser != null : "Parser should not be null";
         assert internshipList != null : "InternshipList should not be null";
         assert interviewList != null : "InterviewList should not be null";
+
+        if (checkHelpFlag(COMMAND_DESCRIPTION, FLAG_DESCRIPTION)) {
+            return;
+        }
 
         List<String> params = parser.getParamsOf(parser.getCommand());
 

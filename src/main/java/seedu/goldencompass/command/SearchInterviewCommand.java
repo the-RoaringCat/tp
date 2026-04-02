@@ -24,6 +24,14 @@ public class SearchInterviewCommand extends Command {
     private static final String FLAG_COMPANY = "/c";
     private static final String FLAG_TITLE = "/t";
     private static final String FLAG_DATE = "/d";
+    private static final String COMMAND_DESCRIPTION =
+            "Searches interviews by company, role, and/or date.\n"
+            + "Format: search-interview [/c COMPANY] [/t ROLE] [/d DATE]";
+    private static final String FLAG_DESCRIPTION =
+            "Flags:\n"
+            + "/c - search by company name (substring match).\n"
+            + "/t - search by role/title (substring match).\n"
+            + "/d - search by date (yyyy-MM-dd, exact match).";
 
     private final InterviewList interviewList;
 
@@ -36,6 +44,10 @@ public class SearchInterviewCommand extends Command {
     public void execute() throws GoldenCompassException {
         assert parser != null : "Parser should not be null";
         assert interviewList != null : "InterviewList should not be null";
+
+        if (checkHelpFlag(COMMAND_DESCRIPTION, FLAG_DESCRIPTION)) {
+            return;
+        }
 
         List<String> companyParams = parser.getParamsOf(FLAG_COMPANY);
         List<String> titleParams = parser.getParamsOf(FLAG_TITLE);

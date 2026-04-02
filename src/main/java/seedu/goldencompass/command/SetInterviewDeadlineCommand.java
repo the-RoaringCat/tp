@@ -21,6 +21,12 @@ public class SetInterviewDeadlineCommand extends Command {
     public static final String COMMAND_WORD = "update-date";
 
     private static final String FLAG_DATE = "/d";
+    private static final String COMMAND_DESCRIPTION =
+            "Sets the deadline date of an interview.\n"
+            + "Format: update-date INDEX /d DATE";
+    private static final String FLAG_DESCRIPTION =
+            "Flags:\n"
+            + "/d - specifies the date (yyyy-MM-dd).";
 
     private final InterviewList interviewList;
 
@@ -49,6 +55,10 @@ public class SetInterviewDeadlineCommand extends Command {
     public void execute() throws GoldenCompassException {
         assert parser != null : "Parser should not be null";
         assert interviewList != null : "InterviewList should not be null";
+
+        if (checkHelpFlag(COMMAND_DESCRIPTION, FLAG_DESCRIPTION)) {
+            return;
+        }
 
         List<String> indexParams = parser.getParamsOf(parser.getCommand());
         if (indexParams == null || indexParams.get(0).isBlank()) {
