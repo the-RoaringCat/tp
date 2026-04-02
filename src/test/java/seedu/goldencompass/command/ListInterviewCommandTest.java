@@ -36,7 +36,6 @@ public class ListInterviewCommandTest {
 
     @Test
     public void list_singleInterview_printsCorrectly() throws GoldenCompassException {
-
         Internship google = new Internship("Software Engineer", "Google");
         interviewList.add(new Interview(google, LocalDateTime.parse("2026-03-25T09:00")));
 
@@ -46,12 +45,10 @@ public class ListInterviewCommandTest {
         System.out.println(output);
         assertTrue(output.contains("Here are the interview invitations:"));
         assertTrue(output.contains("Google - Software Engineer @ 2026-03-25 09:00"));
-
     }
 
     @Test
     public void list_multipleInterviews_printsAllCorrectly() throws GoldenCompassException {
-
         Internship google = new Internship("Software Engineer", "Google");
         Internship meta = new Internship("Frontend Developer", "Meta");
         Internship amazon = new Internship("Backend Developer", "Amazon");
@@ -59,23 +56,21 @@ public class ListInterviewCommandTest {
         interviewList.add(new Interview(google, LocalDateTime.parse("2026-03-31T10:00")));
         interviewList.add(new Interview(meta, LocalDateTime.parse("2026-03-25T14:00")));
         interviewList.add(new Interview(amazon, LocalDateTime.parse("2026-04-01T09:00")));
-        interviewList.add(new Interview(nus, LocalDateTime.parse("2026-02-26T11:00")));
+        interviewList.add(new Interview(nus, LocalDateTime.parse("2026-03-25T11:00")));
 
         listInterviewCommand.execute();
 
         String output = outputStream.toString().trim();
 
-        int nusIndex = output.indexOf("NUS - Bus Driver @ 2026-02-26");
-        int metaIndex = output.indexOf("Meta - Frontend Developer @ 2026-03-25");
-        int googleIndex = output.indexOf("Google - Software Engineer @ 2026-03-31");
-        int amazonIndex = output.indexOf("Amazon - Backend Developer @ 2026-04-01");
+        int nusIndex = output.indexOf("NUS - Bus Driver @ 2026-03-25 11:00");
+        int metaIndex = output.indexOf("Meta - Frontend Developer @ 2026-03-25 14:00");
+        int googleIndex = output.indexOf("Google - Software Engineer @ 2026-03-31 10:00");
+        int amazonIndex = output.indexOf("Amazon - Backend Developer @ 2026-04-01 09:00");
 
         assertTrue(nusIndex < metaIndex);
         assertTrue(metaIndex < googleIndex);
         assertTrue(googleIndex < amazonIndex);
-
         assertEquals(4, interviewList.size());
-
     }
 
 }
