@@ -1,0 +1,102 @@
+@startuml
+title Sequence Diagram for UpcomingCommand.execute()
+
+participant ":Executor" as E
+participant ":UpcomingCommand" as UC
+participant ":Parser" as P
+participant ":InterviewList" as IL
+participant ":List<>" as L
+participant ":UI" as UI
+participant ":Integer" as I
+participant "System" as Sys
+participant ":Interview" as Int
+participant ":Stream" as S
+
+E -> UC: execute()
+activate UC
+UC -> P: getCommand()
+activate P
+P --> UC: command
+deactivate P
+
+UC -> P: getParamsOf(command)
+activate P
+P --> UC: list of params
+deactivate P
+
+UC -> L: get(0)
+activate L
+L --> UC: param
+deactivate L
+
+alt param is not blank
+    UC -> I: parseInt(param)
+    activate I
+    I --> UC
+    deactivate I
+    alt parse successfully
+    UC -> UC: days = parsed integer value
+    activate UC
+    UC --> UC: days set
+    deactivate UC
+    else NumberFormatException
+    UC --> E: throw GoldenCompassException
+    deactivate UC
+    end
+else param is blank
+UC -> UC: days = DEFAULT_DAYS
+activate UC
+
+UC -> Sys: LocalDateTime.now()
+activate Sys
+Sys --> UC: now
+deactivate Sys
+
+UC -> Sys: now.plusDays(days)
+activate Sys
+Sys --> UC: limit
+deactivate Sys
+
+UC -> IL: getInterviews()
+activate IL
+IL --> UC: interviews (List<Interview>)
+deactivate IL
+
+UC -> L: stream()
+activate L
+L --> UC: stream
+deactivate L
+UC -> S: filter(dateTime of the interview not before now)
+activate S
+S --> UC
+deactivate S
+UC -> S: filter(dateTime of the interview not after limit)
+activate S
+S --> UC
+deactivate S
+UC -> S: toList()
+activate S
+S --> UC: filtered list (of interviews)
+deactivate S
+
+
+alt filtered list is empty
+    UC -> UI: print("You don't have any upcoming interviews.")
+    activate UI
+    UI --> UC:
+    deactivate UI
+else filtered list not empty
+    loop for each Interview in filtered list
+        UC -> Int: toString()
+        activate Int
+        Int --> UC: formatted String of the Interview
+        deactivate Int
+        UC -> UI: print(formatted String of the Interview)
+        activate UI
+        UI --> UC:
+        deactivate UI
+    end
+end
+end
+UC --> E
+@enduml

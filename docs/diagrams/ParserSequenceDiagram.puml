@@ -1,0 +1,128 @@
+@startuml
+
+actor User
+participant GoldenCompass
+participant Parser
+participant IntStream
+participant Stream
+participant Arrays
+participant Collectors
+participant GoldenCompassException
+participant String
+participant Map
+
+User -> GoldenCompass : enter command string
+activate GoldenCompass
+
+GoldenCompass -> Parser : parse(userInput)
+activate Parser
+
+Parser -> Parser : trim() and split("\\s+")
+activate Parser
+Parser --> Parser : words[]
+deactivate Parser
+
+Parser -> Parser : command = words[0]
+activate Parser
+Parser --> Parser : command set
+deactivate Parser
+
+Parser -> IntStream : of(0)
+activate IntStream
+IntStream --> Parser : IntStream
+deactivate IntStream
+
+Parser -> IntStream : range(1, words.length)
+activate IntStream
+IntStream --> Parser : IntStream
+deactivate IntStream
+
+Parser -> IntStream : filter(flag in FLAGSET)
+activate IntStream
+IntStream --> Parser : IntStream
+deactivate IntStream
+
+Parser -> IntStream : concat(stream1, stream2)
+activate IntStream
+IntStream --> Parser : IntStream
+deactivate IntStream
+
+Parser -> IntStream : toArray()
+activate IntStream
+IntStream --> Parser : indicesOfFlags
+deactivate IntStream
+
+Parser -> IntStream : range(0, indicesOfFlags.length)
+activate IntStream
+IntStream --> Parser : Stream
+deactivate IntStream
+
+Parser -> Stream : mapToObj(...)
+activate Stream
+
+Stream -> Arrays : copyOfRange(...)
+activate Arrays
+Arrays --> Stream : String[]
+deactivate Arrays
+
+Stream -> String : join(...)
+activate String
+String --> Stream : parameterString
+deactivate String
+
+Stream -> Map : entry(...)
+activate Map
+Map --> Stream : map entry
+deactivate Map
+
+Stream -> Collectors : groupingBy(...)
+activate Collectors
+Collectors --> Stream : Collector
+deactivate Collectors
+
+Stream --> Parser
+deactivate Stream
+
+Parser -> Stream: collect(...)
+activate Stream
+Stream --> Parser : flagToParamMap
+deactivate Stream
+
+deactivate Stream
+
+Parser --> GoldenCompass : void
+deactivate Parser
+
+GoldenCompass -> Parser : getCommand()
+activate Parser
+Parser --> GoldenCompass : command
+deactivate Parser
+
+GoldenCompass -> Parser : getFlagToParamMap()
+activate Parser
+Parser --> GoldenCompass : flagToParamMap
+deactivate Parser
+
+alt flag string exists in user input
+    GoldenCompass -> Parser : getParamsOf(flag)
+    activate Parser
+    Parser --> GoldenCompass : List<String>
+    deactivate Parser
+else flag string not found in user input
+    GoldenCompass -> Parser : getParamsOf(flag)
+    activate Parser
+    Parser -> GoldenCompassException : throw
+    activate GoldenCompassException
+    GoldenCompassException --> GoldenCompass : GoldenCompassException("The flag is not found in the user input.")
+    deactivate GoldenCompassException
+    deactivate Parser
+end
+
+GoldenCompass -> Parser : isFlagExist(flag string)
+activate Parser
+Parser --> GoldenCompass : true/false
+deactivate Parser
+
+deactivate GoldenCompass
+
+@enduml

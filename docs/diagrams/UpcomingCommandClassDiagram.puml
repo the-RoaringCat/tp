@@ -1,0 +1,104 @@
+@startuml
+
+class GoldenCompass {
+    + run() : void
+}
+
+class Executor {
+    - commands : Map<String, Command>
+    - aliasMap : Map<String, String>
+    + execute() : void
+    + addAlias(command : String, alias : String) : void
+    + removeAlias(alias : String) : void
+    + getAliasMap() : Map<String, String>
+}
+
+interface Executable {
+    + execute() : void
+}
+
+abstract class Command {
+    - <u>FLAG_MISSING_MESSAGE : String
+    + Command()
+    + Command(Parser)
+    + execute() : void
+    # getCommandDescription() : String {abstract}
+    # getFlagDescription() : String {abstract}
+    # printHelp() : void
+}
+
+class UpcomingCommand {
+    + UpcomingCommand(parser : Parser, interviewList : InterviewList)
+    + execute() : void
+    # getCommandDescription() : String
+    # getFlagDescription() : String
+}
+
+class InterviewList {
+    + getInterviews() : List<Interview>
+}
+
+class Interview {
+    # dateTime : LocalDateTime
+    + Interview(internship : Internship, date : LocalDateTime)
+    + getDate() : void
+    + setDate() : void
+    + toString() : String
+    + getInternship() : Internship
+}
+
+class Internship {
+    # title : String
+    # companyName : String
+    # hasApplied : boolean
+    + Internship(title : String, companyName : String)
+}
+
+enum ApplicationStatus {
+    PENDING
+    OFFER
+    REJECTED
+}
+
+class Ui {
+    ~ in : Scanner
+    + greet() : void
+    + print(s : String) : void
+    + print(strings : String...) : void
+    + read() : String
+}
+
+class Parser {
+    - <u>FLAGSET : Set<String>
+    - flagToParamMap : Map<String, List<String>>
+    + parse(userInput : String) : void
+    + getCommand() : String
+    + getFlagToParamMap() : Map<String, List<String>>
+    + getParamsOf(flag : String) : List<String>
+    + isFlagExist(flag : String) : boolean
+}
+
+GoldenCompass --> "1" Executor
+GoldenCompass --> "1" InterviewList
+GoldenCompass --> "1" Ui
+GoldenCompass --> "1" Parser
+
+Interview --> "1" Internship
+
+Internship --> "1" Interview
+Internship --> "1" ApplicationStatus
+
+Executor -.> Command
+Executor -.> UpcomingCommand
+Executor --> "1" Parser
+
+Command --.|> Executable
+UpcomingCommand --|> Command
+
+UpcomingCommand --> "1" InterviewList
+InterviewList o--> "*" Interview
+
+Command --> "1" Ui
+Command --> "1" Parser
+
+@enduml

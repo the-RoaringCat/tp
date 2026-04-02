@@ -15,6 +15,100 @@ The following class diagram shows the key classes involved in internship managem
 Each `AddInternshipCommand` holds a reference to the `Parser` and the `InternshipList`.
 The command relies on the `Parser` to extract user inputs and writes the newly created `Internship` directly to the `InternshipList`.
 
+### The Parser Class
+
+The class `Parser` has an immutable class-level attribute `Set<String> FLAGSET` and 
+two mutable private attributes `String command, Map<String, List<String>> flagToParamMap`. 
+The essential method of `Parser` is `parse(String userInput)` which parses a string of user input 
+and stores the result into the attribute `flagToParamMap`. The keys of this map comprise the
+first word of the user input (also stored in `command`) and words that are identified as flags in 
+the `FLAGSET`. The value in this map corresponding to each key word is the parameter string 
+associated with that key, stored as a `List<String>`, where `List` is used to support duplicated flags.
+The class provides getters to get `String command` and `Map<String, List<String>> flagToParamMap`.
+
+More specifically, the parsing procedure works as follows:
+
+1. The input string is trimmed and split by whitespace into an array of words.
+
+2. The first word is treated as the command and stored in command.
+
+3. All occurrences of valid flags defined in `FLAGSET` are identified and their indices in the word array 
+are collected using `IntStream`.
+
+4. The indices are used to partition the word array into segments, where each segment corresponds to a key
+(command or flag) and its associated parameter string.
+
+5. Each segment is converted into a `Map.Entry<String, String>`, where the key is the command or flag and 
+the value is the concatenated parameter string.
+
+6. The entries are grouped using `Collectors.groupingBy `to form the final `flagToParamMap`, where 
+duplicated flags result in multiple parameter strings stored in a list.
+
+This design ensures that:
+
+- the command is always treated as a key in the map,
+
+- each recognized flag maps to its corresponding parameter string,
+
+- parameters can contain multiple words without ambiguity,
+
+- duplicated flags are supported naturally through List<String>.
+
+An example is shown below.
+
+```
+Input:
+add Google SWE Intern /d 2026-04-03 /t Interview /t Online
+
+Output:
+command = "add"
+
+flagToParamMap =
+{
+"add" -> ["Google SWE Intern"],
+"/d"  -> ["2026-04-03"],
+"/t"  -> ["Interview", "Online"]
+}
+
+```
+
+Noticeably, when the parameters of a flag or the command are empty, the value corresponding to the flag or command
+is a `List` of a single empty string, e.g.,
+
+```
+Input:
+upcoming
+
+Output:
+command = "upcoming"
+
+flagToParamMap =
+{
+"upcoming" -> [""]
+}
+
+```
+
+and when the user input is empty string,
+
+```
+Input:
+
+
+Output:
+command = ""
+
+flagToParamMap =
+{
+"" -> [""]
+}
+
+```
+
+Below is the sequence diagram illustrating the `class Parser`:
+
+![Parser Sequence Diagram](diagrams/ParserSequenceDiagram.png)
+
 ### Add Internship Feature
 
 #### Overview
@@ -271,23 +365,27 @@ When `execute()` is called, it performs the following steps:
     - Cons: Adds unnecessary complexity — if the user wants to keep a rejected entry,
       they likely would not have rejected it in the first place.
 
-### Feature: Listing All Interviews
+### Feature: Listing Upcoming Interviews
 
 #### Overview
 
-The user can list all interviews in increasing order of dates such that the earliest interview is shown at the top.
+The user can list upcoming interviews within a specific number of days.
 
-**Command format:** `list-interview`
+**Command format:** `upcoming [N]`, where `N` is an integer.
 
+This lists all upcoming interviews within the following `N` days. If the optional parameter `[N]` is omitted, a default 
+of `5` days will be used. That is, `upcoming` will list all upcoming interviews within the subsequent `5` days.
+
+Note: negative `N` is allowed but will always output `You don't have any upcoming interviews.`
 #### Implementation
 
-The feature is implemented in `ListInterviewCommand`, the relationship of which to other classes is shown in the following class diagram 
+The feature is implemented in `UpcomingCommand`, the relationship of which to other classes is shown in the following class diagram 
 
-![List Interview Class Diagram](diagrams/ListInterviewClassDiagram.png)
+![Upcoming Command Class Diagram](diagrams/UpcomingCommandClassDiagram.png)
 
-The following sequence diagram illustrates `ListInterviewCommand::execute()`
+The following sequence diagram illustrates a call to `execute()` of `UpcomingCommand`
 
-![List Interview Sequence Diagram](diagrams/ListInterviewSequenceDiagram.png)
+![Upcoming Command Sequence Diagram](diagrams/UpcomingCommandSequenceDiagram.png)
 
 ### Delete Internship Feature
 

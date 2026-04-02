@@ -26,7 +26,6 @@ public abstract class Command implements Executable {
     protected abstract String getCommandDescription();
     protected abstract String getFlagDescription();
 
-
     protected void printHelp() {
         ui.print(getCommandDescription(), getFlagDescription());
     }
