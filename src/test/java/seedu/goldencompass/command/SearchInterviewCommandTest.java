@@ -8,7 +8,7 @@ import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -26,15 +26,15 @@ public class SearchInterviewCommandTest {
         searchCommand = new SearchInterviewCommand(parser, interviewList);
 
         Internship google = new Internship("Software Engineer", "Google");
-        Interview googleInterview = new Interview(google, LocalDate.parse("2028-06-15"));
+        Interview googleInterview = new Interview(google, LocalDateTime.parse("2028-06-15T10:00"));
         interviewList.add(googleInterview);
 
         Internship meta = new Internship("Data Scientist", "Meta");
-        Interview metaInterview = new Interview(meta, LocalDate.parse("2028-07-20"));
+        Interview metaInterview = new Interview(meta, LocalDateTime.parse("2028-07-20T14:00"));
         interviewList.add(metaInterview);
 
         Internship googleTwo = new Internship("Product Manager", "Google");
-        Interview googleTwoInterview = new Interview(googleTwo, LocalDate.parse("2028-07-20"));
+        Interview googleTwoInterview = new Interview(googleTwo, LocalDateTime.parse("2028-07-20T14:00"));
         interviewList.add(googleTwoInterview);
     }
 

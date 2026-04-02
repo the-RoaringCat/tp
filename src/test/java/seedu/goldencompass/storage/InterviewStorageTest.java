@@ -8,7 +8,7 @@ import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +31,7 @@ public class InterviewStorageTest {
         // 3. Create and save an interview
         InterviewList interviewList = new InterviewList();
         Interview interview = new Interview(google);
-        interview.setDate(LocalDate.parse("2026-06-01"));
+        interview.setDate(LocalDateTime.parse("2026-06-01T10:00"));
         interviewList.add(interview);
 
         // Save to temp file
@@ -44,7 +44,7 @@ public class InterviewStorageTest {
         // 5. Assertions
         assertEquals(1, loadedList.size(), "Should have loaded 1 interview");
         assertEquals("Google", loadedList.get(0).getInternship().getCompanyName());
-        assertEquals(LocalDate.parse("2026-06-01"), loadedList.get(0).getDate());
+        assertEquals(LocalDateTime.parse("2026-06-01T10:00"), loadedList.get(0).getDate());
     }
 
     @Test

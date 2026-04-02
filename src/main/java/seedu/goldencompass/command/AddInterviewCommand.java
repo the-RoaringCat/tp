@@ -7,7 +7,8 @@ import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
@@ -70,11 +71,13 @@ public class AddInterviewCommand extends Command {
 
         assert index >= 1 && index <= internshipList.getSize() : "Index should be within valid range";
 
-        LocalDate date;
+        LocalDateTime date;
         try {
-            date = LocalDate.parse(dateParam);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            date = LocalDateTime.parse(dateParam, formatter);
         } catch (DateTimeParseException e) {
-            throw new GoldenCompassException("Error: Invalid date format, expected yyyy-MM-dd, got: " + dateParam);
+            throw new GoldenCompassException(
+                    "Error: Invalid date format, expected yyyy-MM-dd HH:mm, got: " + dateParam);
         }
 
         assert date != null : "Parsed date should not be null";

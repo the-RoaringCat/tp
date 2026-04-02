@@ -8,7 +8,7 @@ import seedu.goldencompass.internship.InternshipList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -73,7 +73,7 @@ public class InterviewStorage {
                     Interview interview = new Interview(linkedInternship);
                     if (!dateStr.equals("null")) {
                         try {
-                            interview.setDate(LocalDate.parse(dateStr));
+                            interview.setDate(LocalDateTime.parse(dateStr));
                         } catch (DateTimeParseException e) {
                             logger.warning("Invalid date format for: " + companyName);
                         }

@@ -8,7 +8,7 @@ import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -32,14 +32,14 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_validIndexAndDate_setsDeadlineSuccessfully() throws GoldenCompassException {
-        parser.parse("update-date 1 /d 2028-09-08");
+        parser.parse("update-date 1 /d 2028-09-08 10:00");
         setDeadlineCommand.execute();
-        assertEquals(LocalDate.parse("2028-09-08"), interviewList.get(0).getDate());
+        assertEquals(LocalDateTime.parse("2028-09-08T10:00"), interviewList.get(0).getDate());
     }
 
     @Test
     public void execute_nonIntegerIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("update-date abc /d 2028-09-08");
+        parser.parse("update-date abc /d 2028-09-08 10:00");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -50,7 +50,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_indexOutOfRangeHigh_exceptionThrown() throws GoldenCompassException {
-        parser.parse("update-date 99 /d 2028-09-08");
+        parser.parse("update-date 99 /d 2028-09-08 10:00");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -62,7 +62,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_indexOutOfRangeZero_exceptionThrown() throws GoldenCompassException {
-        parser.parse("update-date 0 /d 2028-09-08");
+        parser.parse("update-date 0 /d 2028-09-08 10:00");
         try {
             setDeadlineCommand.execute();
             fail();
@@ -79,7 +79,7 @@ public class SetInterviewDeadlineCommandTest {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
-            assertEquals("Error: Invalid date format, expected yyyy-MM-dd, got: 2028",
+            assertEquals("Error: Invalid date format, expected yyyy-MM-dd HH:mm, got: 2028",
                     e.getMessage());
         }
     }
@@ -110,7 +110,7 @@ public class SetInterviewDeadlineCommandTest {
 
     @Test
     public void execute_missingIndex_exceptionThrown() throws GoldenCompassException {
-        parser.parse("update-date /d 2028-09-08");
+        parser.parse("update-date /d 2028-09-08 10:00");
         try {
             setDeadlineCommand.execute();
             fail();
