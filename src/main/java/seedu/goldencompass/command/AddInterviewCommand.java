@@ -39,16 +39,6 @@ public class AddInterviewCommand extends Command {
     }
 
     @Override
-    public String getCommandDescription() {
-        return "";
-    }
-
-    @Override
-    public String getFlagDescription() {
-        return "";
-    }
-
-    @Override
     public void execute() throws GoldenCompassException {
         assert parser != null : "Parser should not be null";
         assert internshipList != null : "InternshipList should not be null";
@@ -107,4 +97,15 @@ public class AddInterviewCommand extends Command {
 
         ui.print("Got it! I've added an interview on " + date + " for: " + internship);
     }
+
+    @Override
+    protected String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return FLAG_DESCRIPTION;
+    }
+
 }

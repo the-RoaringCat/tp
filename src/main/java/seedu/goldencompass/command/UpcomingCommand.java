@@ -54,7 +54,6 @@ public class UpcomingCommand extends Command {
 
     @Override
     public void execute() throws GoldenCompassException {
-
         logger.log(Level.INFO, "Executing UpcomingCommand");
 
         assert !parser.getCommand().isBlank(): "Command should not be empty string";
@@ -108,7 +107,6 @@ public class UpcomingCommand extends Command {
         }
 
         logger.log(Level.INFO, "UpcomingCommand execution completed");
-
     }
 
     @Override
