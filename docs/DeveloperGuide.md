@@ -105,6 +105,11 @@ flagToParamMap =
 
 ```
 
+`Parser` also has a method `public List<String> getParamsOf(String flag)`, which returns the value corresponding
+to the key `flag` in the `flagToParamMap`. Importantly, it returns `null` if `flag` does not exist in the key set
+of `flagToParamMap`. Thus, it is recommended to check whether this method returns `null`, in which case, if the `flag`
+is optional, the execution should skip, and if the `flag` is essential, a `GoldenCompassException` should be thrown.
+
 Below is the sequence diagram illustrating the `class Parser`:
 
 ![Parser Sequence Diagram](diagrams/ParserSequenceDiagram.png)
