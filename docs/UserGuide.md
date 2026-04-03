@@ -24,11 +24,11 @@ all from your terminal.
 
 > **Notes about the command format:**
 > - Words in `UPPER_CASE` are parameters to be supplied by the user.
-    >   e.g. in `add-interview INDEX /d DATE`, `INDEX` and `DATE` are parameters.
+>   e.g. in `add-interview INDEX /d DATE`, `INDEX` and `DATE` are parameters.
 > - Items in square brackets are optional.
-    >   e.g. `search-interview [/c COMPANY] [/t ROLE] [/d DATE]`.
+>   e.g. `search-interview [/c COMPANY] [/t ROLE] [/d DATE]`.
 > - Flags start with `/` and are followed by their value.
-    >   e.g. `/c Google` supplies `Google` as the company parameter.
+>   e.g. `/c Google` supplies `Google` as the company parameter.
 > - Parameters can be in any order.
 > - Indexes are **1-based** and refer to the position shown in the most recent list.
 
