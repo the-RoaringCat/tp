@@ -27,20 +27,6 @@ public class DeleteInternshipCommand extends Command {
     }
 
     @Override
-    public String getCommandDescription() {
-        return "Deletes an internship application from the tracker.";
-    }
-
-    @Override
-    public String getFlagDescription() {
-        return "Format: delete INDEX\n"
-                + "Example: delete 2\n\n"
-                + "Note: When an internship is deleted, " +
-                "its corresponding interview will also be deleted automatically.";
-    }
-
-
-    @Override
     public void execute() throws GoldenCompassException {
 
         logger.log(Level.INFO, "Starting execution of DeleteInternshipCommand...");
@@ -78,5 +64,18 @@ public class DeleteInternshipCommand extends Command {
 
         logger.log(Level.INFO, "Successfully deleted internship at index " + index);
         ui.print("✓ Deleted internship: " + internshipName);
+    }
+
+    @Override
+    protected String getCommandDescription() {
+        return "Deletes an internship application from the tracker.";
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return "Format: delete INDEX\n"
+                + "Example: delete 2\n\n"
+                + "Note: When an internship is deleted, " +
+                "its corresponding interview will also be deleted automatically.";
     }
 }

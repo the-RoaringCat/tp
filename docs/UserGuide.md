@@ -58,6 +58,59 @@ Examples:
 - `update-date 1 /d 2025-06-20 09:00`
 - `update-date 2 /d 2025-08-01 15:00`
 
+### Listing all internships: `list`
+
+Displays all internships currently in your tracker with their index numbers and status.
+
+Format: `list`
+
+- Shows company name, job title, and offer/rejection status (if any).
+- If no internships exist, a message is shown.
+
+Example:
+- `list`
+
+### Deleting an internship: `delete`
+
+Removes an internship application from the tracker.
+
+Format: `delete INDEX`
+
+- `INDEX` is the 1-based index of the internship from the list.
+- **Note:** When an internship is deleted, its corresponding interview is also automatically deleted.
+
+Examples:
+- `delete 1` - Deletes the 1st internship in the list.
+- `delete 3` - Deletes the 3rd internship in the list.
+
+### Deleting an interview: `delete-interview`
+
+Removes an interview from an internship application.
+
+Format: `delete-interview INDEX`
+
+- `INDEX` is the 1-based index of the internship whose interview you want to delete.
+- **Note:** Only the interview is deleted. The internship remains in your list.
+
+Example:
+- `delete-interview 1` - Deletes the interview for the 1st internship.
+
+### Searching internships: `search`
+
+Searches for internships by company name and/or job title.
+Text matching is case-insensitive and uses substring matching.
+
+Format: `search [/c COMPANY] [/t TITLE]`
+
+- At least one of `/c` or `/t` must be provided.
+- `/c` - search by company name (partial match, case-insensitive)
+- `/t` - search by job title (partial match, case-insensitive)
+
+Examples:
+- `search /c Google` - Finds all internships with "Google" in the company name.
+- `search /t Engineer` - Finds all internships with "Engineer" in the title.
+- `search /c Google /t Software` - Finds internships matching both criteria.
+
 ### Searching interviews: `search-interview`
 
 Searches for interviews by company name, role, and/or date.
@@ -156,6 +209,10 @@ same location on the other computer.
 |--------------------------|-----------------------------------------------------|---------------------------------------|
 | Add interview            | `add-interview INDEX /d DATE`                       | `add-interview 1 /d 2025-06-15 10:00` |
 | Update interview date    | `update-date INDEX /d DATE`                         | `update-date 1 /d 2025-06-20 09:00`   |
+| List internships         | `list`                                              | `list`                                |
+| Delete internship        | `delete INDEX`                                      | `delete 1`                            |
+| Delete interview         | `delete-interview INDEX`                            | `delete-interview 1`                  |
+| Search internships       | `search [/c COMPANY] [/t TITLE]`                    | `search /c Google`                    |
 | Search interviews        | `search-interview [/c COMPANY] [/t ROLE] [/d DATE]` | `search-interview /d 2025-06-15`      |
 | Clear rejected           | `clear-rejected`                                    | `clear-rejected`                      |
 | List interviews          | `list-interview`                                    | `list-interview`                      |
