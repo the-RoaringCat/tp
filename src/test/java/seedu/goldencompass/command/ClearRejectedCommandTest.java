@@ -5,18 +5,21 @@ import org.junit.jupiter.api.Test;
 import seedu.goldencompass.exception.GoldenCompassException;
 import seedu.goldencompass.internship.Internship;
 import seedu.goldencompass.internship.InternshipList;
+import seedu.goldencompass.internship.InterviewList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClearRejectedCommandTest {
 
     private InternshipList internshipList;
+    private InterviewList interviewList;
     private ClearRejectedCommand clearRejectedCommand;
 
     @BeforeEach
     public void setUp() {
         internshipList = new InternshipList();
-        clearRejectedCommand = new ClearRejectedCommand(internshipList);
+        interviewList = new InterviewList();
+        clearRejectedCommand = new ClearRejectedCommand(internshipList, interviewList);
     }
 
     @Test
