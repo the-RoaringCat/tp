@@ -187,6 +187,58 @@ upcoming 6
 NUS - Bus Driver @ 2026-03-25 11:00
 ```
 
+### Adding Alias: `alias`
+
+Adds an alias to the commands. Alias cannot have alias, while a command can have multiple aliases.
+
+Format: `alias /c COMMAND /a ALIAS`, where `COMMAND` is the command and `ALIAS` is the alias to add.
+
+Example:
+
+To add an alias `ls` to `list`:
+```
+alias /c list /a ls
+```
+
+### Removing Alias: `remove-alias`
+
+Removes an existing alias.
+
+Format: `remove-alias ALIAS`, where `ALIAS` is the alias to remove.
+
+Example:
+
+To remove the alias `ls`:
+```
+remove-alias ls
+```
+
+### Undoing commands: `undo`
+
+Undoes up to `10` commands that are undoable, i.e, that modify the data.
+
+Format: `undo`
+
+Example:
+
+Suppose you have added a wrong internship and want to undo that:
+```
+undo
+```
+
+### Redoing commands: `redo`
+
+Redoes the commands that have been undone. However, if there are new undoable commands, i.e, new changes to the data,
+redo history would be cleared.
+
+Format: `redo`
+
+Example:
+
+Suppose you have added an internship and accidentally undone that, you want to redo it:
+```
+redo
+```
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?
@@ -205,15 +257,19 @@ same location on the other computer.
 
 ## Command Summary
 
-| Action                   | Format                                              | Example                               |
-|--------------------------|-----------------------------------------------------|---------------------------------------|
-| Add interview            | `add-interview INDEX /d DATE`                       | `add-interview 1 /d 2025-06-15 10:00` |
-| Update interview date    | `update-date INDEX /d DATE`                         | `update-date 1 /d 2025-06-20 09:00`   |
-| List internships         | `list`                                              | `list`                                |
-| Delete internship        | `delete INDEX`                                      | `delete 1`                            |
-| Delete interview         | `delete-interview INDEX`                            | `delete-interview 1`                  |
-| Search internships       | `search [/c COMPANY] [/t TITLE]`                    | `search /c Google`                    |
-| Search interviews        | `search-interview [/c COMPANY] [/t ROLE] [/d DATE]` | `search-interview /d 2025-06-15`      |
-| Clear rejected           | `clear-rejected`                                    | `clear-rejected`                      |
-| List interviews          | `list-interview`                                    | `list-interview`                      |
-| List upcoming interviews | `upcoming [N]`                                      | `upcoming` / `upcoming 3`             |
+| Action                   | Undoable?      | Format                                              | Example                               |
+|--------------------------|----------------|-----------------------------------------------------|---------------------------------------|
+| Add interview            | Yes            | `add-interview INDEX /d DATE`                       | `add-interview 1 /d 2025-06-15 10:00` |
+| Update interview date    | Yes            | `update-date INDEX /d DATE`                         | `update-date 1 /d 2025-06-20 09:00`   |
+| List internships         | No             | `list`                                              | `list`                                |
+| Delete internship        | Yes            | `delete INDEX`                                      | `delete 1`                            |
+| Delete interview         | Yes            | `delete-interview INDEX`                            | `delete-interview 1`                  |
+| Search internships       | No             | `search [/c COMPANY] [/t TITLE]`                    | `search /c Google`                    |
+| Search interviews        | No             | `search-interview [/c COMPANY] [/t ROLE] [/d DATE]` | `search-interview /d 2025-06-15`      |
+| Clear rejected           | Yes            | `clear-rejected`                                    | `clear-rejected`                      |
+| List interviews          | No             | `list-interview`                                    | `list-interview`                      |
+| List upcoming interviews | No             | `upcoming [N]`                                      | `upcoming` / `upcoming 3`             |
+| Add alias                | Yes            | `alias /c COMMAND /a ALIAS`                         | `alias /c list /a ls`                 |
+| Remove alias             | Yes            | `remove-alias ALIAS`                                | `remove-alias ls`                     |
+| Undo a command           | Yes (by`redo`) | `undo`                                              | `undo`                                |
+| Redo a command           | Yes (by`undo`) | `redo`                                              | `redo`                                |

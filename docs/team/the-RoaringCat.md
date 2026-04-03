@@ -24,7 +24,7 @@ interviews, search across their data, and stay on top of deadlines — all from 
 - **Project management**: 
   - Managed issue tracking and linked PRs to issues for traceability.
 - **Documentation**:
-    - User Guide: Added documentation for `alias`, `remove-alias`, `undo` and `redo` commands.
+    - User Guide: Added documentation for `alias`, `remove-alias`, `undo` and `redo` commands.[#127](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/127)
     - Developer Guide:
         - Added implementation details and design considerations for `alias`, `remove-alias`, `undo` and `redo` together with a sequence diagram
           [#114](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/114)
