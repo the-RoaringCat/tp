@@ -131,8 +131,7 @@ public class Parser {
      * Returns the list of parameters associated with a specific flag.
      *
      * @param flag the flag or command string to retrieve parameters for
-     * @return list of parameters associated with the flag if the flag
-     * exists in the user input, return null otherwise
+     * @return null or list of parameters associated with the flag
      */
     public List<String> getParamsOf(String flag) {
         assert flag != null : "Flag must not be null";
