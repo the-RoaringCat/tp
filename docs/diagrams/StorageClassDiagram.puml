@@ -1,0 +1,39 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor #ADD1B2
+    ArrowColor #2A2A2A
+    BorderColor #2A2A2A
+}
+
+class GoldenCompass {
+  + run() : void
+}
+
+class InternshipStorage {
+  - filePath: String
+  + load() : ArrayList<Internship>
+  + save(internshipList: InternshipList) : void
+}
+
+class InterviewStorage {
+  - filePath: String
+  + load(interviewList: InterviewList, internshipList: InternshipList) : void
+  + save(interviewList: InterviewList) : void
+}
+
+class AliasStorage {
+  - filePath: String
+  + load(aliasMap: Map<String, String>) : void
+  + save(aliasMap: Map<String, String>) : void
+}
+
+GoldenCompass --> "1" InternshipStorage
+GoldenCompass --> "1" InterviewStorage
+GoldenCompass --> "1" AliasStorage
+
+InternshipStorage ..> "uses" InternshipList
+InterviewStorage ..> "uses" InterviewList
+AliasStorage ..> "uses" Map
+@enduml

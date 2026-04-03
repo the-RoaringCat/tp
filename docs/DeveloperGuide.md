@@ -825,61 +825,122 @@ Potential improvements for future versions:
 4. **Archive feature**: Move deleted internships to an archive instead of permanent deletion
 
 
-### Storage — Component Overview
-
-The following class diagram shows the structure of the `Storage` component and how it interacts with the `Logic` and `Model` layers.
-
-![Storage Class Diagram](diagrams/StorageClassDiagram.png)
-
-The `Storage` component:
-* Saves `InternshipList`, `InterviewList`, and the `ALIAS_MAP` into separate text files.
-* Loads data from these files upon application startup.
-* Uses a "linked loading" approach: `InterviewStorage` references the `InternshipList` to rebuild the object associations between interviews and their respective companies using the `findInternshipByCompany` helper method.
-
-### Implementation: Persistence
+### Storage Component
 
 #### Overview
 
-The storage system is implemented through three main classes: `InternshipStorage`, `InterviewStorage`, and `AliasStorage`. These classes handle the conversion of Java objects into a pipe-delimited (`|`) text format to ensure data persists across sessions.
+The Storage component is responsible for persisting user data across application sessions. It reads data from the local hard drive when GoldenCompass boots up and continuously writes data back to the disk during execution. To maintain the Single Responsibility Principle, the component is divided into three distinct classes:
+* `InternshipStorage`: Manages the saving and loading of `Internship` objects.
+* `InterviewStorage`: Manages `Interview` schedules and links them to existing internships.
+* `AliasStorage`: Manages user-defined command shortcuts.
 
-**Data File Locations:**
-* `data/internships.txt`: Stores company names and job titles.
-* `data/interviews.txt`: Stores interview dates and the linked company names.
-* `data/aliases.txt`: Stores user-defined command shortcuts.
+#### Implementation
 
-#### Execution Flow
+The storage system is initialized inside the `GoldenCompass` main class.
 
-When the application starts, `GoldenCompass` initializes the storage classes and triggers the `load()` sequence in a specific order to maintain data integrity:
+**Loading Data (Application Startup):**
+When the application starts, data is loaded in a strict sequence to resolve dependencies:
+1. `InternshipStorage.load()` is called first. It reads `data/internships.txt` line by line and splits the string using the `" | "` delimiter.
+2. If a third column (status) is present, the parser uses a `switch` statement on the parsed string (`OFFER`, `REJECTED`, or `PENDING`).
+  - `case "OFFER"`: Calls `loadedInternship.markAsOffer()`.
+  - `case "REJECTED"`: Calls `loadedInternship.markAsRejected()`.
+  - `case "PENDING"`: Leaves the internship in its default initialization state.
+  - `default`: Logs a warning for an unknown status to handle potential file corruption.
+3. `InterviewStorage.load()` is called next. Since interviews are tied to specific internships, this class parses `data/interviews.txt`, extracts the company name, and uses `internshipList.findInternshipByCompany(companyName)` to link the newly loaded `Interview` back to its parent `Internship` object in memory.
+4. `AliasStorage.load()` reads `data/aliases.txt` and populates the `Executor`'s internal alias map.
 
-1.  **Internship Loading**: `InternshipStorage` reads `internships.txt` and populates the `InternshipList`.
-2.  **Interview Loading**: `InterviewStorage` reads `interviews.txt`. For each entry, it searches the `InternshipList` for the matching `Internship` object before adding the `Interview` to the `InterviewList`.
-3.  **Alias Loading**: `AliasStorage` reads `aliases.txt` and updates the `ALIAS_MAP` in the `Executor`.
+**Saving Data (Execution Loop):**
+GoldenCompass utilizes an **Eager Saving Strategy**. Inside the main `while (true)` loop in `GoldenCompass.run()`, the application calls the `save()` method on all three storage classes immediately after every user command is executed. During `InternshipStorage.save()`, the system checks `hasOffer()` and `isRejected()` to accurately write the correct status string back into the text file.
 
-The following sequence diagram illustrates the loading process during startup:
+#### Data Formats
 
-![Storage Loading Sequence Diagram](diagrams/StorageLoadingSequenceDiagram.png)
+Data is stored in custom-delimited text files using the `" | "` (space-pipe-space) separator. This format was chosen because it is simple to parse using `String.split()` and remains highly readable if the user opens the file in a standard text editor.
+
+**1. Internships (`data/internships.txt`)**
+Format: `TITLE | COMPANY_NAME | STATUS`
+* The `STATUS` column strictly maps to the application's internal state logic (`PENDING`, `OFFER`, or `REJECTED`).
+* Example: `Software Engineer | Google | OFFER`
+* Example: `Frontend Intern | Grab | PENDING`
+
+**2. Interviews (`data/interviews.txt`)**
+Format: `COMPANY_NAME | ISO_LOCAL_DATE_TIME`
+* Example: `Google | 2026-03-25T14:30:00`
+* Example: `Grab | null` *(If an interview is created but no date is set yet)*
+
+**3. Aliases (`data/aliases.txt`)**
+Format: `ALIAS_TRIGGER | ORIGINAL_COMMAND`
+* Example: `ls | list`
+* Example: `mk | mark`
+The following class diagram shows the main structural components involved in the Storage feature:
+
+![Storage Class Diagram](diagrams/StorageClassDiagram.png)
+
+The following sequence diagram illustrates the execution flow of the eager saving mechanism during the main application loop:
+
+![Storage Sequence Diagram](diagrams/StorageSequenceDiagram.png)
+
+#### Data Validation
+
+Instead of user input validation, the Storage component implements data validation when loading from the text files to prevent crashes from manually edited or corrupted files:
+
+| Validation Layer | Description | Handling Strategy |
+|-----------------|-------------|-------------------|
+| **Length Check** | Verifies a line splits into the correct number of parts via the `" | "` delimiter. | Skips the line and logs a warning if `parts.length` is invalid. |
+| **Empty Value Check** | Ensures parsed titles and company names are not empty strings. | Skips the line to prevent creating ghost internships. |
+| **Date Format Check** | Verifies interview dates conform to `LocalDateTime` ISO formatting. | Catches `DateTimeParseException`, logs a warning, but still loads the interview without a date. |
+
+#### Defensive Programming Features
+
+The implementation includes several defensive programming measures:
+
+**1. Assertions**: Verify internal state invariants before executing I/O operations.
+assert filePath != null && !filePath.trim().isEmpty() : "Storage file path cannot be null or empty";
+assert internshipList != null : "Cannot save a null InternshipList";
+
+**2. Logging**: Track file creation and data corruption for debugging.
+logger.log(Level.INFO, "Created missing data directory.");
+logger.log(Level.WARNING, "Skipped corrupted line: " + line);
+
+**3. Directory Auto-Creation**: The system proactively checks if the `data/` folder exists before attempting to write. If missing, it uses `parentDir.mkdirs()` to create it, preventing `FileNotFoundException`.
+
+**4. Graceful Exception Handling**: Standard `IOException` and `FileNotFoundException` errors are caught and handled. Instead of crashing the application, it alerts the user or starts with a fresh empty list.
 
 #### Design Considerations
 
-**Aspect: Data Format for Persistence**
+**Aspect: Saving Strategy**
 
-* **Alternative 1 (current choice):** Custom Pipe-Delimited Text Format (e.g., `Google | Software Engineer`).
-  * **Pros:** Human-readable, easy to debug by opening the file in a text editor, and lightweight without needing external libraries.
-  * **Cons:** Requires manual parsing logic and careful handling of the delimiter character if it appears in user input.
+* **Alternative 1 (Current Implementation): Eager Saving (Save on every loop)**
+  * **Description:** Inside `GoldenCompass.run()`, the application saves data to all three text files after every single command execution.
+  * **Pros:** Maximum data safety. If the user unexpectedly closes the terminal, experiences a power outage, or encounters a fatal runtime exception, no data is lost because the disk is always synchronized with the RAM.
+  * **Cons:** Higher disk I/O overhead, as the application rewrites the entire file even if a command didn't actually change any data (e.g., after a `list` command).
 
-* **Alternative 2:** JSON or XML.
-  * **Pros:** Standardized format, handles nested data structures easily.
-  * **Cons:** Increases project complexity and file size; requires adding external dependencies which may conflict with the project's "no-third-party-library" constraints.
+* **Alternative 2: Lazy Saving (Save on exit)**
+  * **Description:** The `save()` methods are only called once when the user types the `bye` command.
+  * **Pros:** Better performance due to minimized file I/O operations.
+  * **Cons:** High risk of data loss. If the application terminates abnormally, all progress made during that session is wiped out.
 
-**Aspect: Timing of Save Operations**
+**Aspect: Relational Data Mapping (Interviews to Internships)**
 
-* **Alternative 1 (current choice):** Save on Exit.
-  * **Pros:** Efficient; only performs Disk I/O operations once per session, reducing performance overhead.
-  * **Cons:** Risk of data loss if the application crashes or the terminal is force-closed without using the `bye` command.
+* **Alternative 1 (Current Implementation): Foreign Key Reference by Company Name**
+  * **Description:** `InterviewStorage` saves only the Company Name and the Date. Upon loading, it searches the previously loaded `InternshipList` for an exact company name match (`findInternshipByCompany`) to rebuild the object reference in memory.
+  * **Pros:** Prevents data duplication. Keeps the `interviews.txt` file clean and concise, adhering to the Single Source of Truth principle.
+  * **Cons:** Requires `InternshipList` to be fully loaded *before* `InterviewList` can be loaded.
 
-* **Alternative 2:** Auto-save after every modification.
-  * **Pros:** Maximum data safety; changes are committed immediately.
-  * **Cons:** High disk I/O overhead; might lead to minor lag during command execution if the data lists become very large.
+* **Alternative 2: Deep Copy Storage**
+  * **Description:** `InterviewStorage` saves all details of the parent `Internship` alongside the interview date.
+  * **Pros:** Easier to parse since `InterviewStorage` wouldn't need access to `InternshipList`.
+  * **Cons:** Violates the DRY (Don't Repeat Yourself) principle. If an internship status is updated, it would have to be updated in both files.
+
+#### Test Coverage
+
+The storage components are covered by unit tests to ensure file I/O reliability:
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `save_validList_writesCorrectly` | Save a list with one item, then read the file manually | File contains the exact formatted string |
+| `load_missingFile_returnsEmptyList` | Attempt to load when `data/` does not exist | Returns empty list, creates directory |
+| `load_corruptedFile_skipsLines` | Load a file with missing `|` delimiters | Skips bad lines, loads valid lines |
+| `load_invalidDate_handlesGracefully` | Load interview with date `abc` | Interview loaded, date remains null |
 
 ## Product scope
 ### Target user profile

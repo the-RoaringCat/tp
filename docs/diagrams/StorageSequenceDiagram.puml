@@ -1,0 +1,46 @@
+@startuml
+hide footbox
+skinparam maxMessageSize 150
+
+participant ":GoldenCompass" as GoldenCompass #ADD1B2
+participant "internshipStorage:InternshipStorage" as InternshipStorage #F498AD
+participant "interviewStorage:InterviewStorage" as InterviewStorage #F498AD
+participant "aliasStorage:AliasStorage" as AliasStorage #F498AD
+participant "fw:FileWriter" as FileWriter #8CB6CE
+
+[-> GoldenCompass : run()
+activate GoldenCompass
+
+loop while true
+    GoldenCompass -> GoldenCompass : execute command
+
+    GoldenCompass -> InternshipStorage : save(internships)
+    activate InternshipStorage
+    create FileWriter
+    InternshipStorage -> FileWriter : new FileWriter(filePath)
+    InternshipStorage -> FileWriter : write(formattedData)
+    InternshipStorage -> FileWriter : close()
+    InternshipStorage --> GoldenCompass
+    deactivate InternshipStorage
+
+    GoldenCompass -> InterviewStorage : save(interviews)
+    activate InterviewStorage
+    InterviewStorage -> FileWriter : new FileWriter(filePath)
+    InterviewStorage -> FileWriter : write(formattedData)
+    InterviewStorage -> FileWriter : close()
+    InterviewStorage --> GoldenCompass
+    deactivate InterviewStorage
+
+    GoldenCompass -> AliasStorage : save(aliasMap)
+    activate AliasStorage
+    AliasStorage -> FileWriter : new FileWriter(filePath)
+    AliasStorage -> FileWriter : write(formattedData)
+    AliasStorage -> FileWriter : close()
+    AliasStorage --> GoldenCompass
+    deactivate AliasStorage
+end
+
+[<-- GoldenCompass
+deactivate GoldenCompass
+
+@enduml
