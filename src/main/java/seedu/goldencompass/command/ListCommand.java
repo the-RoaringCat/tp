@@ -43,16 +43,6 @@ public class ListCommand extends Command {
         assert this.internshipList != null : "InternshipList should be set";
     }
 
-    @Override
-    public String getCommandDescription() {
-        return "Lists all internships in the tracker.";
-    }
-
-    @Override
-    public String getFlagDescription() {
-        return "Format: list";
-    }
-
     /**
      * Displays all internships in the list with their index numbers.
      * Shows company name and job title for each internship.
@@ -118,5 +108,15 @@ public class ListCommand extends Command {
             logger.severe("Unexpected error in ListCommand: " + e.getMessage());
             throw new GoldenCompassException("Error displaying internships: " + e.getMessage());
         }
+    }
+
+    @Override
+    protected String getCommandDescription() {
+        return "Lists all internships in the tracker.";
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return "Format: list";
     }
 }

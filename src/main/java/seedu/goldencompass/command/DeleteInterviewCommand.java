@@ -24,18 +24,6 @@ public class DeleteInterviewCommand extends Command {
     }
 
     @Override
-    public String getCommandDescription() {
-        return "Deletes an interview from an internship application.";
-    }
-
-    @Override
-    public String getFlagDescription() {
-        return "Format: delete-interview INDEX\n"
-                + "Example: delete-interview 1\n\n"
-                + "Note: Only the interview is deleted. The internship remains in your list.";
-    }
-
-    @Override
     public void execute() throws GoldenCompassException {
 
         List<String> params = parser.getParamsOf(parser.getCommand());
@@ -84,5 +72,17 @@ public class DeleteInterviewCommand extends Command {
         // Make sure the message says "Deleted interview", not "Deleted internship"
         ui.print("✓ Deleted interview for " + internship.getCompanyName()
                 + " (scheduled on: " + formattedDate + ")");
+    }
+
+    @Override
+    protected String getCommandDescription() {
+        return "Deletes an interview from an internship application.";
+    }
+
+    @Override
+    protected String getFlagDescription() {
+        return "Format: delete-interview INDEX\n"
+                + "Example: delete-interview 1\n\n"
+                + "Note: Only the interview is deleted. The internship remains in your list.";
     }
 }
