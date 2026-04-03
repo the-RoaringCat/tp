@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  */
 public class SetInterviewDeadlineCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(SetInterviewDeadlineCommand.class.getName());
-
     public static final String COMMAND_WORD = "update-date";
+
+    private static final Logger logger = Logger.getLogger(SetInterviewDeadlineCommand.class.getName());
 
     private static final String FLAG_DATE = "/d";
     private static final String COMMAND_DESCRIPTION =

@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  */
 public class SearchInterviewCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(SearchInterviewCommand.class.getName());
-
     public static final String COMMAND_WORD = "search-interview";
+
+    private static final Logger logger = Logger.getLogger(SearchInterviewCommand.class.getName());
 
     private static final String FLAG_COMPANY = "/c";
     private static final String FLAG_TITLE = "/t";

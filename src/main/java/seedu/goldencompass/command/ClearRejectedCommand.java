@@ -18,9 +18,9 @@ import java.util.logging.Logger;
  */
 public class ClearRejectedCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(ClearRejectedCommand.class.getName());
-
     public static final String COMMAND_WORD = "clear-rejected";
+
+    private static final Logger logger = Logger.getLogger(ClearRejectedCommand.class.getName());
 
     private final InternshipList internshipList;
     private final InterviewList interviewList;

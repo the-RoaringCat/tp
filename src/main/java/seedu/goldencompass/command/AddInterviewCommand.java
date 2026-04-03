@@ -22,9 +22,9 @@ import java.util.logging.Logger;
  */
 public class AddInterviewCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(AddInterviewCommand.class.getName());
-
     public static final String COMMAND_WORD = "add-interview";
+
+    private static final Logger logger = Logger.getLogger(AddInterviewCommand.class.getName());
     private static final String FLAG_DATE = "/d";
     private static final String COMMAND_DESCRIPTION =
             "Adds an interview linked to an existing internship.\n"
