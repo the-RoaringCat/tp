@@ -14,7 +14,7 @@ public class DeleteInternshipCommand extends Command {
 
     private static final Logger logger = Logger.getLogger(DeleteInternshipCommand.class.getName());
     private final InternshipList internshipList;
-    private final InterviewList interviewList;  // ADD THIS
+    private final InterviewList interviewList;
 
     public DeleteInternshipCommand(Parser parser, InternshipList internshipList, InterviewList interviewList) {
         super(parser);
@@ -23,7 +23,7 @@ public class DeleteInternshipCommand extends Command {
         assert internshipList != null : "InternshipList passed to DeleteInternshipCommand cannot be null";
 
         this.internshipList = internshipList;
-        this.interviewList = interviewList;  // ADD THIS
+        this.interviewList = interviewList;
     }
 
     @Override

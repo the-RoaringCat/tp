@@ -198,6 +198,353 @@ The feature is covered by comprehensive unit tests to ensure all edge cases are 
 | `execute_missingTitle_throwsException` | Execute `add Grab /t` | Throws `Exception` with missing title message |
 | `execute_missingMultiple_throwsException` | Execute `add /t` | Throws `Exception` containing both missing company and missing title messages |
 
+### List Command
+
+#### Overview
+
+The `list` command displays all internship applications currently stored in the tracker. This feature allows users to quickly view their entire internship portfolio with index numbers and current status.
+
+**Command format:** `list`
+
+**Example:** `list` displays all internships with their indices.
+
+#### Implementation
+
+The feature is implemented in `ListCommand`, which extends the abstract `Command` class.
+
+When the user enters `list`, the execution flow is as follows:
+
+1. The `Parser` parses the user input, extracting the command word "list".
+2. The system looks up the corresponding command and executes `ListCommand`.
+3. `ListCommand` retrieves the full internship list from `InternshipList` using `getInternships()`.
+4. The command validates that the list is not null and checks if it is empty.
+5. If the list is empty, a "No internships" message is displayed.
+6. Otherwise, a header is printed followed by each internship with its index number using the internship's `toString()` method.
+7. The command logs the successful execution.
+
+**Note:** The `ListCommand` does not require a `/help` flag as it has no parameters.
+
+The following class diagram shows the main components involved in the list command:
+
+![List Command Class Diagram](diagrams/ListCommandClassDiagram.png)
+
+The following sequence diagram illustrates the execution flow when the user enters `list`:
+
+![List Command Sequence Diagram](diagrams/ListCommandSequenceDiagram.png)
+
+#### Input Validation
+
+The command implements defensive checks to ensure robustness:
+
+| Validation Layer | Description | Handling |
+|-----------------|-------------|----------|
+| **Null Check** | Verifies `internshipList` is not null | Throws `GoldenCompassException` if null |
+| **List Null Check** | Verifies `getInternships()` does not return null | Throws `GoldenCompassException` if null |
+| **Empty List Check** | Checks if the internship list is empty | Displays friendly message, returns early |
+
+#### Defensive Programming Features
+
+The implementation includes several defensive programming measures:
+
+**1. Assertions**: Verify internal state invariants during command initialization.
+assert this.internshipList != null : "InternshipList should be set";
+
+**2. Logging**: Track execution flow and errors for debugging.
+logger.info("Executing ListCommand");
+logger.warning("Null internship found at index " + i);
+logger.severe("Unexpected error in ListCommand: " + e.getMessage());
+
+**3. Null Checks**: Prevent NullPointerException before accessing data.
+if (internshipList == null) {
+throw new GoldenCompassException("System error: Internship list not initialized");
+}
+
+**4. Defensive Loop**: Checks each internship item before printing.
+if (intern == null) {
+logger.warning("Null internship found at index " + i);
+ui.print((i + 1) + ". [Error: Invalid internship data]");
+} else {
+ui.print((i + 1) + ". " + intern);
+}
+
+#### Design Considerations
+
+**Aspect: Display Format**
+
+- **Alternative 1 (current):** Display index, company name, and job title with status tags using `toString()`.
+  - **Pros:** Simple, easy to read, shows all essential information including offer/rejection status.
+  - **Cons:** Long names may cause wrapping in narrow terminals.
+
+- **Alternative 2:** Display only company names.
+  - **Pros:** More compact.
+  - **Cons:** Users cannot see job titles without additional commands.
+
+#### Test Coverage
+
+The feature is covered by comprehensive unit tests in `InternshipListTest`:
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `list_emptyList_printsNoInternshipsMessage` | Execute `list` with no internships | Prints "No internships in the list" |
+| `list_singleInternship_printsCorrectly` | Execute `list` with one internship | Shows header and single entry |
+| `list_multipleInternships_printsAllCorrectly` | Execute `list` with multiple internships | Shows all entries with correct indices |
+| `list_largeNumberOfInternships_printsAll` | Execute `list` with 10 internships | All 10 entries displayed correctly |
+| `add_internship_increasesListSize` | Add internship after list | List size increases by 1 |
+| `add_nullInternship_throwsException` | Attempt to add null internship | Throws `IllegalArgumentException` |
+| `getInternship_invalidIndex_throwsException` | Access index out of bounds | Throws `IndexOutOfBoundsException` |
+
+### Search Internship Command
+
+#### Overview
+
+The `search` command allows users to find internships by company name and/or job title using case-insensitive substring matching.
+
+**Command format:** `search [/c COMPANY] [/t TITLE]`
+
+**Examples:**
+- `search /c Google` - Finds all internships with "Google" in the company name
+- `search /t Engineer` - Finds all internships with "Engineer" in the title
+- `search /c Google /t Software` - Finds internships matching both criteria
+
+#### Implementation
+
+The feature is implemented in `SearchInternshipCommand`, which extends the abstract `Command` class.
+
+When the user enters `search /c Google`, the execution flow is as follows:
+
+1. The `Parser` parses the user input, extracting the command word "search" and the flags `/c` and its value "Google".
+2. The system looks up the corresponding command and executes `SearchInternshipCommand`.
+3. The command checks for the `/help` flag and displays help if present.
+4. `SearchInternshipCommand` retrieves the company parameter using `getParamsOf("/c")` and the title parameter using `getParamsOf("/t")`.
+5. The command validates that at least one search criterion is provided.
+6. The command filters the internship list using the `matches()` method in `Internship`, which performs case-insensitive substring matching.
+7. The filtered results are collected and displayed with indices.
+8. If no matches are found, a "No internships found" message is displayed.
+9. The command logs the search results.
+
+The filtering relies on the `matches()` method in `Internship`:
+public boolean matches(String company, String title) {
+if (company != null && !company.isEmpty()
+&& !this.companyName.toLowerCase().contains(company.toLowerCase())) {
+return false;
+}
+if (title != null && !title.isEmpty()
+&& !this.title.toLowerCase().contains(title.toLowerCase())) {
+return false;
+}
+return true;
+}
+
+The following class diagram shows the main components involved in the search command:
+
+![Search Command Class Diagram](diagrams/SearchInternshipCommandClassDiagram.png)
+
+The following sequence diagram illustrates the execution flow when the user enters `search /c Google`:
+
+![Search Command Sequence Diagram](diagrams/SearchInternshipCommandSequenceDiagram.png)
+
+#### Input Validation
+
+The command implements multiple layers of validation to ensure robustness:
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Criterion Presence** | Verifies at least one search flag is provided | "Please provide at least one search criteria!" |
+| **Null Handling** | Handles null parameters gracefully | Treats null as "skip this criterion" |
+
+#### Defensive Programming Features
+
+The implementation includes several defensive programming measures:
+
+**1. Assertions**: Verify internal state invariants during command initialization.
+assert parser != null : "Parser cannot be null";
+assert internshipList != null : "InternshipList cannot be null";
+
+**2. Logging**: Track execution flow and search results.
+logger.info("Executing SearchInternshipCommand");
+logger.info("Search found " + results.size() + " results");
+
+**3. Null Checks**: Handle null parameters from parser.
+String companySearch = (companyParams != null && !companyParams.isEmpty())
+? companyParams.get(0).trim() : null;
+
+**4. Help Flag Support**: Display usage information when `/help` flag is provided.
+
+#### Design Considerations
+
+**Aspect: Matching Strategy**
+
+- **Alternative 1 (current choice):** Case-insensitive substring matching.
+  - **Pros:** User-friendly, catches partial matches (e.g., "Goo" matches "Google").
+  - **Cons:** May return unexpected results with very short substrings.
+
+- **Alternative 2:** Exact case-sensitive matching.
+  - **Pros:** More precise.
+  - **Cons:** Less forgiving for user typos or case differences.
+
+**Aspect: Combined Search Logic**
+
+- **Alternative 1 (current choice):** AND logic (matches both company AND title).
+  - **Pros:** More specific results, narrows down search effectively.
+  - **Cons:** May return no results if criteria are too strict.
+
+- **Alternative 2:** OR logic (matches either company OR title).
+  - **Pros:** Returns more results, broader search.
+  - **Cons:** Less specific, may overwhelm users with irrelevant results.
+
+**Aspect: Where to place filtering logic**
+
+- **Alternative 1 (current choice):** Delegate filtering to `Internship.matches()`.
+  - **Pros:** Encapsulates matching logic in the domain object, reusable.
+  - **Cons:** The `Internship` class takes on matching responsibility.
+
+- **Alternative 2:** Perform all filtering inline in the command class.
+  - **Pros:** All logic in one place.
+  - **Cons:** Harder to reuse the matching logic from other commands.
+
+#### Test Coverage
+
+The feature is covered by comprehensive unit tests in `SearchInternshipCommandTest`:
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `execute_searchByCompany_findsMatches` | Search by company name | Returns matching internships |
+| `execute_searchByTitle_findsMatches` | Search by job title | Returns matching internships |
+| `execute_searchByCompanyAndTitle_findsMatches` | Combined search with AND logic | Returns internships matching both |
+| `execute_searchCaseInsensitive_findsMatches` | Case-insensitive search | Matches regardless of case |
+| `execute_searchPartialMatch_findsMatches` | Partial substring matching | "Soft" matches "Software Engineer" |
+| `execute_noMatches_printsNoResults` | No matching internships | Prints "No internships found" |
+| `execute_emptyList_printsNoResults` | Empty internship list | Prints "No internships found" |
+| `execute_noCriteria_throwsException` | No search flags provided | Throws `GoldenCompassException` |
+| `execute_emptyCompanyCriteria_throwsException` | Empty company flag | Throws `GoldenCompassException` |
+| `execute_emptyTitleCriteria_throwsException` | Empty title flag | Throws `GoldenCompassException` |
+| `execute_searchWithExtraWhitespace_worksCorrectly` | Extra whitespace in input | Trims and works correctly |
+| `execute_multipleInternshipsSameCompany_showsAll` | Multiple matches for same company | Shows all matching internships |
+
+### Delete Internship Command
+
+#### Overview
+
+The `delete` command allows the user to remove an existing internship application from the tracker. When an internship is deleted, its associated interview is automatically removed to maintain data consistency.
+
+**Command format:** `delete INDEX`
+
+**Example:** `delete 2` removes the 2nd internship from the list.
+
+#### Implementation
+
+The delete feature is implemented in `DeleteInternshipCommand`, which extends the abstract `Command` class. The command is pre-registered in the `Executor`'s command lookup map during application initialization.
+
+When the user enters `delete 2`, the execution flow is as follows:
+
+1. The `Parser` parses the user input, extracting the command word "delete" and the argument "2".
+2. The `Executor` retrieves the command word and looks up the corresponding `Command` instance from its internal `Map<String, Command>` using `commands.get("delete")`.
+3. The `Executor` calls `execute()` on the retrieved `DeleteInternshipCommand` instance (no new command object is created).
+4. `DeleteInternshipCommand` retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
+5. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
+6. The command checks if the internship has an associated interview and deletes it first using `interviewList.deleteByInternship(internship)`.
+7. The command calls `internshipList.delete(index - 1)` to permanently remove the internship.
+8. The command logs the deletion with details of the removed internship.
+9. The command prints a confirmation message to the user via the `Ui`.
+
+**Note:** The `Executor` does not instantiate a new command for each execution. Instead, it uses a pre-registered command instance from the lookup map, following the Command Pattern.
+
+The following class diagram shows the main components involved in the delete internship feature:
+
+![Delete Internship Class Diagram](diagrams/DeleteInternshipCommandClassDiagram.png)
+
+The following sequence diagram illustrates the execution flow when the user enters `delete 2`:
+
+![Delete Internship Sequence Diagram](diagrams/DeleteInternshipCommandSequenceDiagram.png)
+
+#### Input Validation
+
+The command implements multiple layers of validation to ensure robustness:
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete! (e.g., delete 1)" |
+| **Type Check** | Ensures the index is a valid integer | "The index must be a number! (e.g., delete 1)" |
+| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
+
+#### Defensive Programming Features
+
+The implementation includes several defensive programming measures:
+
+**1. Assertions**: Verify internal state invariants during command initialization.
+assert parser != null : "Parser passed to DeleteInternshipCommand cannot be null";
+assert internshipList != null : "InternshipList passed to DeleteInternshipCommand cannot be null";
+
+**2. Logging**: Track execution flow and errors.
+logger.log(Level.INFO, "Starting execution of DeleteInternshipCommand...");
+logger.log(Level.WARNING, "Failed to delete: Index is missing.");
+logger.info("Deleted associated interview for: " + internship.getCompanyName());
+
+**3. Bounds Checking**: Validate array indices before access.
+if (index < 0 || index >= internships.size()) {
+throw new IndexOutOfBoundsException("Index: " + index);
+}
+
+**4. Null Checks**: Prevent NullPointerException.
+if (internshipList == null) {
+throw new IllegalArgumentException("InternshipList cannot be null");
+}
+
+**5. Graceful Exception Handling**: Catch parsing errors and provide user-friendly messages.
+try {
+index = Integer.parseInt(params.get(0).trim());
+} catch (NumberFormatException e) {
+throw new GoldenCompassException("The index must be a number!");
+}
+
+#### Design Considerations
+
+**Aspect: Indexing Scheme**
+
+- **Alternative 1 (current choice):** Use 1-based indexing for user input, convert to 0-based internally.
+  - **Pros:** More intuitive for users who think of list positions starting from 1.
+  - **Cons:** Requires conversion logic and careful handling.
+
+- **Alternative 2:** Use 0-based indexing directly.
+  - **Pros:** Matches internal representation, no conversion needed.
+  - **Cons:** Less intuitive for users; first item is "0" not "1".
+
+**Aspect: Deletion Strategy**
+
+- **Alternative 1 (current choice):** Immediate permanent deletion with auto-delete of associated interview.
+  - **Pros:** Maintains data consistency, prevents orphaned records, simple to implement.
+  - **Cons:** No recovery option if user deletes accidentally.
+
+- **Alternative 2:** Soft delete (mark as deleted but keep in storage).
+  - **Pros:** Allows undo functionality, data can be recovered.
+  - **Cons:** Adds complexity to data model and queries.
+
+**Aspect: Error Handling Strategy**
+
+- **Alternative 1 (current choice):** Fail-fast validation with specific error messages.
+  - **Pros:** Clear immediate feedback to users.
+  - **Cons:** May require multiple attempts if user makes multiple mistakes.
+
+- **Alternative 2:** Accumulate all validation errors before throwing.
+  - **Pros:** User sees all errors at once.
+  - **Cons:** More complex error handling logic.
+
+#### Test Coverage
+
+The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTest`:
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `delete_firstInternship_removesCorrectly` | Delete index 1 from list of 3 | List size decreases to 2, items shift left |
+| `delete_middleInternship_removesCorrectly` | Delete index 2 from list of 3 | List size decreases to 2, items reorder correctly |
+| `delete_lastInternship_removesCorrectly` | Delete index 3 from list of 3 | List size decreases to 2, last item removed |
+| `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws `IndexOutOfBoundsException` |
+| `delete_emptyList_throwsException` | Delete from empty list | Throws `IndexOutOfBoundsException` |
+| `delete_withAssociatedInterview_removesBoth` | Delete internship with existing interview | Both internship and interview are removed |
+| `delete_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
+| `delete_nonNumericIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
+| `delete_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
+
 
 ### Interview Management — Class Overview
 
@@ -435,42 +782,39 @@ The following sequence diagram illustrates a call to `execute()` of `UpcomingCom
 
 ![Upcoming Command Sequence Diagram](diagrams/UpcomingCommandSequenceDiagram.png)
 
-### Delete Internship Feature
+### Delete Interview Command
 
 #### Overview
 
-The `delete` command allows the user to remove an existing internship application from the tracker.
-The user specifies the 1-based index of the internship to delete, and the system removes the corresponding `Internship` object from the `InternshipList`.
+The `delete-interview` command removes an interview from an internship while preserving the internship record.
 
-**Command format:** `delete INDEX`
+**Command format:** `delete-interview INDEX`
 
-**Example:** `delete 2` removes the 2nd internship from the list.
+**Example:** `delete-interview 1` removes the interview from the 1st internship in the list.
 
 #### Implementation
 
-The delete feature is implemented in `DeleteInternshipCommand`, which extends `CommandClass`. The command is pre-registered in the `Executor`'s command lookup map during application initialization.
+The feature is implemented in `DeleteInterviewCommand`, which extends the abstract `Command` class.
 
-When the user enters `delete 2`, the execution flow is as follows:
+When the user enters `delete-interview 1`, the execution flow is as follows:
 
-1. The `Parser` parses the user input, extracting the command word "delete" and the argument "2".
-2. The `Executor` retrieves the command word and looks up the corresponding `Command` instance from its internal `Map<String, Command>` using `commands.get("delete")`.
-3. The `Executor` calls `execute()` on the retrieved `DeleteInternshipCommand` instance (no new command object is created).
-4. `DeleteInternshipCommand` retrieves the index parameter from the `Parser` using `getParamsOf("delete")`.
-5. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
-6. The command retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList` for logging purposes.
-7. The command calls `internshipList.delete(index - 1)` to permanently remove the internship.
-8. The command logs the deletion with details of the removed internship.
+1. The `Parser` parses the user input, extracting the command word "delete-interview" and the argument "1".
+2. The system looks up the corresponding command and executes `DeleteInterviewCommand`.
+3. `DeleteInterviewCommand` retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
+4. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
+5. The command retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
+6. The command searches the `InterviewList` for an interview belonging to this internship by comparing company names.
+7. If no interview is found, an exception is thrown.
+8. If found, the interview is removed from `InterviewList` and the internship's interview reference is cleared using `internship.deleteInterview()`.
 9. The command prints a confirmation message to the user via the `Ui`.
 
-**Note:** The `Executor` does not instantiate a new command for each execution. Instead, it uses a pre-registered command instance from the lookup map, following the Command Pattern. This design promotes reusability and centralizes command management.
+The following class diagram shows the main components involved in the delete interview feature:
 
-The following class diagram shows the main components involved in the delete internship feature:
+![Delete Interview Class Diagram](diagrams/DeleteInterviewCommandClassDiagram.png)
 
-![Delete Internship Class Diagram](diagrams/DeleteInternshipCommandClassDiagram.png)
+The following sequence diagram illustrates the execution flow when the user enters `delete-interview 1`:
 
-The following sequence diagram illustrates the execution flow when the user enters `delete 2`:
-
-![Delete Internship Sequence Diagram](diagrams/DeleteInternshipCommandSequenceDiagram.png)
+![Delete Interview Sequence Diagram](diagrams/DeleteInterviewCommandSequenceDiagram.png)
 
 #### Input Validation
 
@@ -478,77 +822,68 @@ The command implements multiple layers of validation to ensure robustness:
 
 | Validation Layer | Description | Example Error Message |
 |-----------------|-------------|----------------------|
-| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete! (e.g., delete 1)" |
-| **Type Check** | Ensures the index is a valid integer | "The index must be a number! (e.g., delete 1)" |
-| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and 3" |
+| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete interview from!" |
+| **Type Check** | Ensures the index is a valid integer | "The index must be a number!" |
+| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
+| **Interview Existence** | Checks if the internship actually has an interview | "This internship does not have an interview scheduled." |
 
 #### Defensive Programming Features
 
 The implementation includes several defensive programming measures:
 
-**1. Assertions**: Verify internal state invariants
-assert internships != null : "Internships list should not be null";
-assert size >= 0 : "List size should never be negative";
+**1. Assertions**: Verify internal state invariants during command initialization.
+assert parser != null : "Parser cannot be null";
+assert internshipList != null : "InternshipList cannot be null";
+assert interviewList != null : "InterviewList cannot be null";
 
-**2. Logging**: Track execution flow and errors
-logger.info("Executing DeleteInternshipCommand");
+**2. Logging**: Track execution flow and errors.
+logger.info("Executing DeleteInterviewCommand");
 logger.warning("Invalid index: " + index);
-logger.info("Deleted internship at index " + index);
+logger.info("Deleted interview for: " + internship.getCompanyName());
 
-**3. Bounds Checking**: Validate array indices before access
-if (index < 0 || index >= internships.size()) {
-throw new IndexOutOfBoundsException("Index: " + index);
+**3. Null Checks**: Prevent NullPointerException when accessing data.
+if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {
+throw new GoldenCompassException("Please provide the index...");
 }
 
-
-**4. Null Checks**: Prevent NullPointerException
-if (internshipList == null) {
-throw new IllegalArgumentException("InternshipList cannot be null");
-}
+**4. Graceful Exception Handling**: Provide clear error messages for user mistakes.
 
 #### Design Considerations
 
-**Aspect: Indexing Scheme**
+**Aspect: Finding the Interview to Delete**
 
-- **Alternative 1 (current choice):** Use 1-based indexing for user input, convert to 0-based internally.
-  - **Pros:** More intuitive for users who think of list positions starting from 1.
-  - **Cons:** Requires conversion logic and careful handling.
+- **Alternative 1 (current choice):** Search by company name in InterviewList.
+  - **Pros:** Works even if bidirectional link is broken.
+  - **Cons:** Slightly slower for large lists (O(n) search).
 
-- **Alternative 2:** Use 0-based indexing directly.
-  - **Pros:** Matches internal representation, no conversion needed.
-  - **Cons:** Less intuitive for users; first item is "0" not "1".
+- **Alternative 2:** Use `internship.getInterview()` reference.
+  - **Pros:** Faster, direct access (O(1)).
+  - **Cons:** Requires bidirectional link to be maintained.
 
-**Aspect: Deletion Strategy**
+**Aspect: What happens to the internship**
 
-- **Alternative 1 (current choice):** Immediate permanent deletion.
-  - **Pros:** Simple to implement, matches user expectation for "delete" command.
-  - **Cons:** No recovery option if user deletes accidentally.
+- **Alternative 1 (current choice):** Only the interview is deleted; internship remains.
+  - **Pros:** Preserves application history, user can add another interview later.
+  - **Cons:** None significant.
 
-- **Alternative 2:** Soft delete (mark as deleted but keep in storage).
-  - **Pros:** Allows undo functionality, data can be recovered.
-  - **Cons:** Adds complexity to data model and queries.
-
-**Aspect: Error Handling Strategy**
-
-- **Alternative 1 (current choice):** Fail-fast validation with specific error messages.
-  - **Pros:** Clear immediate feedback to users.
-  - **Cons:** May require multiple attempts if user makes multiple mistakes.
-
-- **Alternative 2:** Accumulate all validation errors before throwing.
-  - **Pros:** User sees all errors at once.
-  - **Cons:** More complex error handling logic.
+- **Alternative 2:** Delete both internship and interview.
+  - **Pros:** Simpler.
+  - **Cons:** User loses the entire application record.
 
 #### Test Coverage
 
-The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTest`:
+The feature is covered by comprehensive unit tests in `DeleteInterviewCommandTest`:
 
 | Test Case | Description | Expected Outcome |
 |-----------|-------------|------------------|
-| `delete_firstInternship_removesCorrectly` | Delete index 1 from list of 3 | List size decreases to 2, remaining items shift |
-| `delete_middleInternship_removesCorrectly` | Delete index 2 from list of 3 | List size decreases to 2, items reorder correctly |
-| `delete_lastInternship_removesCorrectly` | Delete index 3 from list of 3 | List size decreases to 2, last item removed |
-| `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws IndexOutOfBoundsException |
-| `delete_emptyList_throwsException` | Delete from empty list | Throws IndexOutOfBoundsException |
+| `execute_validIndex_deletesInterviewSuccessfully` | Delete interview from valid internship | Interview removed, internship remains |
+| `execute_invalidIndexOutOfBounds_throwsException` | Delete with index too high | Throws `GoldenCompassException` |
+| `execute_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
+| `execute_nonIntegerIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
+| `execute_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
+| `execute_noInterviewForInternship_throwsException` | Delete from internship with no interview | Throws `GoldenCompassException` |
+| `execute_emptyInternshipList_throwsException` | Delete from empty list | Throws `GoldenCompassException` |
+| `execute_multipleInternships_deletesCorrectInterview` | Delete interview from correct internship among multiple | Only target interview removed |
 
 ### Mark Offer Feature
 

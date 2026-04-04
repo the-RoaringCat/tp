@@ -19,6 +19,8 @@ public class SearchInternshipCommand extends Command {
 
     public SearchInternshipCommand(Parser parser, InternshipList internshipList) {
         super(parser);
+        assert parser != null : "Parser cannot be null";
+        assert internshipList != null : "InternshipList cannot be null";
         this.internshipList = internshipList;
     }
 

@@ -47,7 +47,6 @@ public class ListCommand extends Command {
      * Displays all internships in the list with their index numbers.
      * Shows company name and job title for each internship.
      * If the list is empty, displays a message indicating no internships.
-     *
      * Checks for valid flags and displays all internships in the list.
      *
      * @throws GoldenCompassException if invalid flags are provided

@@ -19,6 +19,9 @@ public class DeleteInterviewCommand extends Command {
 
     public DeleteInterviewCommand(Parser parser, InternshipList internshipList, InterviewList interviewList) {
         super(parser);
+        assert parser != null : "Parser cannot be null";
+        assert internshipList != null : "InternshipList cannot be null";
+        assert interviewList != null : "InterviewList cannot be null";
         this.internshipList = internshipList;
         this.interviewList = interviewList;
     }
@@ -45,6 +48,13 @@ public class DeleteInterviewCommand extends Command {
         }
 
         Internship internship = internshipList.get(internshipIndex - 1);
+
+        // Get interviews list with null check
+        List<Interview> interviews = interviewList.getInterviews();
+        if (interviews == null) {
+            logger.severe("getInterviews() returned null");
+            throw new GoldenCompassException("System error: Unable to retrieve interview list");
+        }
 
         // Find interview by searching InterviewList
         Interview interviewToDelete = null;

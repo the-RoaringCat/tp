@@ -2,22 +2,22 @@
 actor User
 participant ":Parser" as Parser
 participant ":Executor" as Exec
-participant ":DeleteInternshipCommand" as Cmd
+participant ":DeleteInterviewCommand" as Cmd
 participant ":InternshipList" as List
 participant ":InterviewList" as IVL
 participant ":Internship" as Intern
 
-User -> Parser : "delete 2"
+User -> Parser : "delete-interview 1"
 activate Parser
 Parser --> Exec : parsed command
 deactivate Parser
 
-Exec -> Exec : get command "delete"
+Exec -> Exec : get command "delete-interview"
 Exec -> Cmd : execute()
 activate Cmd
 
-Cmd -> Cmd : getParamsOf("delete")
-note right of Cmd : retrieves ["2"]
+Cmd -> Cmd : getParamsOf("delete-interview")
+note right of Cmd : retrieves ["1"]
 
 alt no index or invalid
     Cmd -> User : "Please provide the index..."
@@ -35,24 +35,28 @@ else index valid
         List --> Cmd : Internship
         deactivate List
 
-        Cmd -> Intern : getInterview()
-        activate Intern
-        Intern --> Cmd : interview or null
-        deactivate Intern
+        Cmd -> IVL : getInterviews()
+        activate IVL
+        IVL --> Cmd : interviews
+        deactivate IVL
 
-        alt interview exists
-            Cmd -> IVL : deleteByInternship(internship)
+        Cmd -> Cmd : search for interview by company name
+
+        alt interview not found
+            Cmd -> User : "This internship does not have an interview scheduled."
+        else interview found
+            Cmd -> IVL : remove(interview)
             activate IVL
             IVL --> Cmd
             deactivate IVL
+
+            Cmd -> Intern : deleteInterview()
+            activate Intern
+            Intern --> Cmd
+            deactivate Intern
+
+            Cmd -> Cmd : ui.print("✓ Deleted interview for ...")
         end
-
-        Cmd -> List : delete(index - 1)
-        activate List
-        List --> Cmd
-        deactivate List
-
-        Cmd -> Cmd : ui.print("✓ Deleted internship: ...")
     end
 end
 

@@ -1,0 +1,43 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+class SearchInternshipCommand {
+    - InternshipList internshipList
+    + SearchInternshipCommand(Parser, InternshipList)
+    + execute()
+    + getCommandDescription()
+    + getFlagDescription()
+}
+
+class Command {
+    # Ui ui
+    # Parser parser
+    + Command()
+    + Command(Parser)
+    + execute()
+    # getCommandDescription()
+    # getFlagDescription()
+    # printHelp()
+}
+
+class InternshipList {
+    - List<Internship> internships
+    + getInternships()
+    + getSize()
+}
+
+class Internship {
+    - String title
+    - String companyName
+    - ApplicationStatus status
+    + getTitle()
+    + getCompanyName()
+    + matches(String, String)
+    + toString()
+}
+
+SearchInternshipCommand --|> Command
+SearchInternshipCommand --> InternshipList
+InternshipList o--> Internship
+@enduml

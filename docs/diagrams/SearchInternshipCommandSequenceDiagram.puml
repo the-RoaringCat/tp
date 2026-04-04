@@ -1,0 +1,56 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Exec
+participant ":SearchInternshipCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
+
+User -> Parser : "search /c Google"
+activate Parser
+Parser --> Exec : parsed command
+deactivate Parser
+
+Exec -> Exec : get command "search"
+Exec -> Cmd : execute()
+activate Cmd
+
+alt /help flag present
+    Cmd -> Cmd : printHelp()
+    Cmd --> User : help message
+else no /help
+    Cmd -> Cmd : getParamsOf("/c")
+    note right of Cmd : retrieves ["Google"]
+    Cmd -> Cmd : getParamsOf("/t")
+    note right of Cmd : retrieves null
+
+    alt no search criteria
+        Cmd -> User : "Please provide at least one search criteria!"
+    else has criteria
+        Cmd -> List : getInternships()
+        activate List
+        List --> Cmd : allInternships
+        deactivate List
+
+        Cmd -> Cmd : filter internships using matches()
+
+        loop for each internship
+            Cmd -> Intern : matches(companySearch, titleSearch)
+            activate Intern
+            Intern --> Cmd : true/false
+            deactivate Intern
+        end
+
+        alt results empty
+            Cmd -> User : "No internships found matching your search criteria."
+        else results not empty
+            Cmd -> Cmd : ui.print("Found X matching internship(s):")
+            loop for each result
+                Cmd -> Cmd : ui.print((i+1) + ". " + intern.toString())
+            end
+        end
+    end
+end
+
+deactivate Cmd
+@enduml

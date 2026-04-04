@@ -2,10 +2,10 @@
 skinparam classAttributeIconSize 0
 skinparam shadowing false
 
-class DeleteInternshipCommand {
+class DeleteInterviewCommand {
     - InternshipList internshipList
     - InterviewList interviewList
-    + DeleteInternshipCommand(Parser, InternshipList, InterviewList)
+    + DeleteInterviewCommand(Parser, InternshipList, InterviewList)
     + execute()
     + getCommandDescription()
     + getFlagDescription()
@@ -27,7 +27,6 @@ class InternshipList {
     + getInternships()
     + getSize()
     + get(index)
-    + delete(index)
 }
 
 class InterviewList {
@@ -47,9 +46,17 @@ class Internship {
     + deleteInterview()
 }
 
-DeleteInternshipCommand --|> Command
-DeleteInternshipCommand --> InternshipList
-DeleteInternshipCommand --> InterviewList
+class Interview {
+    - Internship internship
+    - LocalDateTime dateTime
+    + getInternship()
+    + getDate()
+    + getInternship()
+}
+
+DeleteInterviewCommand --|> Command
+DeleteInterviewCommand --> InternshipList
+DeleteInterviewCommand --> InterviewList
 InternshipList o--> Internship
 InterviewList o--> Interview
 Internship --> Interview

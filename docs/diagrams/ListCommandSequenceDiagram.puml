@@ -1,0 +1,40 @@
+@startuml
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Exec
+participant ":ListCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
+
+User -> Parser : "list"
+activate Parser
+Parser --> Exec : parsed command
+deactivate Parser
+
+Exec -> Exec : get command "list"
+Exec -> Cmd : execute()
+activate Cmd
+
+Cmd -> Cmd : getCommandDescription()
+Cmd -> Cmd : getFlagDescription()
+
+Cmd -> List : getInternships()
+activate List
+List --> Cmd : internships
+deactivate List
+
+alt internships == null or empty
+    Cmd -> Cmd : ui.print("No internships in the list.")
+else internships not empty
+    Cmd -> Cmd : ui.print("Here are the internships you have added:")
+    loop for each internship
+        Cmd -> List : get(i)
+        activate List
+        List --> Cmd : Internship
+        deactivate List
+        Cmd -> Cmd : ui.print((i+1) + ". " + intern.toString())
+    end
+end
+
+deactivate Cmd
+@enduml
