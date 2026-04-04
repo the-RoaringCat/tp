@@ -17,7 +17,8 @@ Given below are my contributions to the project.
     applications. Linking interviews to internships keeps related data together.
   * Highlights: The implementation required bridging two separate lists (`InternshipList`
     and `InterviewList`) and ensuring the bidirectional reference between `Interview` and
-    `Internship` objects stays consistent. Added date-in-past validation and duplicate
+    `Internship` objects stays consistent. Added date-in-past validation
+    (comparing the parsed `LocalDateTime` against `LocalDateTime.now()`) and duplicate
     interview detection to prevent user errors.
 
 * **New Feature**: Added the `update-date` command
