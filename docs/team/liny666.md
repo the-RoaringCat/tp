@@ -17,7 +17,8 @@ Given below are my contributions to the project.
     applications. Linking interviews to internships keeps related data together.
   * Highlights: The implementation required bridging two separate lists (`InternshipList`
     and `InterviewList`) and ensuring the bidirectional reference between `Interview` and
-    `Internship` objects stays consistent.
+    `Internship` objects stays consistent. Added date-in-past validation and duplicate
+    interview detection to prevent user errors.
 
 * **New Feature**: Added the `update-date` command
   ([#31](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/31),
@@ -37,7 +38,8 @@ Given below are my contributions to the project.
 
 * **New Feature**: Added the `clear-rejected` command
   ([#110](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/110))
-  * What it does: Removes all internships marked as rejected in one step.
+  * What it does: Removes all internships marked as rejected in one step, along with their
+    associated interviews to prevent orphaned records.
   * Justification: Users accumulate rejected entries over time that clutter the list.
     A batch-clear command is more efficient than deleting them one by one.
 
@@ -52,6 +54,13 @@ Given below are my contributions to the project.
   ([#104](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/104))
   * Allows users to type e.g. `add-interview /help` to see usage information without
     leaving the application.
+
+* **Enhancement**: Added defensiveness to interview and rejected commands
+  ([#123](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/123))
+  * Added logging, assertions, and JavaDoc across `AddInterviewCommand`,
+    `SetInterviewDeadlineCommand`, `SearchInterviewCommand`, and `ClearRejectedCommand`.
+  * Added date-in-past validation and duplicate interview checks to `AddInterviewCommand`.
+  * Updated `ClearRejectedCommand` to delete associated interviews, preventing orphaned records.
 
 * **Code contributed**:
   [RepoSense link](https://nus-cs2113-ay2526-s2.github.io/tp-dashboard/?search=liny&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=functional-code&since=2026-02-20T00%3A00%3A00&filteredFileName=&tabOpen=true&tabType=authorship&tabAuthor=liny666&tabRepo=AY2526S2-CS2113-W10-4%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=functional-code&authorshipIsBinaryFileTypeChecked=false&authorshipIsIgnoredFilesChecked=false)
@@ -77,8 +86,12 @@ Given below are my contributions to the project.
   * PRs reviewed (with non-trivial comments):
     [#55](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/55),
     [#81](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/81),
+    [#87](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/87),
+    [#98](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/98),
     [#107](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/107),
-    [#108](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/108)
+    [#108](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/108),
+    [#124](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/124),
+    [#125](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/125)
   * Addressed code review feedback across multiple iterations for search-interview
     ([#89](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/89)) — refactored filtering
     logic, removed redundant variables, and used direct field access based on reviewer

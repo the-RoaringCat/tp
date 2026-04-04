@@ -1,66 +1,74 @@
 @startuml
 actor User
-participant ":Ui" as Ui
-participant ":GoldenCompass" as GC
 participant ":Parser" as Parser
 participant ":Executor" as Executor
 participant ":AddInterviewCommand" as AIC
 participant ":InternshipList" as IL
+participant ":Internship" as Intern
 participant ":InterviewList" as IVL
 
-User -> Ui : "add-interview 2 /d 2025-06-15 10:00"
-activate Ui
-Ui --> GC : returns input
-deactivate Ui
-
-GC -> Parser : parse("add-interview 2 /d 2025-06-15 10:00")
+User -> Parser : "add-interview 2 /d 2025-06-15 10:00"
 activate Parser
-Parser --> GC
+Parser --> Executor : parsed command
 deactivate Parser
 
-GC -> Executor : execute()
-activate Executor
 Executor -> AIC : execute()
 activate AIC
 
-AIC -> Parser : getParamsOf("add-interview")
-activate Parser
-Parser --> AIC : ["2"]
-deactivate Parser
+AIC -> AIC : getParamsOf(parser.getCommand())
+note right of AIC : retrieves ["2"]
 
-AIC -> Parser : getParamsOf("/d")
-activate Parser
-Parser --> AIC : ["2025-06-15 10:00"]
-deactivate Parser
+AIC -> AIC : getParamsOf("/d")
+note right of AIC : retrieves ["2025-06-15 10:00"]
 
-AIC -> IL : getSize()
-activate IL
-IL --> AIC : size
-deactivate IL
+alt missing index or date
+    AIC -> User : error message
+else params present
+    AIC -> AIC : parseInt("2")
+    AIC -> IL : getSize()
+    activate IL
+    IL --> AIC : size
+    deactivate IL
 
-AIC -> IL : getInternships()
-activate IL
-IL --> AIC : internships
-deactivate IL
+    alt index out of range
+        AIC -> User : "Index is out of range."
+    else index valid
+        AIC -> AIC : parse date into LocalDateTime
 
-note right of AIC : Parses "2025-06-15 10:00" into LocalDateTime\nRetrieves Internship at index 1 (0-based)
+        alt date is in the past
+            AIC -> User : "Interview date ... is in the past."
+        else date valid
+            AIC -> IL : getInternships().get(index - 1)
+            activate IL
+            IL --> AIC : Internship
+            deactivate IL
 
-create "iv:Interview" as IV
-AIC -> IV : new Interview(internship, date)
-activate IV
-IV --> AIC
-deactivate IV
+            AIC -> Intern : getInterview()
+            activate Intern
+            Intern --> AIC : interview or null
+            deactivate Intern
 
-AIC -> IVL : add(iv)
-activate IVL
-IVL --> AIC
-deactivate IVL
+            alt interview already exists
+                AIC -> User : "... already has an interview scheduled."
+            else no existing interview
+                create "iv:Interview" as IV
+                AIC -> IV : new Interview(internship, date)
 
-AIC -> Ui : print("Got it! I've added an interview...")
-activate Ui
-Ui --> AIC
-deactivate Ui
+                AIC -> Intern : setInterview(iv)
+                activate Intern
+                Intern --> AIC
+                deactivate Intern
+
+                AIC -> IVL : add(iv)
+                activate IVL
+                IVL --> AIC
+                deactivate IVL
+
+                AIC -> AIC : ui.print("Got it! I've added an interview...")
+            end
+        end
+    end
+end
 
 deactivate AIC
-deactivate Executor
 @enduml

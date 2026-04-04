@@ -40,6 +40,10 @@ Format: `add-interview INDEX /d DATE`
 
 - `INDEX` is the 1-based index of the internship from the list.
 - `DATE` must follow the format `yyyy-MM-dd HH:mm`.
+- The date must be in the future.
+- Each internship can only have one interview. Use `update-date` to change the date, or
+  `delete-interview` to remove the existing interview before adding a new one.
+- Use `add-interview /help` to see usage information.
 
 Examples:
 - `add-interview 1 /d 2025-06-15 10:00`
@@ -47,12 +51,13 @@ Examples:
 
 ### Updating interview date: `update-date`
 
-Updates the deadline or date of an existing interview.
+Updates the date and time of an existing interview.
 
 Format: `update-date INDEX /d DATE`
 
-- `INDEX` is the 1-based index of the interview from the interview list.
+- `INDEX` is the 1-based index of the interview as shown in `list-interview` (sorted by date).
 - `DATE` must follow the format `yyyy-MM-dd HH:mm`.
+- Use `update-date /help` to see usage information.
 
 Examples:
 - `update-date 1 /d 2025-06-20 09:00`
@@ -116,11 +121,15 @@ Examples:
 Searches for interviews by company name, role, and/or date.
 Text matching is case-insensitive substring matching.
 Date matching is an exact match on the date portion.
+Multiple flags narrow the results using AND logic.
 
 Format: `search-interview [/c COMPANY] [/t ROLE] [/d DATE]`
 
 - At least one of `/c`, `/t`, or `/d` must be provided.
-- `DATE` must follow the format `yyyy-MM-dd`.
+- `/c` - search by company name (partial match, case-insensitive).
+- `/t` - search by role/title (partial match, case-insensitive).
+- `/d` - search by date, must follow the format `yyyy-MM-dd` (exact date match).
+- Use `search-interview /help` to see usage information.
 
 Examples:
 - `search-interview /c Google`
@@ -129,11 +138,13 @@ Examples:
 
 ### Clearing rejected internships: `clear-rejected`
 
-Removes all internships marked as rejected from the tracker.
+Removes all internships marked as rejected from the tracker, along with their
+associated interviews (if any).
 
 Format: `clear-rejected`
 
 - If there are no rejected internships, a message is shown indicating nothing to clear.
+- A summary of the removed internships is printed after clearing.
 
 Example:
 - `clear-rejected`

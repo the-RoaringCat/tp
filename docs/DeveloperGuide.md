@@ -227,21 +227,50 @@ for the 2nd internship in the list.
 The feature is implemented in `AddInterviewCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
-1. Checks if the `/help` flag is present — if so, prints usage information and returns.
-2. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
-3. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
-4. Validates that both parameters are present and non-empty.
-5. Parses the index as an integer and checks it is within the range `[1, internshipList.getSize()]`.
-6. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+1. Retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
+2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
+3. Validates that both parameters are present and non-empty.
+4. Parses the index as an integer and checks it is within the range `[1, internshipList.getSize()]`.
+5. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+6. Validates the date is not in the past.
 7. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
-8. Creates a new `Interview` object linked to that `Internship` with the given date-time.
-9. Adds the `Interview` to the `InterviewList`.
-10. Prints a confirmation message to the user.
+8. Checks the internship does not already have an interview (prevents duplicates).
+9. Creates a new `Interview` object linked to that `Internship` with the given date-time.
+10. Sets the interview reference on the `Internship` and adds the `Interview` to the `InterviewList`.
+11. Prints a confirmation message to the user.
 
 The following sequence diagram illustrates the execution flow when the user enters
 `add-interview 2 /d 2025-06-15 10:00`:
 
 ![Add Interview Sequence Diagram](diagrams/AddInterviewSequenceDiagram.png)
+
+#### Input Validation
+
+The command implements multiple layers of validation to ensure robustness:
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Index Presence** | Verifies the index parameter is present | "Please provide the index of the internship." |
+| **Date Presence** | Verifies the `/d` flag and value are present | "Please provide a date using the /d flag." |
+| **Type Check** | Ensures the index is a valid integer | "Index must be a valid integer, got: abc" |
+| **Range Check** | Confirms index is within list bounds | "Index 99 is out of range. There are 2 internship(s)." |
+| **Date Format** | Validates the date string parses correctly | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+| **Date-in-Past** | Rejects dates earlier than the current time | "Interview date ... is in the past." |
+| **Duplicate Check** | Prevents adding a second interview to an internship | "... already has an interview scheduled." |
+
+#### Defensive Programming Features
+
+**1. Assertions**: Verify internal state invariants during execution.
+```java
+assert parser != null : "Parser should not be null";
+assert internshipList != null : "InternshipList should not be null";
+```
+
+**2. Logging**: Track execution flow and specific validation failures.
+```java
+logger.log(Level.WARNING, "Failed to add interview: date is in the past.");
+logger.log(Level.WARNING, "Failed to add interview: internship already has an interview.");
+```
 
 #### Design Considerations
 
@@ -265,12 +294,35 @@ The following sequence diagram illustrates the execution flow when the user ente
     - Pros: Shorter input.
     - Cons: Cannot differentiate between interviews on the same day at different times.
 
+**Aspect: Duplicate interview handling**
+
+- **Alternative 1 (current choice):** Reject the command if the internship already has an interview.
+    - Pros: Prevents accidental data loss. User is told to use `update-date` or `delete-interview` first.
+    - Cons: Requires an extra step if the user wants to replace the interview.
+
+- **Alternative 2:** Silently overwrite the existing interview.
+    - Pros: Fewer steps for the user.
+    - Cons: User may accidentally lose an existing interview without realising.
+
+#### Test Coverage
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `execute_validIndex_addsInterviewSuccessfully` | Add interview with valid index and future date | Interview added, list size increases by 1 |
+| `execute_validIndexSecondInternship_addsInterviewSuccessfully` | Add to 2nd internship | Interview added successfully |
+| `execute_nonIntegerIndex_exceptionThrown` | Use `abc` as index | Throws `GoldenCompassException` |
+| `execute_indexOutOfRangeHigh_exceptionThrown` | Use index `99` for list of 2 | Throws `GoldenCompassException` |
+| `execute_indexOutOfRangeZero_exceptionThrown` | Use index `0` | Throws `GoldenCompassException` |
+| `execute_negativeIndex_exceptionThrown` | Use index `-1` | Throws `GoldenCompassException` |
+| `execute_missingIndex_exceptionThrown` | Omit index entirely | Throws `GoldenCompassException` |
+
 ### Update Interview Date Feature
 
 #### Overview
 
 The `update-date` command allows the user to set or update the date and time of an existing interview.
-The user specifies the 1-based index of the interview and a date-time in `yyyy-MM-dd HH:mm` format.
+The user specifies the 1-based index of the interview (as shown by `list-interview`, sorted by date)
+and a date-time in `yyyy-MM-dd HH:mm` format.
 
 **Command format:** `update-date INDEX /d DATE`
 
@@ -282,27 +334,50 @@ April 15, 2025 at 14:00.
 The feature is implemented in `SetInterviewDeadlineCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
-1. Checks if the `/help` flag is present — if so, prints usage information and returns.
-2. Retrieves the index parameter from the `Parser` using `getParamsOf(COMMAND_WORD)`.
-3. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
-4. Validates that both parameters are present and non-empty.
-5. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
-6. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
-7. Sorts the interview list and retrieves the `Interview` at the 0-based position `(index - 1)`.
-8. Calls `interview.setDate(date)` to update the date-time.
-9. Prints a confirmation message to the user.
+1. Retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
+2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
+3. Validates that both parameters are present and non-empty.
+4. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
+5. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+6. Sorts the interview list by date and retrieves the `Interview` at the 0-based position `(index - 1)`.
+7. Calls `interview.setDate(date)` to update the date-time.
+8. Prints a confirmation message to the user.
 
 The following sequence diagram illustrates the execution flow when the user enters
 `update-date 1 /d 2025-04-15 14:00`:
 
 ![Set Deadline Sequence Diagram](diagrams/SetDeadlineSequenceDiagram.png)
 
+#### Input Validation
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Index Presence** | Verifies the index parameter is present | "Please provide the index of the interview." |
+| **Date Presence** | Verifies the `/d` flag and value are present | "Please provide a date using the /d flag." |
+| **Type Check** | Ensures the index is a valid integer | "Index must be a valid integer, got: abc" |
+| **Range Check** | Confirms index is within interview list bounds | "Index 99 is out of range. There are 1 interview(s)." |
+| **Date Format** | Validates the date string parses correctly | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+
+#### Defensive Programming Features
+
+**1. Assertions**: Verify internal state invariants during execution.
+```java
+assert parser != null : "Parser should not be null";
+assert interviewList != null : "InterviewList should not be null";
+```
+
+**2. Logging**: Track execution flow and specific validation failures.
+```java
+logger.log(Level.WARNING, "Failed to update date: index is not a number.");
+logger.log(Level.INFO, "Successfully updated interview " + index + " to " + date);
+```
+
 #### Design Considerations
 
 **Aspect: How to identify which interview to update**
 
-- **Alternative 1 (current choice):** Use a 1-based index from the displayed interview list.
-    - Pros: Consistent with other commands (e.g., `add-interview` uses an index). Simple for the user to type.
+- **Alternative 1 (current choice):** Use a 1-based index from the displayed interview list (sorted by date).
+    - Pros: Consistent with other commands. Simple for the user to type.
     - Cons: The user must run `list-interview` first to know the index.
 
 - **Alternative 2:** Identify by internship name or interview description.
@@ -318,6 +393,19 @@ The following sequence diagram illustrates the execution flow when the user ente
 - **Alternative 2:** Accept the date as a positional argument (e.g., `update-date 1 2025-04-15 14:00`).
     - Pros: Shorter command for the user.
     - Cons: Breaks the flag-based convention used by other commands, making the parser inconsistent.
+
+#### Test Coverage
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `execute_validIndexAndDate_setsDeadlineSuccessfully` | Update with valid index and date | Date updated to new value |
+| `execute_nonIntegerIndex_exceptionThrown` | Use `abc` as index | Throws `GoldenCompassException` |
+| `execute_indexOutOfRangeHigh_exceptionThrown` | Use index `99` for list of 1 | Throws `GoldenCompassException` |
+| `execute_indexOutOfRangeZero_exceptionThrown` | Use index `0` | Throws `GoldenCompassException` |
+| `execute_invalidDateFormat_exceptionThrown` | Use `2028` as date | Throws `GoldenCompassException` |
+| `execute_missingDateFlag_exceptionThrown` | Omit `/d` flag | Throws `GoldenCompassException` |
+| `execute_wrongFlag_exceptionThrown` | Use `/by` instead of `/d` | Throws `GoldenCompassException` |
+| `execute_missingIndex_exceptionThrown` | Omit index entirely | Throws `GoldenCompassException` |
 
 ### Search Interview Feature
 
@@ -337,14 +425,13 @@ containing "Google" on 15 Jun 2025.
 The feature is implemented in `SearchInterviewCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
-1. Checks if the `/help` flag is present — if so, prints usage information and returns.
-2. Retrieves the optional parameters for `/c`, `/t`, and `/d` from the `Parser`.
-3. Extracts each keyword, treating blank or missing values as `null`.
-4. Validates that at least one search flag is provided.
-5. If a `/d` value is provided, parses it into a `LocalDate` (format `yyyy-MM-dd`).
-6. Filters the interview list using `Interview.matches(company, title, date)`, which applies
-   AND logic across all non-null criteria.
-7. Prints the matching results, or a "no results" message if none match.
+1. Retrieves the optional parameters for `/c`, `/t`, and `/d` from the `Parser`.
+2. Extracts each keyword using a helper method `getKeyword()`, treating blank or missing values as `null`.
+3. Validates that at least one search flag is provided.
+4. If a `/d` value is provided, parses it into a `LocalDate` (format `yyyy-MM-dd`).
+5. Filters the interview list using Java streams with `Interview.matches(company, title, date)`,
+   which applies AND logic across all non-null criteria.
+6. Prints the matching results with numbered indices, or a "no results" message if none match.
 
 The filtering relies on the `matches()` method in `Interview`, which uses direct field access
 to `internship.companyName` and `internship.title` for case-insensitive substring matching,
@@ -354,6 +441,28 @@ The following sequence diagram illustrates the execution flow when the user ente
 `search-interview /c Google`:
 
 ![Search Interview Sequence Diagram](diagrams/SearchInterviewSequenceDiagram.png)
+
+#### Input Validation
+
+| Validation Layer | Description | Example Error Message |
+|-----------------|-------------|----------------------|
+| **Flag Presence** | At least one of `/c`, `/t`, `/d` must be provided | "Please provide at least one search flag." |
+| **Date Format** | If `/d` is provided, validates it as `yyyy-MM-dd` | "Invalid date format, expected yyyy-MM-dd" |
+
+#### Defensive Programming Features
+
+**1. Assertions**: Verify internal state invariants during execution.
+```java
+assert parser != null : "Parser should not be null";
+assert interviewList != null : "InterviewList should not be null";
+```
+
+**2. Logging**: Track search criteria and result count for debugging.
+```java
+logger.log(Level.INFO, "Searching interviews with company=" + companyKeyword
+        + ", title=" + titleKeyword + ", date=" + date);
+logger.log(Level.INFO, "Search found " + results.size() + " result(s).");
+```
 
 #### Design Considerations
 
@@ -378,12 +487,28 @@ The following sequence diagram illustrates the execution flow when the user ente
     - Pros: All logic in one place.
     - Cons: Harder to reuse the matching logic from other commands.
 
+#### Test Coverage
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `execute_searchByCompany_findsMatches` | Search `/c Google` with 2 Google interviews | Finds both matches |
+| `execute_searchByCompanyCaseInsensitive_findsMatches` | Search `/c google` (lowercase) | Matches case-insensitively |
+| `execute_searchByTitle_findsMatches` | Search `/t Engineer` | Finds interviews with "Engineer" in role |
+| `execute_searchByDate_findsMatches` | Search `/d 2028-07-20` | Finds interviews on that date |
+| `execute_searchByCompanyAndTitle_findsMatches` | Combined `/c Google /t Product` | Matches both criteria (AND) |
+| `execute_searchByCompanyAndDate_findsMatches` | Combined `/c Google /d 2028-06-15` | Matches both criteria |
+| `execute_noMatchingResults_printsNoResults` | Search `/c Amazon` with no Amazon interviews | Prints "No interviews found" |
+| `execute_noFlagsProvided_exceptionThrown` | Omit all flags | Throws `GoldenCompassException` |
+| `execute_invalidDateFormat_exceptionThrown` | Use `not-a-date` for `/d` | Throws `GoldenCompassException` |
+| `execute_emptyList_printsNoResults` | Search on empty interview list | Prints "No interviews found" |
+
 ### Clear Rejected Feature
 
 #### Overview
 
 The `clear-rejected` command removes all internships that have been marked as rejected from the
-tracker. This helps users declutter their list by removing entries they no longer need to track.
+tracker, along with their associated interviews. This helps users declutter their list by
+removing entries they no longer need to track, while preventing orphaned interview records.
 
 **Command format:** `clear-rejected`
 
@@ -395,10 +520,26 @@ The feature is implemented in `ClearRejectedCommand`, which extends `Command`.
 When `execute()` is called, it performs the following steps:
 
 1. Retrieves the full internship list from `InternshipList`.
-2. Filters the list to find all internships where `isRejected()` returns `true`.
+2. Filters the list using Java streams to find all internships where `isRejected()` returns `true`.
 3. If no rejected internships are found, prints a message and returns.
-4. Removes all rejected internships from the list using `removeAll()`.
-5. Prints a summary showing how many were cleared and their details.
+4. For each rejected internship that has an associated interview, deletes the interview
+   from `InterviewList` using `deleteByInternship()`.
+5. Removes all rejected internships from the list using `removeAll()`.
+6. Prints a summary showing how many were cleared and their details.
+
+#### Defensive Programming Features
+
+**1. Assertions**: Verify internal state invariants during execution.
+```java
+assert internshipList != null : "InternshipList should not be null";
+assert interviewList != null : "InterviewList should not be null";
+```
+
+**2. Logging**: Track the number of entries cleared and interview deletions.
+```java
+logger.log(Level.INFO, "Found " + rejected.size() + " rejected internship(s) to clear.");
+logger.log(Level.INFO, "Deleted associated interview for: " + internship.getCompanyName());
+```
 
 #### Design Considerations
 
@@ -412,6 +553,25 @@ When `execute()` is called, it performs the following steps:
     - Pros: More granular control.
     - Cons: Adds unnecessary complexity — if the user wants to keep a rejected entry,
       they likely would not have rejected it in the first place.
+
+**Aspect: Handling associated interviews**
+
+- **Alternative 1 (current choice):** Automatically delete associated interviews when clearing rejected internships.
+    - Pros: Prevents orphaned interview records. Maintains data consistency without user intervention.
+    - Cons: User cannot keep the interview while removing the internship (unlikely use case).
+
+- **Alternative 2:** Only delete the internship, leave interviews.
+    - Pros: Simpler implementation.
+    - Cons: Orphaned interviews with no parent internship cause confusion and potential errors.
+
+#### Test Coverage
+
+| Test Case | Description | Expected Outcome |
+|-----------|-------------|------------------|
+| `execute_noRejected_printsNoRejected` | Clear with no rejected entries | List unchanged, message printed |
+| `execute_allRejected_clearsAll` | All internships are rejected | List becomes empty |
+| `execute_someRejected_clearsOnlyRejected` | Mix of rejected and non-rejected | Only rejected entries removed |
+| `execute_emptyList_printsNoRejected` | Clear on empty list | No error, message printed |
 
 ### Feature: Listing Upcoming Interviews
 
@@ -981,14 +1141,18 @@ The storage components are covered by unit tests to ensure file I/O reliability:
 ### Adding an interview
 
 1. Prerequisites: At least one internship exists. Run `add Google /t SWE` to create one.
-2. Test case: `add-interview 1 /d 2025-06-15 10:00`
+2. Test case: `add-interview 1 /d 2028-06-15 10:00`
    Expected: Interview added for the 1st internship with the given date-time.
-3. Test case: `add-interview 0 /d 2025-06-15 10:00`
+3. Test case: `add-interview 0 /d 2028-06-15 10:00`
    Expected: Error message indicating the index is out of range.
 4. Test case: `add-interview 1 /d bad-date`
    Expected: Error message indicating invalid date format.
 5. Test case: `add-interview`
    Expected: Error message asking for the index.
+6. Test case: `add-interview 1 /d 2020-01-01 10:00`
+   Expected: Error message indicating the date is in the past.
+7. Test case: Run `add-interview 1 /d 2028-06-15 10:00` again after step 2.
+   Expected: Error message indicating the internship already has an interview scheduled.
 
 ### Updating interview date
 
@@ -1016,6 +1180,8 @@ The storage components are covered by unit tests to ensure file I/O reliability:
 
 1. Prerequisites: Mark at least one internship as rejected using `reject INDEX`.
 2. Test case: `clear-rejected`
-   Expected: All rejected internships are removed. A summary is printed.
+   Expected: All rejected internships are removed, along with their associated interviews. A summary is printed.
 3. Test case: Run `clear-rejected` again when no rejected internships remain.
    Expected: Message indicating nothing to clear.
+4. Test case: Add an internship, add an interview to it, reject it, then run `clear-rejected`.
+   Expected: Both the internship and its interview are removed. Verify with `list` and `list-interview`.
