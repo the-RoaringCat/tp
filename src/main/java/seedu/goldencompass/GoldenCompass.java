@@ -51,11 +51,10 @@ public class GoldenCompass {
     public static void main(String[] args) throws IOException, GoldenCompassException {
 
         Logger rootLogger = Logger.getLogger("");
-        rootLogger.setLevel(Level.WARNING);
+        rootLogger.setLevel(Level.OFF);
 
         for (Handler h : rootLogger.getHandlers()) {
-            h.setLevel(Level.WARNING);
-            h.setEncoding("UTF-8");
+            h.setLevel(Level.OFF);
         }
         new GoldenCompass().run();
 
