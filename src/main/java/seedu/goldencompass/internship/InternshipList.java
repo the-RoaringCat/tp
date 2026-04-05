@@ -41,8 +41,10 @@ public class InternshipList {
      */
     public InternshipList(InternshipList other) {
         this.internships.clear();
-        if (other != null) {
-            this.internships.addAll(other.internships);
+        assert other != null : "Cannot copy null";
+        //copy each element
+        for(Internship internship : other.internships) {
+            this.internships.add(new Internship(internship));
         }
         logger.info("InternshipList copied with " + this.internships.size() + " internships");
     }

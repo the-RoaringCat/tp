@@ -68,6 +68,16 @@ public class Internship {
                 + " - " + this.title);
     }
 
+    public Internship(Internship other) {
+        this.title = other.title;
+        this.companyName = other.companyName;
+        this.comments = other.comments;
+        this.link = other.link;
+        this.hasApplied = other.hasApplied;
+        this.interview = other.interview;
+        this.status = other.status;
+    }
+
     /**
      * Gets the job title.
      *

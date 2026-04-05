@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class InterviewList {
 
-    private static final Logger logger = Logger.getLogger(InternshipList.class.getName());
+    private static final Logger logger = Logger.getLogger(InterviewList.class.getName());
 
     private final List<Interview> interviews = new ArrayList<>();
 
@@ -17,7 +17,11 @@ public class InterviewList {
 
     public InterviewList(InterviewList other) {
         this.interviews.clear();
-        this.interviews.addAll(other.interviews);
+        assert other != null : "Cannot copy null";
+        //copy the element as well.
+        for(Interview interview : other.interviews) {
+            this.interviews.add(new Interview(interview));
+        }
     }
 
 

@@ -24,6 +24,11 @@ public class Interview {
         internship.setInterview(this);
     }
 
+    public Interview(Interview other) {
+        this.internship = other.internship;
+        this.dateTime = other.dateTime;
+    }
+
     /**
      * Sets the deadline date and time of this interview.
      * @param date a {@code LocalDateTime} representing the new deadline.
