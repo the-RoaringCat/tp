@@ -874,6 +874,11 @@ When `execute()` is called, it performs the following steps:
 5. Removes all rejected internships from the list using `removeAll()`.
 6. Prints a summary showing how many were cleared and their details.
 
+The following sequence diagram illustrates the execution flow when the user enters
+`clear-rejected`:
+
+![Clear Rejected Sequence Diagram](diagrams/ClearRejectedSequenceDiagram.png)
+
 #### Defensive Programming Features
 
 **1. Assertions**: Verify internal state invariants during execution.

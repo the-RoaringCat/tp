@@ -1,0 +1,59 @@
+@startuml
+actor User
+participant ":Ui" as Ui
+participant ":GoldenCompass" as GC
+participant ":Parser" as Parser
+participant ":Executor" as Executor
+participant ":ClearRejectedCommand" as CRC
+participant ":InternshipList" as IL
+participant ":InterviewList" as IVL
+
+User -> Ui : "clear-rejected"
+activate Ui
+Ui --> GC : returns input
+deactivate Ui
+
+GC -> Parser : parse("clear-rejected")
+activate Parser
+Parser --> GC
+deactivate Parser
+
+GC -> Executor : execute()
+activate Executor
+Executor -> CRC : execute()
+activate CRC
+
+CRC -> IL : getInternships()
+activate IL
+IL --> CRC : internships
+deactivate IL
+
+note right of CRC : Filters internships where\nisRejected() returns true
+
+alt no rejected internships
+    CRC -> Ui : print("No rejected internships to clear.")
+    activate Ui
+    Ui --> CRC
+    deactivate Ui
+else rejected internships found
+    loop for each rejected internship with interview
+        CRC -> IVL : deleteByInternship(internship)
+        activate IVL
+        IVL --> CRC
+        deactivate IVL
+    end
+
+    CRC -> IL : removeAll(rejected)
+    activate IL
+    IL --> CRC
+    deactivate IL
+
+    CRC -> Ui : print("Cleared N rejected internship(s): ...")
+    activate Ui
+    Ui --> CRC
+    deactivate Ui
+end
+
+deactivate CRC
+deactivate Executor
+@enduml
