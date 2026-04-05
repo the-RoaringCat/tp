@@ -74,7 +74,7 @@ public class Internship {
         this.comments = other.comments;
         this.link = other.link;
         this.hasApplied = other.hasApplied;
-        this.interview = new Interview(other.interview);
+        this.interview = other.interview;
         this.status = other.status;
     }
 
