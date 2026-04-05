@@ -78,6 +78,6 @@ public class MarkOfferCommand extends Command {
         internship.markAsOffer();
 
         logger.log(Level.INFO, "Successfully marked internship as offer received.");
-        ui.print("HUGE CONGRATS! 🥳 Marked this internship as [OFFER RECEIVED]:\n  " + internship);
+        ui.print("HUGE CONGRATS! Marked this internship as [OFFER RECEIVED]:\n  " + internship);
     }
 }

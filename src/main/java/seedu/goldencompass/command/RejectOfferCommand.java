@@ -78,6 +78,6 @@ public class RejectOfferCommand extends Command {
         logger.log(Level.INFO, "Successfully marked internship as rejected.");
 
         // Notice we can just use 'ui' directly because we inherited it from CommandClass!
-        ui.print("Rejection builds character! 💪 Marked this internship as [REJECTED]:\n  " + internship);
+        ui.print("Rejection builds character! Marked this internship as [REJECTED]:\n  " + internship);
     }
 }

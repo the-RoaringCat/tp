@@ -163,10 +163,10 @@ public class Internship {
         // Your teammate's suggested switch statement!
         switch (status) {
         case OFFER:
-            tag = " [OFFER RECEIVED] 🏆";
+            tag = " [OFFER RECEIVED] ";
             break;
         case REJECTED:
-            tag = " [REJECTED] ❌";
+            tag = " [REJECTED] ";
             break;
         case PENDING:
             tag = "";
