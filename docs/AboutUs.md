@@ -6,5 +6,5 @@ Display |     Name      | Github Profile | Portfolio
 ![](https://via.placeholder.com/100.png?text=Photo) | Chen Xingtong | [Github](https://github.com/) | [Portfolio](team/uphyrdia.md)
 ![](https://via.placeholder.com/100.png?text=Photo) |  Li Linying   | [Github](https://github.com/liny666) | [Portfolio](team/liny666.md)
 ![](https://via.placeholder.com/100.png?text=Photo) |   Hao Yian    | [Github](https://github.com/) | [Portfolio](team/Hao_Yian-AboutUs.md)
-![](https://via.placeholder.com/100.png?text=Photo) |   Mo Hanqi    | [Github](https://github.com/the-RoaringCat/) | [Portfolio](team/Mo_Hanqi.md)
+![](https://via.placeholder.com/100.png?text=Photo) |   Mo Hanqi    | [Github](https://github.com/the-RoaringCat/) | [Portfolio](team/the-RoaringCat.md)
 
