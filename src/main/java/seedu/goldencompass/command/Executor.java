@@ -7,17 +7,19 @@ import seedu.goldencompass.operation.OperationHistory;
 import seedu.goldencompass.parser.Parser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class Executor {
+    private static final Set<String> UNDOABLE=Set.of("add", "update-date", "add-interview", "alias",
+            "remove-alias", "mark", "delete", "delete-interview", "reject", "clear-rejected");
 
     private final Map<String, String> aliasMap = new HashMap<>();
 
     private final Map<String, Command> commands;
     private final Parser parser;
-    private final Set<String> undoable=Set.of("add", "update-date", "add-interview", "alias", "remove-alias", "mark",
-            "delete", "reject");
+    private final Set<String> undoable;
 
 
     public Executor(Parser parser, InternshipList internshipList, InterviewList interviewList,
@@ -49,8 +51,10 @@ public class Executor {
         );
 
         //copy the key of commands into alias map
-
         commands.keySet().forEach(key -> aliasMap.put(key, key));
+
+        //copy the set of undoable command into set of undoable alias
+        undoable = new HashSet<>(UNDOABLE);
     }
 
     public void execute() throws GoldenCompassException {
@@ -76,27 +80,56 @@ public class Executor {
     }
 
     public void addAlias(String command, String alias) throws GoldenCompassException {
-        if (aliasMap.get(command) == null) {
-            throw new GoldenCompassException("Error: Cannot add alias to \"" + command + " since it does not exist.");
+        command = command.trim();
+        alias = alias.trim();
+
+        //alias is empty
+        if(alias.isEmpty()) {
+            throw new GoldenCompassException("Error: Cannot add blank alias");
         }
-        if (aliasMap.containsKey(alias)) {
+
+        //command is not found
+        if(aliasMap.get(command) == null) {
+            throw new GoldenCompassException("Error: Cannot add alias to \"" + command + "\" since it does not exist.");
+        }
+
+        //alias is already registered
+        if(aliasMap.containsKey(alias)) {
             throw new GoldenCompassException("Error: Alias \"" + alias + "\" already exists.");
         }
+
+        //register that alias
         aliasMap.put(alias, command);
+
+        //register the alias as undoable if it is
+        if(UNDOABLE.contains(command)) {
+            undoable.add(alias);
+        }
     }
 
     public void removeAlias(String alias) throws GoldenCompassException{
+        alias = alias.trim();
+
+        //alias is empty
+        if(alias.isEmpty()) {
+            throw new GoldenCompassException("Error: Cannot remove blank alias");
+        }
+
         //alias does not exist
         if (!aliasMap.containsKey(alias)) {
             throw new GoldenCompassException("Error: Alias: \"" + alias +"\" does not exist.");
         }
 
-        //cannot remove default command
-        if (commands.containsKey(alias)) {
+        //alias is default command
+        if(commands.containsKey(alias)) {
             throw new GoldenCompassException("Error: Cannot remove default command: \"" + alias +"\"");
         }
 
+        //remove the alias from registry
         aliasMap.remove(alias);
+
+        //remove the alias from undoable registry if it is undoable
+        undoable.remove(alias);
     }
 
     public Map<String, String> getAliasMap() {

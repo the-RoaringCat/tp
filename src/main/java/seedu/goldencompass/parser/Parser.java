@@ -150,4 +150,7 @@ public class Parser {
         return flagToParamMap.containsKey(flag);
     }
 
+    public String getDefaultParam() {
+        return getParamsOf(command).get(0);
+    }
 }
