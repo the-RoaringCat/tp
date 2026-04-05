@@ -63,7 +63,7 @@ public class DeleteInternshipCommand extends Command {
         internshipList.delete(index - 1);
 
         logger.log(Level.INFO, "Successfully deleted internship at index " + index);
-        ui.print("✓ Deleted internship: " + internshipName);
+        ui.print("Deleted internship: " + internshipName);
     }
 
     @Override

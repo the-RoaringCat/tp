@@ -80,7 +80,7 @@ public class DeleteInterviewCommand extends Command {
         internship.deleteInterview();
 
         // Make sure the message says "Deleted interview", not "Deleted internship"
-        ui.print("✓ Deleted interview for " + internship.getCompanyName()
+        ui.print("Deleted interview for " + internship.getCompanyName()
                 + " (scheduled on: " + formattedDate + ")");
     }
 
