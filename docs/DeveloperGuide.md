@@ -1458,21 +1458,24 @@ or memory, which can become disorganized and error-prone as the number of applic
 
 ## User Stories
 
-| Version | As a ... | I want to ...                               | So that I can ...                                                           |
-|---------|----------|---------------------------------------------|-----------------------------------------------------------------------------|
-| v1.0    | new user | see usage instructions                      | refer to them when I forget how to use the application                      |
-| v1.0    | user     | add an interview linked to an internship    | track my upcoming interviews alongside my applications                      |
-| v1.0    | user     | set a date and time for an interview        | remember when each interview is scheduled                                   |
-| v1.0    | user     | add and remove short alias for commands     | customize command words that are easy to remember                           |
-| v1.0    | user     | list all applications                       | I can see my progress at a glance                                           |
-| v2.0    | user     | search interviews by company, role, or date | quickly find specific interviews without scrolling the full list            |
-| v2.0    | user     | clear all rejected internships at once      | declutter my list and focus on active applications                          |
-| v2.0    | user     | update the date of an existing interview    | correct or reschedule an interview without deleting and re-adding it        |
-| v2.0    | user     | undo and redo certain operations            | correct mistakes in typing the commands                                     |
-| v2.0    | user     | delete an application                       | my list stays updated, clean and accurate                                   |
-| v2.0    | user     | delete an interview                         | my list stays updated, clean and accurate                                   |
-| v2.0    | user     | search internships by company and role      | quick find specific internship applications without scrolling the full list |
-
+| Version | As a ... | I want to ...                                                  | So that I can ...                                                             |
+|---------|----------|----------------------------------------------------------------|-------------------------------------------------------------------------------|
+| v1.0    | new user | see usage instructions                                         | refer to them when I forget how to use the application                        |
+| v1.0    | user     | add an internship application                                  | keep track of the roles I've applied for                                      |
+| v1.0    | user     | add an interview linked to an internship                       | track my upcoming interviews alongside my applications                        |
+| v1.0    | user     | set a date and time for an interview                           | remember when each interview is scheduled                                     |
+| v1.0    | user     | add and remove short alias for commands                        | customize command words that are easy to remember                             |
+| v1.0    | user     | list all applications                                          | I can see my progress at a glance                                             |
+| v2.0    | user     | search interviews by company, role, or date                    | quickly find specific interviews without scrolling the full list              |
+| v2.0    | user     | clear all rejected internships at once                         | declutter my list and focus on active applications                            |
+| v2.0    | user     | update the date of an existing interview                       | correct or reschedule an interview without deleting and re-adding it          |
+| v2.0    | user     | undo and redo certain operations                               | correct mistakes in typing the commands                                       |
+| v2.0    | user     | delete an application                                          | my list stays updated, clean and accurate                                     |
+| v2.0    | user     | delete an interview                                            | my list stays updated, clean and accurate                                     |
+| v2.0    | user     | search internships by company and role                         | quick find specific internship applications without scrolling the full list   |
+| v2.0    | user     | mark an application as offer received                          | easily track my successful applications and decide which internship to accept |
+| v2.0    | user     | mark an application as offer rejected                          | filter them out and focus my attention on my pending applications             |
+| v2.0    | user     | have my application data to be automatically saved when I exit | keep tracking my internship application progress between sessions             |
 
 ## Non-Functional Requirements
 
@@ -1489,6 +1492,20 @@ or memory, which can become disorganized and error-prone as the number of applic
 * *Index* - A 1-based position number referring to an item in the displayed list.
 
 ## Instructions for manual testing
+
+### Adding an internship
+
+1. Prerequisites: None. (Can be tested on an empty or populated list).
+2. Test case: `add Grab /t Software Engineer`
+   Expected: Internship added to the list. A success message is printed showing the company and title.
+3. Test case: `add /t Software Engineer`
+   Expected: Error message indicating the company name cannot be empty.
+4. Test case: `add Grab`
+   Expected: Error message indicating an invalid flag or missing title.
+5. Test case: `add Grab /t`
+   Expected: Error message indicating the internship title cannot be empty.
+6. Test case: `add    Google    /t    Data Analyst   `
+   Expected: Internship added successfully, with extra spaces gracefully trimmed from the company name and title.
 
 ### Adding an interview
 
@@ -1537,3 +1554,39 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: Message indicating nothing to clear.
 4. Test case: Add an internship, add an interview to it, reject it, then run `clear-rejected`.
    Expected: Both the internship and its interview are removed. Verify with `list` and `list-interview`.
+
+### Marking an internship as offer received
+
+1. Prerequisites: At least one internship exists in the tracker. Run `add Grab /t Software Engineer` if the list is empty, then use `list` to view it.
+2. Test case: `mark 1`
+   Expected: The 1st internship is updated, and a congratulatory message is printed showing its new `[OFFER RECEIVED]` status.
+3. Test case: `mark 0`
+   Expected: Error message indicating the index is invalid or out of bounds.
+4. Test case: `mark 999` (assuming your list has fewer than 999 items)
+   Expected: Error message indicating the index is invalid or out of bounds.
+5. Test case: `mark abc`
+   Expected: Error message indicating that the index must be a number.
+6. Test case: `mark`
+   Expected: Error message asking to provide the index of the internship.
+
+### Marking an internship as rejected
+
+1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
+2. Test case: `reject 1`
+   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
+3. Test case: `reject 0`
+   Expected: Error message indicating the index is invalid or out of bounds.
+4. Test case: `reject 999` (assuming your list has fewer than 999 items)
+   Expected: Error message indicating the index is invalid or out of bounds.
+5. Test case: `reject abc`
+   Expected: Error message indicating that the index must be a number.
+6. Test case: `reject`
+   Expected: Error message asking to provide the index of the internship.
+
+### Saving and Loading Data (Storage)
+
+1. Prerequisites: Ensure the application is not running and delete the `data` folder in the project root directory if it exists. Start the application, add an internship (`add Grab /t SWE`), schedule an interview for it (`add-interview 1 /d 2026-05-10 10:00`), and create a custom alias (`alias /c list /a ls`).
+2. Test case: Run `bye` to exit the application.
+   Expected: The application exits successfully. A `data` folder is automatically created, containing `internships.txt`, `interviews.txt`, and `alias.txt`, with all your entered data safely stored inside.
+3. Test case: Restart the application. Run `list`, then `list-interview`, and finally type your custom alias `ls`.
+   Expected: The application successfully loads all relational data. The Grab internship and its interview date appear correctly, and typing `ls` successfully triggers the list command.

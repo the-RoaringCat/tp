@@ -286,8 +286,8 @@ Updates the status of an existing internship application in your tracker to indi
 
 **Expected Output:**
 ```text
-HUGE CONGRATS! 🥳 Marked this internship as [OFFER RECEIVED]:
-  Grab - Software Engineer [OFFER RECEIVED] 🏆
+HUGE CONGRATS! Marked this internship as [OFFER RECEIVED]:
+  Grab - Software Engineer [OFFER RECEIVED]
 ```
 
 ### Marking an internship application as rejected: `reject`
@@ -305,8 +305,8 @@ Updates the status of an existing internship application to indicate that it is 
 
 **Expected Output:**
 ```text
-Rejection builds character! 💪 Marked this internship as [REJECTED]:
-  Grab - Software Engineer [REJECTED] ❌
+Rejection builds character! Marked this internship as [REJECTED]:
+  Grab - Software Engineer [REJECTED] 
 ```
 
 ### Saving the data
