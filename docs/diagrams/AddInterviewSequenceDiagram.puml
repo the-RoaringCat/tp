@@ -1,5 +1,7 @@
 @startuml
 actor User
+participant ":Ui" as Ui
+participant ":GoldenCompass" as GC
 participant ":Parser" as Parser
 participant ":Executor" as Executor
 participant ":AddInterviewCommand" as AIC
@@ -7,11 +9,18 @@ participant ":InternshipList" as IL
 participant ":Internship" as Intern
 participant ":InterviewList" as IVL
 
-User -> Parser : "add-interview 2 /d 2025-06-15 10:00"
+User -> Ui : "add-interview 2 /d 2025-06-15 10:00"
+activate Ui
+Ui --> GC : returns input
+deactivate Ui
+
+GC -> Parser : parse("add-interview 2 /d 2025-06-15 10:00")
 activate Parser
-Parser --> Executor : parsed command
+Parser --> GC
 deactivate Parser
 
+GC -> Executor : execute()
+activate Executor
 Executor -> AIC : execute()
 activate AIC
 
@@ -71,4 +80,5 @@ else params present
 end
 
 deactivate AIC
+deactivate Executor
 @enduml
