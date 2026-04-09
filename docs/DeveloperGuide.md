@@ -1458,16 +1458,21 @@ or memory, which can become disorganized and error-prone as the number of applic
 
 ## User Stories
 
-| Version | As a ... | I want to ...                               | So that I can ...                                                    |
-|---------|----------|---------------------------------------------|----------------------------------------------------------------------|
-| v1.0    | new user | see usage instructions                      | refer to them when I forget how to use the application               |
-| v1.0    | user     | add an interview linked to an internship    | track my upcoming interviews alongside my applications               |
-| v1.0    | user     | set a date and time for an interview        | remember when each interview is scheduled                            |
-| v1.0    | user     | add and remove short alias for commands     | customize command words that are easy to remember                    |
-| v2.0    | user     | search interviews by company, role, or date | quickly find specific interviews without scrolling the full list     |
-| v2.0    | user     | clear all rejected internships at once      | declutter my list and focus on active applications                   |
-| v2.0    | user     | update the date of an existing interview    | correct or reschedule an interview without deleting and re-adding it |
-| v2.0    | user     | undo and redo certain operations            | correct mistakes in typing the commands                              |
+| Version | As a ... | I want to ...                               | So that I can ...                                                           |
+|---------|----------|---------------------------------------------|-----------------------------------------------------------------------------|
+| v1.0    | new user | see usage instructions                      | refer to them when I forget how to use the application                      |
+| v1.0    | user     | add an interview linked to an internship    | track my upcoming interviews alongside my applications                      |
+| v1.0    | user     | set a date and time for an interview        | remember when each interview is scheduled                                   |
+| v1.0    | user     | add and remove short alias for commands     | customize command words that are easy to remember                           |
+| v1.0    | user     | list all applications                       | I can see my progress at a glance                                           |
+| v2.0    | user     | search interviews by company, role, or date | quickly find specific interviews without scrolling the full list            |
+| v2.0    | user     | clear all rejected internships at once      | declutter my list and focus on active applications                          |
+| v2.0    | user     | update the date of an existing interview    | correct or reschedule an interview without deleting and re-adding it        |
+| v2.0    | user     | undo and redo certain operations            | correct mistakes in typing the commands                                     |
+| v2.0    | user     | delete an application                       | my list stays updated, clean and accurate                                   |
+| v2.0    | user     | delete an interview                         | my list stays updated, clean and accurate                                   |
+| v2.0    | user     | search internships by company and role      | quick find specific internship applications without scrolling the full list |
+
 
 ## Non-Functional Requirements
 

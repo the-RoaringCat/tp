@@ -1,40 +1,39 @@
 @startuml
 actor User
-participant ":Parser" as Parser
-participant ":Executor" as Exec
-participant ":ListCommand" as Cmd
-participant ":InternshipList" as List
-participant ":Internship" as Intern
+participant ":ListCommand" as ListCommand
+participant ":InternshipList" as InternshipList
+participant ":Internship" as Internship
 
-User -> Parser : "list"
-activate Parser
-Parser --> Exec : parsed command
-deactivate Parser
+User -> ListCommand : execute()
+activate ListCommand
 
-Exec -> Exec : get command "list"
-Exec -> Cmd : execute()
-activate Cmd
-
-Cmd -> Cmd : getCommandDescription()
-Cmd -> Cmd : getFlagDescription()
-
-Cmd -> List : getInternships()
-activate List
-List --> Cmd : internships
-deactivate List
+ListCommand -> InternshipList : getInternships()
+activate InternshipList
+InternshipList --> ListCommand : internships
+deactivate InternshipList
 
 alt internships == null or empty
-    Cmd -> Cmd : ui.print("No internships in the list.")
+    ListCommand -> ListCommand : ui.print("No internships in the list.")
+    note right of ListCommand : Self-invocation
 else internships not empty
-    Cmd -> Cmd : ui.print("Here are the internships you have added:")
+    ListCommand -> ListCommand : ui.print("Here are the internships you have added:")
+    note right of ListCommand : Self-invocation
+
     loop for each internship
-        Cmd -> List : get(i)
-        activate List
-        List --> Cmd : Internship
-        deactivate List
-        Cmd -> Cmd : ui.print((i+1) + ". " + intern.toString())
+        ListCommand -> InternshipList : get(i)
+        activate InternshipList
+        InternshipList --> ListCommand : internship
+        deactivate InternshipList
+
+        ListCommand -> Internship : toString()
+        activate Internship
+        Internship --> ListCommand : formatted string
+        deactivate Internship
+
+        ListCommand -> ListCommand : ui.print(index + ". " + formattedString)
+        note right of ListCommand : Self-invocation
     end
 end
 
-deactivate Cmd
+deactivate ListCommand
 @enduml
