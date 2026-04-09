@@ -1,48 +1,45 @@
 @startuml
-hide footbox
-skinparam maxMessageSize 150
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Exec
+participant ":AddInternshipCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
 
-participant ":AddInternshipCommand" as AddInternshipCommand #ADD1B2
-participant "parser:Parser" as Parser #ADD1B2
-participant "internshipList:InternshipList" as InternshipList #F498AD
-participant "newInternship:Internship" as Internship #F498AD
-participant "ui:Ui" as Ui #8CB6CE
-
-[-> AddInternshipCommand : execute()
-activate AddInternshipCommand
-
-AddInternshipCommand -> Parser : getParamsOf(parser.getCommand())
+User -> Parser : "add Grab /t Software Engineer"
 activate Parser
-Parser --> AddInternshipCommand : addParams
+Parser --> Exec : parsed command
 deactivate Parser
 
-AddInternshipCommand -> Parser : getParamsOf("/t")
+Exec -> Exec : get command "add"
+Exec -> Cmd : execute()
+activate Cmd
+
+Cmd -> Parser : getParamsOf(parser.getCommand())
 activate Parser
-Parser --> AddInternshipCommand : titleParams
+Parser --> Cmd : addParams
 deactivate Parser
 
-note right of AddInternshipCommand
-  Validates company name,
-  flag, and title strings
-end note
+Cmd -> Parser : getParamsOf("/t")
+activate Parser
+Parser --> Cmd : titleParams
+deactivate Parser
 
-create Internship
-AddInternshipCommand -> Internship : Internship(title, companyName)
-activate Internship
-Internship --> AddInternshipCommand : newInternship
-deactivate Internship
+note right of Cmd : Validates company name,\nflag, and title strings
 
-AddInternshipCommand -> InternshipList : add(newInternship)
-activate InternshipList
-InternshipList --> AddInternshipCommand
-deactivate InternshipList
+alt missing company name or title
+    Cmd -> User : throw GoldenCompassException
+else params valid
+    create "newInternship:Internship" as Intern
+    Cmd -> Intern : new Internship(title, companyName)
 
-AddInternshipCommand -> Ui : print("Got it! I've added this internship...")
-activate Ui
-Ui --> AddInternshipCommand
-deactivate Ui
+    Cmd -> List : add(newInternship)
+    activate List
+    List --> Cmd
+    deactivate List
 
-[<-- AddInternshipCommand
-deactivate AddInternshipCommand
+    Cmd -> Cmd : ui.print("Got it! I've added this internship...")
+end
 
+deactivate Cmd
 @enduml

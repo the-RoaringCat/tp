@@ -1,42 +1,51 @@
 @startuml
-hide footbox
-skinparam maxMessageSize 150
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Exec
+participant ":RejectOfferCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
 
-participant ":RejectOfferCommand" as RejectOfferCommand #ADD1B2
-participant "parser:Parser" as Parser #ADD1B2
-participant "internshipList:InternshipList" as InternshipList #F498AD
-participant "internship:Internship" as Internship #F498AD
-participant "ui:Ui" as Ui #8CB6CE
-
-[-> RejectOfferCommand : execute()
-activate RejectOfferCommand
-
-RejectOfferCommand -> Parser : getParamsOf("reject")
+User -> Parser : "reject 1"
 activate Parser
-Parser --> RejectOfferCommand : params
+Parser --> Exec : parsed command
 deactivate Parser
 
-note right of RejectOfferCommand
-  Parses index and
-  validates bounds
-end note
+Exec -> Exec : get command "reject"
+Exec -> Cmd : execute()
+activate Cmd
 
-RejectOfferCommand -> InternshipList : get(index - 1)
-activate InternshipList
-InternshipList --> RejectOfferCommand : internship
-deactivate InternshipList
+Cmd -> Parser : getParamsOf("reject")
+activate Parser
+Parser --> Cmd : params
+deactivate Parser
 
-RejectOfferCommand -> Internship : markAsRejected()
-activate Internship
-Internship --> RejectOfferCommand
-deactivate Internship
+note right of Cmd : retrieves ["1"]
 
-RejectOfferCommand -> Ui : print("Rejection builds character! 💪...")
-activate Ui
-Ui --> RejectOfferCommand
-deactivate Ui
+alt missing index or not a number
+    Cmd -> User : throw GoldenCompassException
+else index format valid
+    Cmd -> List : getSize()
+    activate List
+    List --> Cmd : size
+    deactivate List
 
-[<-- RejectOfferCommand
-deactivate RejectOfferCommand
+    alt index out of range
+        Cmd -> User : throw GoldenCompassException
+    else index valid
+        Cmd -> List : get(index - 1)
+        activate List
+        List --> Cmd : Internship
+        deactivate List
 
+        Cmd -> Intern : markAsRejected()
+        activate Intern
+        Intern --> Cmd
+        deactivate Intern
+
+        Cmd -> Cmd : ui.print("Rejection builds character! Marked...")
+    end
+end
+
+deactivate Cmd
 @enduml

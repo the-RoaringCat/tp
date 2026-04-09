@@ -1,46 +1,33 @@
 @startuml
-hide footbox
-skinparam maxMessageSize 150
+actor User
+participant ":GoldenCompass" as GC
+participant ":InternshipStorage" as InternStorage
+participant ":InterviewStorage" as InterviewStorage
+participant ":AliasStorage" as AliasStorage
 
-participant ":GoldenCompass" as GoldenCompass #ADD1B2
-participant "internshipStorage:InternshipStorage" as InternshipStorage #F498AD
-participant "interviewStorage:InterviewStorage" as InterviewStorage #F498AD
-participant "aliasStorage:AliasStorage" as AliasStorage #F498AD
-participant "fw:FileWriter" as FileWriter #8CB6CE
+User -> GC : "bye"
+activate GC
 
-[-> GoldenCompass : run()
-activate GoldenCompass
+note right of GC : GoldenCompass triggers\nsave for all data types
 
-loop while true
-    GoldenCompass -> GoldenCompass : execute command
+GC -> InternStorage : save(internshipList)
+activate InternStorage
+InternStorage -> InternStorage : Write formatting logic
+InternStorage --> GC
+deactivate InternStorage
 
-    GoldenCompass -> InternshipStorage : save(internships)
-    activate InternshipStorage
-    create FileWriter
-    InternshipStorage -> FileWriter : new FileWriter(filePath)
-    InternshipStorage -> FileWriter : write(formattedData)
-    InternshipStorage -> FileWriter : close()
-    InternshipStorage --> GoldenCompass
-    deactivate InternshipStorage
+GC -> InterviewStorage : save(interviewList)
+activate InterviewStorage
+InterviewStorage -> InterviewStorage : Write formatting logic
+InterviewStorage --> GC
+deactivate InterviewStorage
 
-    GoldenCompass -> InterviewStorage : save(interviews)
-    activate InterviewStorage
-    InterviewStorage -> FileWriter : new FileWriter(filePath)
-    InterviewStorage -> FileWriter : write(formattedData)
-    InterviewStorage -> FileWriter : close()
-    InterviewStorage --> GoldenCompass
-    deactivate InterviewStorage
+GC -> AliasStorage : save(aliasMap)
+activate AliasStorage
+AliasStorage -> AliasStorage : Write formatting logic
+AliasStorage --> GC
+deactivate AliasStorage
 
-    GoldenCompass -> AliasStorage : save(aliasMap)
-    activate AliasStorage
-    AliasStorage -> FileWriter : new FileWriter(filePath)
-    AliasStorage -> FileWriter : write(formattedData)
-    AliasStorage -> FileWriter : close()
-    AliasStorage --> GoldenCompass
-    deactivate AliasStorage
-end
-
-[<-- GoldenCompass
-deactivate GoldenCompass
-
+GC --> User : "Goodbye!"
+deactivate GC
 @enduml

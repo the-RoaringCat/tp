@@ -1,42 +1,51 @@
 @startuml
-hide footbox
-skinparam maxMessageSize 150
+actor User
+participant ":Parser" as Parser
+participant ":Executor" as Exec
+participant ":MarkOfferCommand" as Cmd
+participant ":InternshipList" as List
+participant ":Internship" as Intern
 
-participant ":MarkOfferCommand" as MarkOfferCommand #ADD1B2
-participant "parser:Parser" as Parser #ADD1B2
-participant "internshipList:InternshipList" as InternshipList #F498AD
-participant "internship:Internship" as Internship #F498AD
-participant "ui:Ui" as Ui #8CB6CE
-
-[-> MarkOfferCommand : execute()
-activate MarkOfferCommand
-
-MarkOfferCommand -> Parser : getParamsOf(parser.getCommand())
+User -> Parser : "mark-offer 1"
 activate Parser
-Parser --> MarkOfferCommand : params
+Parser --> Exec : parsed command
 deactivate Parser
 
-note right of MarkOfferCommand
-  Parses index and
-  validates bounds
-end note
+Exec -> Exec : get command "mark-offer"
+Exec -> Cmd : execute()
+activate Cmd
 
-MarkOfferCommand -> InternshipList : get(index - 1)
-activate InternshipList
-InternshipList --> MarkOfferCommand : internship
-deactivate InternshipList
+Cmd -> Parser : getParamsOf(parser.getCommand())
+activate Parser
+Parser --> Cmd : params
+deactivate Parser
 
-MarkOfferCommand -> Internship : markAsOffer()
-activate Internship
-Internship --> MarkOfferCommand
-deactivate Internship
+note right of Cmd : retrieves ["1"]
 
-MarkOfferCommand -> Ui : print("HUGE CONGRATS! 🥳...")
-activate Ui
-Ui --> MarkOfferCommand
-deactivate Ui
+alt missing index or not a number
+    Cmd -> User : throw GoldenCompassException
+else index format valid
+    Cmd -> List : getSize()
+    activate List
+    List --> Cmd : size
+    deactivate List
 
-[<-- MarkOfferCommand
-deactivate MarkOfferCommand
+    alt index out of range
+        Cmd -> User : throw GoldenCompassException
+    else index valid
+        Cmd -> List : get(index - 1)
+        activate List
+        List --> Cmd : Internship
+        deactivate List
 
+        Cmd -> Intern : markAsOffer()
+        activate Intern
+        Intern --> Cmd
+        deactivate Intern
+
+        Cmd -> Cmd : ui.print("HUGE CONGRATS! Marked this internship...")
+    end
+end
+
+deactivate Cmd
 @enduml
