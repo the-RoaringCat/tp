@@ -1608,3 +1608,24 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: The application exits successfully. A `data` folder is automatically created, containing `internships.txt`, `interviews.txt`, and `alias.txt`, with all your entered data safely stored inside.
 3. Test case: Restart the application. Run `list`, then `list-interview`, and finally type your custom alias `ls`.
    Expected: The application successfully loads all relational data. The Grab internship and its interview date appear correctly, and typing `ls` successfully triggers the list command.
+
+### Listing all interviews
+
+1. Test case: `list-interview`
+
+   Expected: If there are interviews added, it should list all interviews; 
+    otherwise it should print "You don't have any interviews!"
+
+### Listing upcoming interviews
+
+1. Test case: `upcoming`
+
+   Expected: If there are interviews added, it should list all interviews in the upcoming 5 days (starting from and 
+    including the current system time); otherwise it should print "You don't have any upcoming interviews."
+2. Test case: `upcoming N`, where `N` is a strictly positive integer
+
+   Expected: If there are interviews added, it should list all interviews in the upcoming `N` days (starting from and
+   including the current system time); otherwise it should print "You don't have any upcoming interviews."
+3. Test case: `upcoming N`, where `N` is a negative integer or `0`
+
+   Expected: It should always print "You don't have any upcoming interviews."
