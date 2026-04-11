@@ -60,7 +60,10 @@ Adds an interview to an existing internship.
 Format: `add-interview INDEX /d DATE`
 
 - `INDEX` is the 1-based index of the internship from the list.
-- `DATE` must follow the format `yyyy-MM-dd HH:mm`.
+- `DATE` must follow the format `yyyy-MM-dd HH:mm`. The time is in **24-hour** format
+  (e.g. `09:00` for 9 AM, `14:30` for 2:30 PM, `22:00` for 10 PM).
+- The date must be a valid calendar date. Impossible dates such as `2026-02-30` or
+  `2026-13-01` are rejected.
 - The date must be in the future.
 - Each internship can only have one interview. Use `update-date` to change the date, or
   `delete-interview` to remove the existing interview before adding a new one.
@@ -77,7 +80,13 @@ Updates the date and time of an existing interview.
 Format: `update-date INDEX /d DATE`
 
 - `INDEX` is the 1-based index of the interview as shown in `list-interview` (sorted by date).
-- `DATE` must follow the format `yyyy-MM-dd HH:mm`.
+  After the update, the interview list is re-sorted, so running `list-interview` again
+  will reflect the new ordering.
+- `DATE` must follow the format `yyyy-MM-dd HH:mm`. The time is in **24-hour** format
+  (e.g. `09:00` for 9 AM, `14:30` for 2:30 PM, `22:00` for 10 PM).
+- The date must be a valid calendar date. Impossible dates such as `2026-02-30` or
+  `2026-13-01` are rejected.
+- The date must be in the future.
 - Use `update-date /help` to see usage information.
 
 Examples:

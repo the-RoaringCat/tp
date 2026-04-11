@@ -101,4 +101,37 @@ public class AddInterviewCommandTest {
                     + "Usage: add-interview INDEX /d DATE", e.getMessage());
         }
     }
+
+    @Test
+    public void execute_invalidCalendarDate_exceptionThrown() throws GoldenCompassException {
+        parser.parse("add-interview 1 /d 2099-02-30 10:00");
+        try {
+            addInterviewCommand.execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: 2099-02-30 10:00 is not a valid date.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_invalidMonth_exceptionThrown() throws GoldenCompassException {
+        parser.parse("add-interview 1 /d 2099-13-09 10:00");
+        try {
+            addInterviewCommand.execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: 2099-13-09 10:00 is not a valid date.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_dayOutOfRangeForMonth_exceptionThrown() throws GoldenCompassException {
+        parser.parse("add-interview 1 /d 2099-04-31 10:00");
+        try {
+            addInterviewCommand.execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: 2099-04-31 10:00 is not a valid date.", e.getMessage());
+        }
+    }
 }

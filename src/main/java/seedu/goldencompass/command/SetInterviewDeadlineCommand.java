@@ -1,14 +1,13 @@
 package seedu.goldencompass.command;
 
 import seedu.goldencompass.exception.GoldenCompassException;
-import seedu.goldencompass.internship.Interview;
 import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.parser.Parser;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator;
+import java.time.format.ResolverStyle;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,25 +100,33 @@ public class SetInterviewDeadlineCommand extends Command {
 
         assert interviewList.isValidIndex(index) : "Index should be valid after validation";
 
-        LocalDateTime date;
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            date = LocalDateTime.parse(dateParam, formatter);
-        } catch (DateTimeParseException e) {
+        if (!dateParam.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}")) {
             logger.log(Level.WARNING, "Failed to update date: invalid date format.");
             throw new GoldenCompassException(
                     "Error: Invalid date format, expected yyyy-MM-dd HH:mm, got: " + dateParam);
         }
 
+        LocalDateTime date;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm")
+                    .withResolverStyle(ResolverStyle.STRICT);
+            date = LocalDateTime.parse(dateParam, formatter);
+        } catch (DateTimeParseException e) {
+            logger.log(Level.WARNING, "Failed to update date: date is not a valid calendar date.");
+            throw new GoldenCompassException(
+                    "Error: " + dateParam + " is not a valid date.");
+        }
+
         assert date != null : "Parsed date should not be null";
 
-        List<Interview> sortedInterviews = interviewList.getInterviews().stream()
-                .sorted(Comparator.comparing(Interview::getDate))
-                .toList();
-        Interview interview = sortedInterviews.get(index - 1);
-        assert interview != null : "Retrieved interview should not be null";
+        if (date.isBefore(LocalDateTime.now())) {
+            logger.log(Level.WARNING, "Failed to update date: date is in the past.");
+            throw new GoldenCompassException(
+                    "Error: Interview date " + dateParam + " is in the past. "
+                            + "Please provide a future date.");
+        }
 
-        interview.setDate(date);
+        interviewList.setDateFor(index - 1, date);
 
         logger.log(Level.INFO, "Successfully updated interview " + index + " to " + date);
         ui.print("Deadline set for interview " + index + ": " + date);

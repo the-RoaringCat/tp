@@ -595,7 +595,10 @@ When `execute()` is called, it performs the following steps:
 2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
 3. Validates that both parameters are present and non-empty.
 4. Parses the index as an integer and checks it is within the range `[1, internshipList.getSize()]`.
-5. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
+5. Validates the date string shape with a regex (`\d{4}-\d{2}-\d{2} \d{2}:\d{2}`), then
+   parses it into a `LocalDateTime` using `yyyy-MM-dd HH:mm` with `ResolverStyle.STRICT`.
+   The time is in 24-hour format (`HH` is `00`–`23`), and impossible calendar dates such
+   as `2026-02-30` or `2026-13-01` are rejected instead of being silently adjusted.
 6. Validates the date is not in the past.
 7. Retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
 8. Checks the internship does not already have an interview (prevents duplicates).
@@ -618,7 +621,8 @@ The command implements multiple layers of validation to ensure robustness:
 | **Date Presence** | Verifies the `/d` flag and value are present | "Please provide a date using the /d flag." |
 | **Type Check** | Ensures the index is a valid integer | "Index must be a valid integer, got: abc" |
 | **Range Check** | Confirms index is within list bounds | "Index 99 is out of range. There are 2 internship(s)." |
-| **Date Format** | Validates the date string parses correctly | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+| **Date Format (shape)** | Pre-parse regex ensures the input matches `yyyy-MM-dd HH:mm` | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+| **Calendar Validity** | Strict parser rejects impossible calendar dates (e.g. Feb 30, month 13, April 31) | "2026-02-30 10:00 is not a valid date." |
 | **Date-in-Past** | Rejects dates earlier than the current time | "Interview date ... is in the past." |
 | **Duplicate Check** | Prevents adding a second interview to an internship | "... already has an interview scheduled." |
 
@@ -679,6 +683,9 @@ logger.log(Level.WARNING, "Failed to add interview: internship already has an in
 | `execute_indexOutOfRangeZero_exceptionThrown` | Use index `0` | Throws `GoldenCompassException` |
 | `execute_negativeIndex_exceptionThrown` | Use index `-1` | Throws `GoldenCompassException` |
 | `execute_missingIndex_exceptionThrown` | Omit index entirely | Throws `GoldenCompassException` |
+| `execute_invalidCalendarDate_exceptionThrown` | Use `2099-02-30 10:00` (impossible day in Feb) | Throws with "is not a valid date" |
+| `execute_invalidMonth_exceptionThrown` | Use `2099-13-09 10:00` (month out of range) | Throws with "is not a valid date" |
+| `execute_dayOutOfRangeForMonth_exceptionThrown` | Use `2099-04-31 10:00` (April has 30 days) | Throws with "is not a valid date" |
 
 ### Update Interview Date Feature
 
@@ -702,10 +709,18 @@ When `execute()` is called, it performs the following steps:
 2. Retrieves the date parameter from the `Parser` using `getParamsOf("/d")`.
 3. Validates that both parameters are present and non-empty.
 4. Parses the index as an integer and checks it is within valid range using `interviewList.isValidIndex()`.
-5. Parses the date string into a `LocalDateTime` using the format `yyyy-MM-dd HH:mm`.
-6. Sorts the interview list by date and retrieves the `Interview` at the 0-based position `(index - 1)`.
-7. Calls `interview.setDate(date)` to update the date-time.
-8. Prints a confirmation message to the user.
+5. Validates the date string shape with a regex (`\d{4}-\d{2}-\d{2} \d{2}:\d{2}`), then
+   parses it into a `LocalDateTime` using `yyyy-MM-dd HH:mm` with `ResolverStyle.STRICT`.
+   The time is in 24-hour format (`HH` is `00`–`23`), and impossible calendar dates such
+   as `2026-02-30` or `2026-13-01` are rejected instead of being silently adjusted.
+6. Rejects dates that are in the past.
+7. Retrieves the `Interview` directly from `InterviewList` at the 0-based position
+   `(index - 1)`. This matches the ordering shown by `list-interview`, so the index the
+   user sees always refers to the same interview.
+8. Calls `interview.setDate(date)` to update the date-time.
+9. Re-sorts the underlying `InterviewList` by date so subsequent `list-interview` calls
+   remain in ascending date order after the mutation.
+10. Prints a confirmation message to the user.
 
 The following sequence diagram illustrates the execution flow when the user enters
 `update-date 1 /d 2025-04-15 14:00`:
@@ -720,7 +735,9 @@ The following sequence diagram illustrates the execution flow when the user ente
 | **Date Presence** | Verifies the `/d` flag and value are present | "Please provide a date using the /d flag." |
 | **Type Check** | Ensures the index is a valid integer | "Index must be a valid integer, got: abc" |
 | **Range Check** | Confirms index is within interview list bounds | "Index 99 is out of range. There are 1 interview(s)." |
-| **Date Format** | Validates the date string parses correctly | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+| **Date Format (shape)** | Pre-parse regex ensures the input matches `yyyy-MM-dd HH:mm` | "Invalid date format, expected yyyy-MM-dd HH:mm" |
+| **Calendar Validity** | Strict parser rejects impossible calendar dates (e.g. Feb 30, month 13, April 31) | "2026-02-30 10:00 is not a valid date." |
+| **Date-in-Past** | Rejects dates earlier than the current time | "Interview date ... is in the past." |
 
 #### Defensive Programming Features
 
@@ -758,6 +775,26 @@ logger.log(Level.INFO, "Successfully updated interview " + index + " to " + date
     - Pros: Shorter command for the user.
     - Cons: Breaks the flag-based convention used by other commands, making the parser inconsistent.
 
+**Aspect: Index resolution after a date mutation**
+
+- **Alternative 1 (current choice):** Index directly into `InterviewList` (using the same
+  ordering that `list-interview` prints), then re-sort the backing list after mutating the
+  interview's date.
+    - Pros: The index a user types to `update-date` always refers to the interview they
+      just saw at that position in `list-interview`, with no drift across successive
+      updates. Subsequent `list-interview` calls remain in ascending date order.
+    - Cons: `update-date` has the side effect of re-ordering the backing list (although
+      this is invisible to the user since `list-interview` also shows date-sorted order).
+
+- **Alternative 2 (previous approach):** Sort a freshly computed local copy of the list
+  by date and index into that.
+    - Pros: Self-contained — the backing list is never touched.
+    - Cons: After any in-place date mutation, the backing list falls out of date order
+      while `list-interview` still reads from it, so the user sees a stale ordering.
+      The next `update-date` then re-sorts a fresh local copy and picks a different
+      interview at the same index, targeting the wrong row. This was the root cause of
+      PE-D issue #192.
+
 #### Test Coverage
 
 | Test Case | Description | Expected Outcome |
@@ -770,6 +807,9 @@ logger.log(Level.INFO, "Successfully updated interview " + index + " to " + date
 | `execute_missingDateFlag_exceptionThrown` | Omit `/d` flag | Throws `GoldenCompassException` |
 | `execute_wrongFlag_exceptionThrown` | Use `/by` instead of `/d` | Throws `GoldenCompassException` |
 | `execute_missingIndex_exceptionThrown` | Omit index entirely | Throws `GoldenCompassException` |
+| `execute_pastDate_exceptionThrown` | Use a past date like `2020-01-01 10:00` | Throws with "is in the past" |
+| `execute_invalidCalendarDate_exceptionThrown` | Use `2099-02-30 10:00` | Throws with "is not a valid date" |
+| `execute_sequentialUpdatesAfterDateReorder_updatesCorrectInterview` | Push an interview past another, then `update-date` the same visible index | Targets the interview at the displayed position, not a stale sort (regression test for PE-D #192) |
 
 ### Search Interview Feature
 
@@ -1529,7 +1569,8 @@ or memory, which can become disorganized and error-prone as the number of applic
 
 1. Prerequisites: At least one internship exists. Run `add Google /t SWE` to create one.
 2. Test case: `add-interview 1 /d 2028-06-15 10:00`
-   Expected: Interview added for the 1st internship with the given date-time.
+   Expected: Interview added for the 1st internship with the given date-time (10:00 in
+   24-hour time, i.e. 10 AM).
 3. Test case: `add-interview 0 /d 2028-06-15 10:00`
    Expected: Error message indicating the index is out of range.
 4. Test case: `add-interview 1 /d bad-date`
@@ -1538,18 +1579,36 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: Error message asking for the index.
 6. Test case: `add-interview 1 /d 2020-01-01 10:00`
    Expected: Error message indicating the date is in the past.
-7. Test case: Run `add-interview 1 /d 2028-06-15 10:00` again after step 2.
+7. Test case: `add-interview 1 /d 2028-02-30 10:00`
+   Expected: Error message indicating `2028-02-30 10:00 is not a valid date.`
+   (Feb 30 does not exist; the strict parser rejects it instead of silently rounding.)
+8. Test case: Run `add-interview 1 /d 2028-06-15 10:00` again after step 2.
    Expected: Error message indicating the internship already has an interview scheduled.
 
 ### Updating interview date
 
 1. Prerequisites: At least one interview exists. Use `list-interview` to verify.
-2. Test case: `update-date 1 /d 2025-07-01 09:30`
-   Expected: Date of the 1st interview updated to the new date-time.
+2. Test case: `update-date 1 /d 2028-07-01 09:30`
+   Expected: Date of the 1st interview updated to the new date-time (09:30 in 24-hour
+   time). Running `list-interview` again shows the list re-sorted in ascending date order.
 3. Test case: `update-date 1 /d 2025-13-01 10:00`
-   Expected: Error message indicating invalid date format.
-4. Test case: `update-date 999 /d 2025-07-01 09:30`
+   Expected: Error message indicating `2025-13-01 10:00 is not a valid date.` (Month 13
+   has valid shape but is not a valid calendar month.)
+4. Test case: `update-date 1 /d bad-date`
+   Expected: Error message indicating invalid date format (shape does not match
+   `yyyy-MM-dd HH:mm`).
+5. Test case: `update-date 1 /d 2020-01-01 10:00`
+   Expected: Error message indicating the date is in the past. (Consistent with
+   `add-interview` as of fix-PED-bugs.)
+6. Test case: `update-date 999 /d 2028-07-01 09:30`
    Expected: Error message indicating the index is out of range.
+7. Test case: With two interviews `A` (earlier) and `B` (later), run
+   `update-date 1 /d <later-than-B>` followed by `list-interview`, then `update-date 1
+   /d <any-future-date>`.
+   Expected: After the first update, `list-interview` shows `B` then `A` (re-sorted).
+   The second `update-date 1` targets `B` (the new index 1), not `A`. This verifies the
+   PE-D #192 fix — the index `update-date` sees always matches what `list-interview`
+   just displayed.
 
 ### Searching interviews
 

@@ -119,4 +119,65 @@ public class SetInterviewDeadlineCommandTest {
                     + "Usage: update-date INDEX /d DATE", e.getMessage());
         }
     }
+
+    @Test
+    public void execute_pastDate_exceptionThrown() throws GoldenCompassException {
+        parser.parse("update-date 1 /d 2020-01-01 10:00");
+        try {
+            setDeadlineCommand.execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: Interview date 2020-01-01 10:00 is in the past. "
+                    + "Please provide a future date.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_invalidCalendarDate_exceptionThrown() throws GoldenCompassException {
+        parser.parse("update-date 1 /d 2099-02-30 10:00");
+        try {
+            setDeadlineCommand.execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: 2099-02-30 10:00 is not a valid date.", e.getMessage());
+        }
+    }
+
+    /**
+     * Regression test for PE-D issue #192. Mirrors the tester's scenario:
+     * McDonalds and KFC interviews are added, McDonalds's date is pushed past KFC's,
+     * then update-date 1 is issued again. The second update must target the interview
+     * at index 1 of the (now re-sorted) list, not a stale local sort.
+     */
+    @Test
+    public void execute_sequentialUpdatesAfterDateReorder_updatesCorrectInterview()
+            throws GoldenCompassException {
+        InterviewList list = new InterviewList();
+        Internship mcd = new Internship("Cashier", "McDonalds");
+        Internship kfc = new Internship("CEO", "KFC");
+        list.add(new Interview(mcd, LocalDateTime.parse("2026-10-10T10:00")));
+        list.add(new Interview(kfc, LocalDateTime.parse("2026-10-10T11:00")));
+
+        // Step 1: push McDonalds's date later than KFC's.
+        Parser p1 = new Parser();
+        p1.parse("update-date 1 /d 2027-10-10 11:00");
+        new SetInterviewDeadlineCommand(p1, list).execute();
+
+        // Backing list must be re-sorted after mutation: KFC (earlier) before McDonalds (later).
+        assertEquals("KFC", list.get(0).getInternship().getCompanyName());
+        assertEquals("McDonalds", list.get(1).getInternship().getCompanyName());
+        assertEquals(LocalDateTime.parse("2027-10-10T11:00"), list.get(1).getDate());
+
+        // Step 2: update-date 1 now refers to KFC in the re-sorted list.
+        Parser p2 = new Parser();
+        p2.parse("update-date 1 /d 2028-10-10 11:00");
+        new SetInterviewDeadlineCommand(p2, list).execute();
+
+        // KFC should have been updated to 2028; McDonalds should still be 2027.
+        // After re-sort: McDonalds (2027) before KFC (2028).
+        assertEquals("McDonalds", list.get(0).getInternship().getCompanyName());
+        assertEquals(LocalDateTime.parse("2027-10-10T11:00"), list.get(0).getDate());
+        assertEquals("KFC", list.get(1).getInternship().getCompanyName());
+        assertEquals(LocalDateTime.parse("2028-10-10T11:00"), list.get(1).getDate());
+    }
 }

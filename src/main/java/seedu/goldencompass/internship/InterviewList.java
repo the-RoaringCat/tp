@@ -1,5 +1,6 @@
 package seedu.goldencompass.internship;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -85,6 +86,21 @@ public class InterviewList {
      */
     public boolean isValidIndex(int index) {
         return index >= 1 && index <= interviews.size();
+    }
+
+    /**
+     * Updates the date of the interview at the given zero-based index, then re-sorts
+     * the list by date so that subsequent calls to {@code list-interview} reflect the
+     * new ordering.
+     *
+     * @param index zero-based index of the interview to update.
+     * @param date  the new date-time to set.
+     */
+    public void setDateFor(int index, LocalDateTime date) {
+        assert index >= 0 && index < interviews.size() : "Index should be within valid range";
+        assert date != null : "Date should not be null";
+        interviews.get(index).setDate(date);
+        interviews.sort(Comparator.comparing(Interview::getDate));
     }
 
 }

@@ -23,39 +23,55 @@ activate Executor
 Executor -> SDC : execute()
 activate SDC
 
-SDC -> Parser : getParamsOf("update-date")
-activate Parser
-Parser --> SDC : ["1"]
-deactivate Parser
+SDC -> SDC : getParamsOf(parser.getCommand())
+note right of SDC : retrieves ["1"]
 
-SDC -> Parser : getParamsOf("/d")
-activate Parser
-Parser --> SDC : ["2025-04-15 14:00"]
-deactivate Parser
+SDC -> SDC : getParamsOf("/d")
+note right of SDC : retrieves ["2025-04-15 14:00"]
 
-SDC -> IVL : isValidIndex(1)
-activate IVL
-IVL --> SDC : true
-deactivate IVL
+alt missing index or date
+    SDC -> Ui : error message
+else params present
+    SDC -> SDC : parseInt("1")
+    SDC -> IVL : isValidIndex(1)
+    activate IVL
+    IVL --> SDC : true
+    deactivate IVL
 
-note right of SDC : Parses "2025-04-15 14:00" into LocalDateTime
+    alt index out of range
+        SDC -> Ui : "Index is out of range."
+    else index valid
+        SDC -> SDC : validate shape (regex) and strict-parse to LocalDateTime
 
-SDC -> IVL : getInterviews()
-activate IVL
-IVL --> SDC : interviews
-deactivate IVL
+        alt invalid format or calendar date
+            SDC -> Ui : "Invalid date format..." or "... is not a valid date."
+        else date parses
+            alt date is in the past
+                SDC -> Ui : "Interview date ... is in the past."
+            else date valid
+                SDC -> IVL : get(index - 1)
+                activate IVL
+                IVL --> SDC : iv
+                deactivate IVL
 
-note right of SDC : Sorts interviews by date,\nretrieves interview at index 0
+                SDC -> IV : setDate(2025-04-15T14:00)
+                activate IV
+                IV --> SDC
+                deactivate IV
 
-SDC -> IV : setDate(2025-04-15T14:00)
-activate IV
-IV --> SDC
-deactivate IV
+                SDC -> IVL : getInterviews().sort(by date)
+                activate IVL
+                IVL --> SDC
+                deactivate IVL
 
-SDC -> Ui : print("Deadline set for interview 1: ...")
-activate Ui
-Ui --> SDC
-deactivate Ui
+                SDC -> Ui : print("Deadline set for interview 1: ...")
+                activate Ui
+                Ui --> SDC
+                deactivate Ui
+            end
+        end
+    end
+end
 
 deactivate SDC
 deactivate Executor

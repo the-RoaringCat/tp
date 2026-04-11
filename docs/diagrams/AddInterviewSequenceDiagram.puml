@@ -42,12 +42,15 @@ else params present
     alt index out of range
         AIC -> User : "Index is out of range."
     else index valid
-        AIC -> AIC : parse date into LocalDateTime
+        AIC -> AIC : validate shape (regex) and strict-parse to LocalDateTime
 
-        alt date is in the past
-            AIC -> User : "Interview date ... is in the past."
-        else date valid
-            AIC -> IL : getInternships().get(index - 1)
+        alt invalid format or calendar date
+            AIC -> User : "Invalid date format..." or "... is not a valid date."
+        else date parses
+            alt date is in the past
+                AIC -> User : "Interview date ... is in the past."
+            else date valid
+                AIC -> IL : getInternships().get(index - 1)
             activate IL
             IL --> AIC : Internship
             deactivate IL
@@ -76,6 +79,7 @@ else params present
                 AIC -> AIC : ui.print("Got it! I've added an interview...")
             end
         end
+    end
     end
 end
 
