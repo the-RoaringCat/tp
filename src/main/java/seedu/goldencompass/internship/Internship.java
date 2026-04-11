@@ -199,4 +199,18 @@ public class Internship {
         }
         return companyName + " - " + title + tag;
     }
+    // 🛠️ CHANGED: Added equals() method to allow deep comparison of text rather than memory addresses (Fixes Bug 1)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Internship other = (Internship) obj;
+        return this.companyName.equalsIgnoreCase(other.companyName) &&
+                this.title.equalsIgnoreCase(other.title);
+    }
+    // 🛠️ END OF CHANGE
 }
