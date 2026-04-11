@@ -23,6 +23,7 @@ all from your terminal.
 ## Features
 
 > **Notes about the command format:**
+> - The commands are all **case-sensitive**.
 > - Words in `UPPER_CASE` are parameters to be supplied by the user.
 >   e.g. in `add-interview INDEX /d DATE`, `INDEX` and `DATE` are parameters.
 > - Items in square brackets are optional.
