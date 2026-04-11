@@ -128,22 +128,25 @@ public class UpcomingCommandTest {
     }
 
     @Test
-    public void getterForHelpMessages_help_printsHelpMessages() throws GoldenCompassException {
+    public void getterForHelpMessages_help_printsHelpMessages() {
         String commandDescription = upcomingCommand.getCommandDescription();
         String flagDescription = upcomingCommand.getFlagDescription();
 
-        assertEquals(
-                "The command lists upcoming interviews within a specified number of days (inclusive of current date time).",
-                commandDescription);
+        String expected =
+                "The command lists upcoming interviews within a specified number of days " +
+                        "(inclusive of current date time).";
 
-        String expected = String.join(System.lineSeparator(),
+        assertEquals(expected, commandDescription);
+
+        expected = String.join(System.lineSeparator(),
                         "Command format:",
                         "\tupcoming [days]",
                         "If the optional parameter [days] is not supplied, a default of 5 days will be used.",
                         "Example usage:",
                         "\tupcoming -> shows interviews in the next 5 days",
                         "\tupcoming 3 -> shows interviews in the next 3 days",
-                        "If the parameter [days] is a negative integer -N, then interviews in the past N days will be shown."
+                        "If the parameter [days] is a negative integer -N, " +
+                        "then interviews in the past N days will be shown."
         );
 
         assertEquals(expected, flagDescription);
