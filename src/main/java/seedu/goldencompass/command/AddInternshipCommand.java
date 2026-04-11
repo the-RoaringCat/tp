@@ -100,13 +100,12 @@ public class AddInternshipCommand extends Command {
 
         Internship newInternship = new Internship(title, companyName);
 
-        for (int i = 0; i < internshipList.getSize(); i++) {
-            if (internshipList.get(i).equals(newInternship)) {
-                throw new GoldenCompassException("Warning: This internship already exists in your list!");
-            }
+        try {
+            internshipList.add(newInternship);
+        } catch (IllegalArgumentException e) {
+            // This catches the list's hidden error and safely turns it into a normal UI warning!
+            throw new GoldenCompassException(e.getMessage());
         }
-
-        internshipList.add(newInternship);
 
         // LOGGING: Secretly confirm the addition was successful in the background
         logger.log(Level.INFO, "Successfully added internship: [" + companyName + "] " + title);
