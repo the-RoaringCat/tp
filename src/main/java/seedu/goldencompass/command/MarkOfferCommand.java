@@ -44,13 +44,12 @@ public class MarkOfferCommand extends Command {
     public void execute() throws GoldenCompassException {
         logger.log(Level.INFO, "Starting execution of MarkOfferCommand...");
 
-        // Note: Change "mark-offer" if your team uses a different command word (e.g., "mark")
         List<String> params = parser.getParamsOf(parser.getCommand());
 
         // 1. DEFENSIVE CHECK: Missing index
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {
             logger.log(Level.WARNING, "Failed to mark offer: Index is missing.");
-            throw new GoldenCompassException("Please provide the index of the internship! (e.g., mark-offer 1)");
+            throw new GoldenCompassException("Please provide the index of the internship! (e.g., mark 1)");
         }
 
         int index;

@@ -1056,7 +1056,7 @@ The feature is covered by comprehensive unit tests in `DeleteInterviewCommandTes
 
 The `mark` command allows the user to update the status of an existing internship application to indicate that an offer has been received. The user specifies the 1-based index of the internship in the current list, and the system updates its status to `OFFER` and immediately saves the change to the disk.
 
-**Command format:** `mark INDEX` (or `mark-offer INDEX`)
+**Command format:** `mark INDEX`
 
 **Example:** `mark 1` marks the 1st internship in the current list as having received an offer.
 
