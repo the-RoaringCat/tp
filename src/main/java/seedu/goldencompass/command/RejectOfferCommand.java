@@ -71,6 +71,9 @@ public class RejectOfferCommand extends Command {
 
         // Get the internship (0-indexed)
         Internship internship = internshipList.get(index - 1);
+        if (internship.isRejected()) {
+            throw new GoldenCompassException("Error: This internship has already been rejected!");
+        }
 
         // Mark it as rejected!
         internship.markAsRejected();

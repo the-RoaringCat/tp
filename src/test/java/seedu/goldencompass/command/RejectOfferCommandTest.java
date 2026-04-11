@@ -69,4 +69,30 @@ public class RejectOfferCommandTest {
 
         assertThrows(GoldenCompassException.class, rejectCommand::execute);
     }
+
+    @Test
+    public void execute_alreadyRejected_throwsException() throws GoldenCompassException {
+        // Reject it once successfully
+        parser.parse("reject 1");
+        rejectCommand.execute();
+
+        // Try to reject the exact same internship again
+        parser.parse("reject 1");
+        assertThrows(GoldenCompassException.class, rejectCommand::execute);
+    }
+
+    @Test
+    public void execute_hasOffer_marksRejectSuccessfully() throws GoldenCompassException {
+        // Manually set status to OFFER RECEIVED
+        internshipList.get(0).markAsOffer();
+        assertTrue(internshipList.get(0).hasOffer());
+
+        // User decides to reject the offer
+        parser.parse("reject 1");
+        rejectCommand.execute();
+
+        // Verify it is now REJECTED and no longer has the OFFER tag
+        assertTrue(internshipList.get(0).isRejected());
+        assertFalse(internshipList.get(0).hasOffer());
+    }
 }

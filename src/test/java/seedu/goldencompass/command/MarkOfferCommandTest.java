@@ -67,4 +67,25 @@ public class MarkOfferCommandTest {
 
         assertThrows(GoldenCompassException.class, markCommand::execute);
     }
+
+    @Test
+    public void execute_alreadyOffered_throwsException() throws GoldenCompassException {
+        // Mark it once successfully
+        parser.parse("mark 1");
+        markCommand.execute();
+
+        // Try to mark the exact same internship again
+        parser.parse("mark 1");
+        assertThrows(GoldenCompassException.class, markCommand::execute);
+    }
+
+    @Test
+    public void execute_alreadyRejected_throwsException() throws GoldenCompassException {
+        // Directly alter the state of the internship to REJECTED for this test
+        internshipList.get(0).markAsRejected();
+
+        // Try to mark the rejected internship as an offer
+        parser.parse("mark 1");
+        assertThrows(GoldenCompassException.class, markCommand::execute);
+    }
 }

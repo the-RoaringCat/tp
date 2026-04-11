@@ -74,6 +74,14 @@ public class MarkOfferCommand extends Command {
         // Get the internship (0-indexed)
         Internship internship = internshipList.get(index - 1);
 
+        if (internship.hasOffer()) {
+            throw new GoldenCompassException("Error: This internship is already marked as OFFER RECEIVED!");
+        }
+
+        if (internship.isRejected()) {
+            throw new GoldenCompassException("Error: You cannot mark an internship that has already been rejected!");
+        }
+
         // Mark it as offered!
         internship.markAsOffer();
 
