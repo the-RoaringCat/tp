@@ -36,9 +36,6 @@ alt param is not blank
     deactivate I
     alt parse successfully
     UC -> UC: days = parsed integer value
-    activate UC
-    UC --> UC: days set
-    deactivate UC
     else NumberFormatException
     UC --> E: throw GoldenCompassException
     deactivate UC
@@ -52,10 +49,26 @@ activate Sys
 Sys --> UC: now
 deactivate Sys
 
+alt days >= 0
+UC -> Sys: now.minusMinutes(1)
+activate Sys
+Sys --> UC: start
+deactivate Sys
 UC -> Sys: now.plusDays(days)
 activate Sys
-Sys --> UC: limit
+Sys --> UC: end
 deactivate Sys
+else days < 0
+UC -> Sys: now.plusDays(days)
+activate Sys
+Sys --> UC
+deactivate Sys
+UC -> Sys: minusMinutes(1)
+activate Sys
+Sys --> UC: start
+deactivate Sys
+UC -> UC: end = now
+end
 
 UC -> IL: getInterviews()
 activate IL
@@ -66,11 +79,11 @@ UC -> L: stream()
 activate L
 L --> UC: stream
 deactivate L
-UC -> S: filter(dateTime of the interview not before now)
+UC -> S: filter(dateTime of the interview not before start)
 activate S
 S --> UC
 deactivate S
-UC -> S: filter(dateTime of the interview not after limit)
+UC -> S: filter(dateTime of the interview not after end)
 activate S
 S --> UC
 deactivate S
@@ -81,11 +94,15 @@ deactivate S
 
 
 alt filtered list is empty
-    UC -> UI: print("You don't have any upcoming interviews.")
+    UC -> UI: print("You don't have any interviews in the upcoming " + days + " day(s).")
     activate UI
     UI --> UC:
     deactivate UI
 else filtered list not empty
+    UC -> UI: print("You have the following interviews in the upcoming " + days + " day(s):")
+    activate UI
+    UI --> UC:
+    deactivate UI
     loop for each Interview in filtered list
         UC -> Int: toString()
         activate Int
