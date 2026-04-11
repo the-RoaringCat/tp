@@ -32,6 +32,12 @@ all from your terminal.
 > - Parameters can be in any order.
 > - Indexes are **1-based** and refer to the position shown in the most recent list.
 
+### Exiting the program: `bye`
+
+Exits the program.
+
+**Format:** `bye`
+
 ### Adding an internship application: `add`
 
 Adds a new internship application to the tracker. By default, the status of a newly added internship is set to `PENDING`.
@@ -389,3 +395,4 @@ same location on the other computer.
 | Redo a command                                | Yes (by`undo`) | `redo`                                              | `redo`                                |
 | Mark internship application as offer received | Yes            | `mark INDEX`                                        | `mark 4`                              |
 | Mark internship application as rejected       | Yes            | `reject INDEX`                                      | `reject 4`                            |
+| Exit the program                              | No             | `bye`                                               | `bye`                                 |
