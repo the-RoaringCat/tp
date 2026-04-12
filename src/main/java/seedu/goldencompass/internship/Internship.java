@@ -208,4 +208,17 @@ public class Internship {
         }
         return companyName + " - " + title + tag;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Internship other = (Internship) obj;
+        return this.companyName.equalsIgnoreCase(other.companyName) &&
+                this.title.equalsIgnoreCase(other.title);
+    }
 }

@@ -74,6 +74,12 @@ public class InternshipList {
             throw new IllegalArgumentException("Internship cannot be null");
         }
 
+        for (int i = 0; i < internships.size(); i++) {
+            if (internships.get(i).equals(x)) {
+                throw new IllegalArgumentException("Warning: This internship already exists in your list!");
+            }
+        }
+
         int sizeBefore = internships.size();
         internships.add(x);
         int sizeAfter = internships.size();

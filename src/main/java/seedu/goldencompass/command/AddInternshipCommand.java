@@ -85,8 +85,30 @@ public class AddInternshipCommand extends Command {
         String companyName = addParams.get(0).trim();
         String title = String.join(" ", titleParams).trim();
 
+        if (companyName.length() < 2 || title.length() < 2) {
+            errorMessage.append("Company name and title must be at least 2 characters long!\n");
+        }
+
+        if (companyName.length() > 40 || title.length() > 40) {
+            errorMessage.append("Input exceeds maximum allowed length of 40 characters!\n");
+        }
+
+        if (!companyName.matches("^[a-zA-Z0-9\\s,]+$") || !title.matches("^[a-zA-Z0-9\\s,]+$")) {
+            errorMessage.append("Only alphanumeric characters and commas ',' are permitted.\n");
+        }
+
+        if (!errorMessage.isEmpty()) {
+            throw new GoldenCompassException(errorMessage.toString().trim());
+        }
+
         Internship newInternship = new Internship(title, companyName);
-        internshipList.add(newInternship);
+
+        try {
+            internshipList.add(newInternship);
+        } catch (IllegalArgumentException e) {
+            // This catches the list's hidden error and safely turns it into a normal UI warning!
+            throw new GoldenCompassException(e.getMessage());
+        }
 
         // LOGGING: Secretly confirm the addition was successful in the background
         logger.log(Level.INFO, "Successfully added internship: [" + companyName + "] " + title);
