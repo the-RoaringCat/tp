@@ -151,6 +151,10 @@ public class Parser {
     }
 
     public String getDefaultParam() {
-        return getParamsOf(command).get(0);
+        List<String> params = getParamsOf(command);
+        if(params == null) {
+            return null;
+        }
+        return params.get(0);
     }
 }
