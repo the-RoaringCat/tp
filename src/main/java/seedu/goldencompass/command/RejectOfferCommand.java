@@ -42,7 +42,7 @@ public class RejectOfferCommand extends Command {
     public void execute() throws GoldenCompassException {
         logger.log(Level.INFO, "Starting execution of RejectCommand...");
 
-        // Assuming your team's command word is "reject"
+
         String param = parser.getDefaultParam();
         // 1. DEFENSIVE CHECK: Missing index
         if (param == null || param.isBlank()) {
