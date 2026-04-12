@@ -88,9 +88,14 @@ public class Executor {
             throw new GoldenCompassException("Error: Cannot add blank alias");
         }
 
-        //command is not found
-        if(aliasMap.get(command) == null) {
+        //command is not found, use key set so that can identify "adding alias to alias" in separate if block
+        if(!aliasMap.containsKey(command)) {
             throw new GoldenCompassException("Error: Cannot add alias to \"" + command + "\" since it does not exist.");
+        }
+
+        //input command is actually an alias
+        if(!aliasMap.containsValue(command)) {
+            throw new GoldenCompassException("Error: Cannot add alias to an alias: \"" + command + "\"");
         }
 
         //alias is already registered
