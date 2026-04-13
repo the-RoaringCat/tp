@@ -1685,6 +1685,31 @@ or memory, which can become disorganized and error-prone as the number of applic
    PE-D #192 fix — the index `update-date` sees always matches what `list-interview`
    just displayed.
 
+### Listing all interviews
+
+1. Test case: `list-interview`
+
+   Expected: If there are interviews added, it should list all interviews;
+   otherwise it should print "You don't have any interviews!"
+
+### Listing upcoming interviews
+
+1. Test case: `upcoming`
+
+   Expected: It should list all interviews within the upcoming 5 days (starting from and
+   including the present system time). If no such interview exist in the list, 
+   it should print "You don't have any interviews in the upcoming 5 day(s)."
+2. Test case: `upcoming N`, where `N` is a positive integer
+
+   Expected: It should list all interviews within the upcoming `N` days (starting from and
+   including the present system time). If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+3. Test case: `upcoming N`, where `N` is a negative integer
+
+   Expected: It should list all interviews within the past `|N|` days. 
+   If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+
 ### Searching interviews
 
 1. Prerequisites: Multiple interviews exist with different companies and dates.
@@ -1696,6 +1721,20 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: Message indicating no interviews found.
 5. Test case: `search-interview`
    Expected: Error message asking for at least one search flag.
+
+### Marking an internship as rejected
+
+1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
+2. Test case: `reject 1`
+   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
+3. Test case: `reject 0`
+   Expected: Error message indicating the index is invalid or out of bounds.
+4. Test case: `reject 999` (assuming your list has fewer than 999 items)
+   Expected: Error message indicating the index is invalid or out of bounds.
+5. Test case: `reject abc`
+   Expected: Error message indicating that the index must be a number.
+6. Test case: `reject`
+   Expected: Error message asking to provide the index of the internship.
 
 ### Clearing rejected internships
 
@@ -1721,20 +1760,6 @@ or memory, which can become disorganized and error-prone as the number of applic
 6. Test case: `mark`
    Expected: Error message asking to provide the index of the internship.
 
-### Marking an internship as rejected
-
-1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
-2. Test case: `reject 1`
-   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
-3. Test case: `reject 0`
-   Expected: Error message indicating the index is invalid or out of bounds.
-4. Test case: `reject 999` (assuming your list has fewer than 999 items)
-   Expected: Error message indicating the index is invalid or out of bounds.
-5. Test case: `reject abc`
-   Expected: Error message indicating that the index must be a number.
-6. Test case: `reject`
-   Expected: Error message asking to provide the index of the internship.
-
 ### Saving and Loading Data (Storage)
 
 1. Prerequisites: Ensure the application is not running and delete the `data` folder in the project root directory if it exists. Start the application, add an internship (`add Grab /t SWE`), schedule an interview for it (`add-interview 1 /d 2026-05-10 10:00`), and create a custom alias (`alias /c list /a ls`).
@@ -1742,24 +1767,3 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: The application exits successfully. A `data` folder is automatically created, containing `internships.txt`, `interviews.txt`, and `alias.txt`, with all your entered data safely stored inside.
 3. Test case: Restart the application. Run `list`, then `list-interview`, and finally type your custom alias `ls`.
    Expected: The application successfully loads all relational data. The Grab internship and its interview date appear correctly, and typing `ls` successfully triggers the list command.
-
-### Listing all interviews
-
-1. Test case: `list-interview`
-
-   Expected: If there are interviews added, it should list all interviews; 
-    otherwise it should print "You don't have any interviews!"
-
-### Listing upcoming interviews
-
-1. Test case: `upcoming`
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming 5 days (starting from and 
-    including the current system time); otherwise it should print "You don't have any upcoming interviews."
-2. Test case: `upcoming N`, where `N` is a strictly positive integer
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming `N` days (starting from and
-   including the current system time); otherwise it should print "You don't have any upcoming interviews."
-3. Test case: `upcoming N`, where `N` is a negative integer or `0`
-
-   Expected: It should always print "You don't have any upcoming interviews."
