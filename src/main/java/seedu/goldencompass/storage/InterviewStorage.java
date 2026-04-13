@@ -49,10 +49,7 @@ public class InterviewStorage {
     }
 
     /**
-     * Loads interviews and reconnects them to existing internships in the list.
-     */
-    /**
-     * Loads interviews and reconnects them to existing internships in the list.
+     * Loads interviews and reconnects them to existing internships.
      */
     public void load(InterviewList interviewList, InternshipList internshipList) {
         File f = new File(filePath);
@@ -66,7 +63,8 @@ public class InterviewStorage {
                 String[] parts = line.split(" \\| ");
 
                 if (parts.length < 3) {
-                    new Ui().print("Error: Corrupted format in interviews.txt. Skipping line: [" + line + "]");
+                    new Ui().print("Error: Corrupted format in interviews.txt. "
+                            + "Skipping line: [" + line + "]");
                     continue;
                 }
 
@@ -77,15 +75,17 @@ public class InterviewStorage {
                 Internship linkedInternship = internshipList.findInternshipByCompanyAndRole(companyName, role);
 
                 if (linkedInternship != null) {
+                    // Check for corrupted dates first
                     LocalDateTime parsedDate;
                     try {
                         parsedDate = LocalDateTime.parse(dateStr);
                     } catch (DateTimeParseException e) {
-                        new Ui().print("Error: Date is corrupted ('" + dateStr + "') for " + companyName + " (" + role + "). Skipping this interview.");
-                        logger.warning("Invalid date format: " + dateStr + " for company: " + companyName);
+                        new Ui().print("Error: Date is corrupted ('" + dateStr + "') for "
+                                + companyName + " (" + role + "). Skipping.");
                         continue;
                     }
 
+                    // Check for duplicates
                     boolean isDuplicate = false;
                     for (Interview existing : interviewList.getInterviews()) {
                         if (existing.getInternship().equals(linkedInternship)) {
@@ -95,7 +95,8 @@ public class InterviewStorage {
                     }
 
                     if (isDuplicate) {
-                        new Ui().print("Warning: Duplicate interview for " + companyName + " (" + role + ") skipped and will be cleaned.");
+                        new Ui().print("Warning: Duplicate interview for " + companyName
+                                + " (" + role + ") skipped and will be cleaned.");
                         continue;
                     }
 
