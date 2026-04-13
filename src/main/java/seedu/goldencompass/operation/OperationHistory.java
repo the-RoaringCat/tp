@@ -16,7 +16,7 @@ public class OperationHistory {
     }
 
     public void saveSnapshot(OperationSnapshot snapshot) {
-        if(undoStack.size() == REAL_CAPACITY) {
+        if (undoStack.size() == REAL_CAPACITY) {
             undoStack.removeLast();
         }
         undoStack.addFirst(snapshot);
@@ -27,7 +27,7 @@ public class OperationHistory {
         //pop the current version from undo
         OperationSnapshot current = undoStack.pollFirst();
         OperationSnapshot past = undoStack.peekFirst();
-        if(past == null) {
+        if (past == null) {
             //since no history, push back
             undoStack.addFirst(current);
             return null;
@@ -42,7 +42,7 @@ public class OperationHistory {
     public OperationSnapshot getRedo() {
         //pop from redo
         OperationSnapshot current = redoStack.pollFirst();
-        if(current == null) {
+        if (current == null) {
             //there is no redo history
             return null;
         }

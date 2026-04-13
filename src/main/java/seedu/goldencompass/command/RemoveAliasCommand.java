@@ -49,7 +49,7 @@ public class RemoveAliasCommand extends Command {
     public void execute() throws GoldenCompassException {
         logger.info("Executing RemoveAliasCommand");
 
-        if(parser.getFlagToParamMap().size() != PARAM_LENGTH) {
+        if (parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             logger.info("There are missing or unexpected parameters.");
             throw new GoldenCompassException("Error: Expecting only one argument.");
         }

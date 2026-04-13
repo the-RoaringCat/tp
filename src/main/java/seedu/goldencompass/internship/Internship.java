@@ -84,7 +84,7 @@ public class Internship {
     }
 
     public static Internship copyOf(Internship other) {
-        if(other == null) {
+        if (other == null) {
             return null;
         }
         return new Internship(other);

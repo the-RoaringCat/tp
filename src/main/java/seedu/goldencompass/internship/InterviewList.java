@@ -16,16 +16,6 @@ public class InterviewList {
 
     }
 
-    public InterviewList(InterviewList other) {
-        this.interviews.clear();
-        assert other != null : "Cannot copy null";
-        //copy the element as well.
-        for(Interview interview : other.interviews) {
-            this.interviews.add(new Interview(interview));
-        }
-    }
-
-
     public List<Interview> getInterviews() {
         return interviews;
     }

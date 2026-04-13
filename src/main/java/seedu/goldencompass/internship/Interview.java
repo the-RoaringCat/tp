@@ -36,7 +36,7 @@ public class Interview {
     }
 
     public static Interview copyOf(Interview other) {
-        if(other == null) {
+        if (other == null) {
             return null;
         }
         return new Interview(other);

@@ -55,13 +55,13 @@ public class RedoCommand extends Command implements DataHistory{
     @Override
     public void execute() throws GoldenCompassException {
         logger.info("Executing RedoCommand");
-        if(parser.getFlagToParamMap().size() != PARAM_LENGTH || !parser.getDefaultParam().isBlank()) {
+        if (parser.getFlagToParamMap().size() != PARAM_LENGTH || !parser.getDefaultParam().isBlank()) {
             logger.info("There are unexpected parameters");
             throw new GoldenCompassException("Error: expecting no parameters");
         }
         OperationSnapshot future = operationHistory.getRedo();
 
-        if(future == null) {
+        if (future == null) {
             logger.info("No redo history");
             throw new GoldenCompassException("Error: there is no more redo history.");
         }

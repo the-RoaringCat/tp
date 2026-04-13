@@ -34,21 +34,6 @@ public class InternshipList {
         logger.info("InternshipList created with " + this.internships.size() + " internships");
     }
 
-    /**
-     * Copy constructor - creates a deep copy of another InternshipList.
-     *
-     * @param other The InternshipList to copy from
-     */
-    public InternshipList(InternshipList other) {
-        this.internships.clear();
-        assert other != null : "Cannot copy null";
-        //copy each element
-        for(Internship internship : other.internships) {
-            this.internships.add(new Internship(internship));
-        }
-        logger.info("InternshipList copied with " + this.internships.size() + " internships");
-    }
-
     public List<Internship> getInternships() {
         assert internships != null : "Internships list should not be null";
         logger.finer("Returning internships list, size: " + internships.size());
