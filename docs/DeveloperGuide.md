@@ -1027,6 +1027,7 @@ In essence, a negative `N` is not the intended usage of the command, and listing
 `|N|` days if `N` is negative, is not a subfeature of the command, but an exception handling, which may happen to be
 useful for the user.
 
+If somehow the dateTime of an interview becomes null, the interview will never be listed by this command.
 #### Implementation
 
 The feature is implemented in `UpcomingCommand`, the relationship of which to other classes is shown in the following class diagram 

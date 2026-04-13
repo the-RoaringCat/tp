@@ -107,9 +107,17 @@ public class UpcomingCommand extends Command {
                                                            assert i != null : "Interview should not be null";
                                                            assert i.getDate() != null :
                                                                    "Interview date should not be null";
+                                                           if (i.getDate() == null) {
+                                                               return false;
+                                                           }
                                                            return !i.getDate().isBefore(start);
                                                        })
-                                                       .filter(i -> !i.getDate().isAfter(end))
+                                                       .filter(i -> {
+                                                           if (i.getDate() == null) {
+                                                               return false;
+                                                           }
+                                                           return !i.getDate().isAfter(end);
+                                                       })
                                                        .toList();
 
         assert filteredInterviews.size() <= interviews.size() :
