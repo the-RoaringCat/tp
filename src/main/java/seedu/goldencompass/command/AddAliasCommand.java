@@ -55,23 +55,24 @@ public class AddAliasCommand extends Command {
     public void execute() throws GoldenCompassException {
         logger.info("Executing AddAliasCommand");
 
+        //validate no default param
+        String defaultParam = parser.getDefaultParam();
+        if (!defaultParam.isBlank()) {
+            logger.info("There are unexpected parameters.");
+            throw new GoldenCompassException("Error: Need to provide a flag to the parameter: " + defaultParam);
+        }
+
+        //validate there are only two params excluding the default param
         if (parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             logger.info("There are unexpected parameters.");
             throw new GoldenCompassException("Error: This command takes 2 arguments");
         }
 
-        //validate no default param
-        String defaultParam = parser.getDefaultParam();
-        if (!defaultParam.isBlank()) {
-            logger.info("There are unexpected parameters.");
-            throw new GoldenCompassException("Error: Need to provide flag to the parameter: " + defaultParam);
-        }
-
-        //validate the correct type of params
+        //validate the correct flag
         checkFlagPresence(COMMAND_FLAG, ALIAS_FLAG);
 
-        String commandWord = parser.getParamsOf("/c").get(0);
-        String alias = parser.getParamsOf("/a").get(0);
+        String commandWord = parser.getParamsOf(COMMAND_FLAG).get(0);
+        String alias = parser.getParamsOf(ALIAS_FLAG).get(0);
 
         executor.addAlias(commandWord, alias);
         ui.print("Command: \"" + commandWord + "\" now has a new alias: \"" + alias + "\"");
