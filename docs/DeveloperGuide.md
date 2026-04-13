@@ -759,7 +759,7 @@ The following sequence diagram illustrates the execution flow when the user ente
 | **Index Presence** | Verifies the index parameter is present | "Please provide the index of the interview." |
 | **Date Presence** | Verifies the `/d` flag and value are present | "Please provide a date using the /d flag." |
 | **Type Check** | Ensures the index is a valid integer | "Index must be a valid integer, got: abc" |
-| **Range Check** | Confirms index is within interview list bounds | "Index 99 is out of range. There are 1 interview(s)." |
+| **Range Check** | Confirms index is within interview list bounds; if empty, prompts user to add an interview first | "You have no interviews scheduled. Use add-interview to schedule one first." / "Index 99 is out of range. There are 1 interview(s). Use list-interview to see valid indexes." |
 | **Date Format (shape)** | Pre-parse regex ensures the input matches `yyyy-MM-dd HH:mm` | "Invalid date format, expected yyyy-MM-dd HH:mm" |
 | **Calendar Validity** | Strict parser rejects impossible calendar dates (e.g. Feb 30, month 13, April 31) | "2026-02-30 10:00 is not a valid date." |
 | **Date-in-Past** | Rejects dates earlier than the current time | "Interview date ... is in the past." |
@@ -835,6 +835,7 @@ logger.log(Level.INFO, "Successfully updated interview " + index + " to " + date
 | `execute_pastDate_exceptionThrown` | Use a past date like `2020-01-01 10:00` | Throws with "is in the past" |
 | `execute_invalidCalendarDate_exceptionThrown` | Use `2099-02-30 10:00` | Throws with "is not a valid date" |
 | `execute_sequentialUpdatesAfterDateReorder_updatesCorrectInterview` | Push an interview past another, then `update-date` the same visible index | Targets the interview at the displayed position, not a stale sort (regression test for PE-D #192) |
+| `execute_noInterviewsScheduled_suggestsAddInterview` | Call `update-date` with an empty interview list | Throws with "You have no interviews scheduled. Use add-interview to schedule one first." |
 
 ### Search Interview Feature
 
