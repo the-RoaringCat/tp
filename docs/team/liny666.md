@@ -88,6 +88,9 @@ Given below are my contributions to the project.
   [RepoSense link](https://nus-cs2113-ay2526-s2.github.io/tp-dashboard/?search=liny&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=functional-code&since=2026-02-20T00%3A00%3A00&filteredFileName=&tabOpen=true&tabType=authorship&tabAuthor=liny666&tabRepo=AY2526S2-CS2113-W10-4%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=functional-code&authorshipIsBinaryFileTypeChecked=false&authorshipIsIgnoredFilesChecked=false)
 
 * **Project management**:
+  * Managed releases [v1.0](https://github.com/AY2526S2-CS2113-W10-4/tp/releases/tag/v1.0)
+    and [v2.0](https://github.com/AY2526S2-CS2113-W10-4/tp/releases/tag/v2.0) on GitHub
+    (2 releases).
   * Managed issue tracking and linked PRs to issues for traceability.
 
 * **Documentation**:
