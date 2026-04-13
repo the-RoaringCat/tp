@@ -33,8 +33,7 @@ public class InterviewList {
     public void add(Interview x) {
         assert x != null : "Interview to add should not be null";
         interviews.add(x);
-        interviews.sort(Comparator.comparing(Interview::getDate));
-    }
+        interviews.sort(Comparator.comparing(Interview::getDate, Comparator.nullsLast(Comparator.naturalOrder())));    }
 
     /**
      * Deletes an interview by internship reference.
