@@ -54,13 +54,13 @@ public class UndoCommand extends Command implements DataHistory {
      */
     @Override
     public void execute() throws GoldenCompassException {
-        if(parser.getFlagToParamMap().size() != PARAM_LENGTH || !parser.getDefaultParam().isBlank()) {
+        if (parser.getFlagToParamMap().size() != PARAM_LENGTH || !parser.getDefaultParam().isBlank()) {
             logger.info("There are unexpected parameters");
             throw new GoldenCompassException("Error: expecting no parameters");
         }
         OperationSnapshot past = operationHistory.getUndo();
 
-        if(past == null) {
+        if (past == null) {
             logger.info("No undo history");
             throw new GoldenCompassException("Error: there is no more undo history.");
         }

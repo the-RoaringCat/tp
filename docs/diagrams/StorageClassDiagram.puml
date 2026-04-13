@@ -29,11 +29,16 @@ class AliasStorage {
   + save(aliasMap: Map<String, String>) : void
 }
 
+class InternshipList {
+  + findInternshipByCompanyAndRole(companyName: String, role: String) : Internship
+}
+
 GoldenCompass --> "1" InternshipStorage
 GoldenCompass --> "1" InterviewStorage
 GoldenCompass --> "1" AliasStorage
 
 InternshipStorage ..> "uses" InternshipList
+InterviewStorage ..> "uses" InternshipList
 InterviewStorage ..> "uses" InterviewList
 AliasStorage ..> "uses" Map
 @enduml

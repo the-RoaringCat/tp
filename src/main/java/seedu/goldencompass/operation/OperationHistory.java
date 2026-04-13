@@ -15,19 +15,27 @@ public class OperationHistory {
         redoStack = new ArrayDeque<>();
     }
 
+    /**
+     * Pushes the snapshot into undo stack
+     * @param snapshot a snapshot
+     */
     public void saveSnapshot(OperationSnapshot snapshot) {
-        if(undoStack.size() == REAL_CAPACITY) {
+        if (undoStack.size() == REAL_CAPACITY) {
             undoStack.removeLast();
         }
         undoStack.addFirst(snapshot);
     }
 
+    /**
+     * Returns the OperationSnapshot of the data before the latest command
+     * @return
+     */
     public OperationSnapshot getUndo() {
 
         //pop the current version from undo
         OperationSnapshot current = undoStack.pollFirst();
         OperationSnapshot past = undoStack.peekFirst();
-        if(past == null) {
+        if (past == null) {
             //since no history, push back
             undoStack.addFirst(current);
             return null;
@@ -39,10 +47,14 @@ public class OperationHistory {
         return past;
     }
 
+    /**
+     * Returns the OperationSnapshot of the data of the latest command that has been undone.
+     * @return the OperationSnapshot of the data of the latest command that has been undone.
+     */
     public OperationSnapshot getRedo() {
         //pop from redo
         OperationSnapshot current = redoStack.pollFirst();
-        if(current == null) {
+        if (current == null) {
             //there is no redo history
             return null;
         }
@@ -53,6 +65,9 @@ public class OperationHistory {
         return current;
     }
 
+    /**
+     * Clears redo history
+     */
     public void clearRedo() {
         redoStack.clear();
     }

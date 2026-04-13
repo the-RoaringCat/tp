@@ -79,27 +79,33 @@ public class Executor {
         cmd.execute();
     }
 
+    /**
+     * Adds an alias to the command
+     * @param command a string
+     * @param alias a string
+     * @throws GoldenCompassException if error occurs when trying to add
+     */
     public void addAlias(String command, String alias) throws GoldenCompassException {
         command = command.trim();
         alias = alias.trim();
 
         //alias is empty
-        if(alias.isEmpty()) {
+        if (alias.isEmpty()) {
             throw new GoldenCompassException("Error: Cannot add blank alias");
         }
 
         //command is not found, use key set so that can identify "adding alias to alias" in separate if block
-        if(!aliasMap.containsKey(command)) {
+        if (!aliasMap.containsKey(command)) {
             throw new GoldenCompassException("Error: Cannot add alias to \"" + command + "\" since it does not exist.");
         }
 
         //input command is actually an alias
-        if(!aliasMap.containsValue(command)) {
+        if (!aliasMap.containsValue(command)) {
             throw new GoldenCompassException("Error: Cannot add alias to an alias: \"" + command + "\"");
         }
 
         //alias is already registered
-        if(aliasMap.containsKey(alias)) {
+        if (aliasMap.containsKey(alias)) {
             throw new GoldenCompassException("Error: Alias \"" + alias + "\" already exists.");
         }
 
@@ -107,16 +113,21 @@ public class Executor {
         aliasMap.put(alias, command);
 
         //register the alias as undoable if it is
-        if(UNDOABLE.contains(command)) {
+        if (UNDOABLE.contains(command)) {
             undoable.add(alias);
         }
     }
 
+    /**
+     * Remove the input alias
+     * @param alias a string
+     * @throws GoldenCompassException error occurs when trying to remove.
+     */
     public void removeAlias(String alias) throws GoldenCompassException{
         alias = alias.trim();
 
         //alias is empty
-        if(alias.isEmpty()) {
+        if (alias.isEmpty()) {
             throw new GoldenCompassException("Error: Cannot remove blank alias");
         }
 
@@ -126,7 +137,7 @@ public class Executor {
         }
 
         //alias is default command
-        if(commands.containsKey(alias)) {
+        if (commands.containsKey(alias)) {
             throw new GoldenCompassException("Error: Cannot remove default command: \"" + alias +"\"");
         }
 
@@ -141,11 +152,20 @@ public class Executor {
         return aliasMap;
     }
 
+    /**
+     * Replace the alias map with the input
+     * @param newAliasMap a Map
+     */
     public void setAliasMap(Map<String, String> newAliasMap) {
         aliasMap.clear();
         aliasMap.putAll(newAliasMap);
     }
 
+    /**
+     * Returns true if the command is undoable
+     * @param command command
+     * @return true if the command is undoable
+     */
     public boolean isUndoable(String command) {
         return undoable.contains(command);
     }

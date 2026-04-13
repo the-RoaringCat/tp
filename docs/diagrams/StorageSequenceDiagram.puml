@@ -5,29 +5,31 @@ participant ":InternshipStorage" as InternStorage
 participant ":InterviewStorage" as InterviewStorage
 participant ":AliasStorage" as AliasStorage
 
-User -> GC : "bye"
 activate GC
+loop while application is running
+    User -> GC : inputs command (e.g., "add", "mark")
 
-note right of GC : GoldenCompass triggers\nsave for all data types
+    note right of GC : Command executes, then\ntriggers eager saving
 
-GC -> InternStorage : save(internshipList)
-activate InternStorage
-InternStorage -> InternStorage : Write formatting logic
-InternStorage --> GC
-deactivate InternStorage
+    GC -> InternStorage : save(internshipList)
+    activate InternStorage
+    InternStorage -> InternStorage : Write formatting logic
+    InternStorage --> GC
+    deactivate InternStorage
 
-GC -> InterviewStorage : save(interviewList)
-activate InterviewStorage
-InterviewStorage -> InterviewStorage : Write formatting logic
-InterviewStorage --> GC
-deactivate InterviewStorage
+    GC -> InterviewStorage : save(interviewList)
+    activate InterviewStorage
+    InterviewStorage -> InterviewStorage : Write formatting logic\n(Extracts Company & Role)
+    InterviewStorage --> GC
+    deactivate InterviewStorage
 
-GC -> AliasStorage : save(aliasMap)
-activate AliasStorage
-AliasStorage -> AliasStorage : Write formatting logic
-AliasStorage --> GC
-deactivate AliasStorage
+    GC -> AliasStorage : save(aliasMap)
+    activate AliasStorage
+    AliasStorage -> AliasStorage : Write formatting logic
+    AliasStorage --> GC
+    deactivate AliasStorage
 
-GC --> User : "Goodbye!"
+    GC --> User : prints command result
+end
 deactivate GC
 @enduml

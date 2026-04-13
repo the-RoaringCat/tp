@@ -5,6 +5,13 @@ import seedu.goldencompass.internship.InterviewList;
 import seedu.goldencompass.operation.OperationSnapshot;
 
 public interface DataHistory {
+    /**
+     * Modify the internal data with the given data in the operationalSnapshot
+     * @param operationSnapshot operationSnapshot
+     * @param executor executor
+     * @param internshipList internshipList
+     * @param interviewList interviewList
+     */
     default void modifyDataWith(OperationSnapshot operationSnapshot, Executor executor,
                                 InternshipList internshipList, InterviewList interviewList) {
         assert operationSnapshot != null : "operationSnapshot cannot be null";

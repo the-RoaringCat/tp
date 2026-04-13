@@ -31,14 +31,14 @@ public class OperationSnapshot {
         this.command = command;
         this.internshipListCopy = new InternshipList();
         this.interviewListCopy = new InterviewList();
-        for(Internship internship : internshipList.getInternships()) {
+        for (Internship internship : internshipList.getInternships()) {
             //copy all attribute except their relation
             Internship internshipCopy = Internship.copyOf(internship);
             Interview interviewCopy = Interview.copyOf(internship.getInterview());
 
             internshipListCopy.add(internshipCopy);
 
-            if(interviewCopy == null) {
+            if (interviewCopy == null) {
                 continue;
             }
 

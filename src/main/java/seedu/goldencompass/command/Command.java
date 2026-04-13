@@ -33,13 +33,13 @@ public abstract class Command implements Executable {
     protected void checkFlagPresence(String... flags) throws GoldenCompassException {
         StringBuilder errorMessage = new StringBuilder();
 
-        for(String flag : flags) {
-            if(!parser.isFlagExist(flag)) {
+        for (String flag : flags) {
+            if (!parser.isFlagExist(flag)) {
                 errorMessage.append(FLAG_MISSING_MESSAGE).append(flag).append(System.lineSeparator());
             }
         }
 
-        if(!errorMessage.isEmpty()) {
+        if (!errorMessage.isEmpty()) {
             throw new GoldenCompassException(errorMessage.toString());
         }
     }

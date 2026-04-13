@@ -35,8 +35,13 @@ public class Interview {
         this.dateTime = other.dateTime;
     }
 
+    /**
+     * Get a copy of the input {@code Interview}
+     * @param other an Interview
+     * @return an Interview object or null if other is null.
+     */
     public static Interview copyOf(Interview other) {
-        if(other == null) {
+        if (other == null) {
             return null;
         }
         return new Interview(other);
