@@ -28,7 +28,6 @@ Given below are my contributions to the project.
   - User Guide: Added documentation for `list-interview`, `upcoming` commands 
   [#119](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/119)
   - Developer Guide:
-    - Added diagrams for architecture and `Executor` [#159](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/159)
     - Added implementation details and design considerations for `Parser` together with a sequence diagram
     [#118](https://github.com/AY2526S2-CS2113-W10-4/tp/pull/118)
     - Added a class diagram & a sequence diagram for `UpcomingCommand`
