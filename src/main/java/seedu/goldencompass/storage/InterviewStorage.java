@@ -35,10 +35,11 @@ public class InterviewStorage {
             FileWriter fw = new FileWriter(filePath);
 
             for (Interview i : interviewList.getInterviews()) {
-                // Fixed: Using getCompanyName() from your Internship class
                 String company = i.getInternship().getCompanyName();
+                String role = i.getInternship().getTitle();
                 String date = (i.getDate() != null) ? i.getDate().toString() : "null";
-                fw.write(company + " | " + date + System.lineSeparator());
+
+                fw.write(company + " | " + role + " | " + date + System.lineSeparator());
             }
             fw.close();
         } catch (IOException e) {
@@ -59,15 +60,18 @@ public class InterviewStorage {
             while (s.hasNext()) {
                 String line = s.nextLine();
                 String[] parts = line.split(" \\| ");
-                if (parts.length < 2) {
+
+                // CHANGED: We now expect 3 parts (Company, Role, Date)
+                if (parts.length < 3) {
                     continue;
                 }
 
                 String companyName = parts[0];
-                String dateStr = parts[1];
+                String role = parts[1]; // ADDED: Extract the role
+                String dateStr = parts[2]; // CHANGED: Date is now at index 2
 
-                // Find the parent internship by name
-                Internship linkedInternship = internshipList.findInternshipByCompany(companyName);
+                // CHANGED: Use a new composite search method (see Step 3 below)
+                Internship linkedInternship = internshipList.findInternshipByCompanyAndRole(companyName, role);
 
                 if (linkedInternship != null) {
                     Interview interview = new Interview(linkedInternship);

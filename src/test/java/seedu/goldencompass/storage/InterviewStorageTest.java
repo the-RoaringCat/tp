@@ -23,7 +23,7 @@ public class InterviewStorageTest {
         String testPath = tempDir.resolve("testInterviews.txt").toString();
         InterviewStorage storage = new InterviewStorage(testPath);
 
-        // 2. Setup mock internships (Interviews need these to exist first!)
+        // 2. Setup mock internships
         Internship google = new Internship("Software Engineer", "Google");
         InternshipList internshipList = new InternshipList();
         internshipList.add(google);
@@ -44,7 +44,53 @@ public class InterviewStorageTest {
         // 5. Assertions
         assertEquals(1, loadedList.size(), "Should have loaded 1 interview");
         assertEquals("Google", loadedList.get(0).getInternship().getCompanyName());
+        assertEquals("Software Engineer", loadedList.get(0).getInternship().getTitle()); // Added composite check
         assertEquals(LocalDateTime.parse("2026-06-01T10:00"), loadedList.get(0).getDate());
+    }
+
+    @Test
+    public void saveAndLoad_multipleRolesSameCompany_mapsCorrectly() {
+        // PROOF THAT BUGS #201 AND #202 ARE FIXED!
+        String testPath = tempDir.resolve("testMultipleRoles.txt").toString();
+        InterviewStorage storage = new InterviewStorage(testPath);
+
+        // Setup TWO internships at the SAME company
+        Internship swe = new Internship("Software Engineer", "Grab");
+        Internship data = new Internship("Data Analyst", "Grab");
+        InternshipList internshipList = new InternshipList();
+        internshipList.add(swe);
+        internshipList.add(data);
+
+        // Create interviews for both
+        InterviewList originalList = new InterviewList();
+        Interview sweInterview = new Interview(swe);
+        sweInterview.setDate(LocalDateTime.parse("2026-12-01T10:00"));
+
+        Interview dataInterview = new Interview(data);
+        dataInterview.setDate(LocalDateTime.parse("2026-12-05T14:00"));
+
+        originalList.add(sweInterview);
+        originalList.add(dataInterview);
+
+        // Save them using the new Composite Key format
+        storage.save(originalList);
+
+        // Load them back into a fresh list
+        InterviewList loadedList = new InterviewList();
+        storage.load(loadedList, internshipList);
+
+        // Assertions to ensure they mapped perfectly without ghosting the second role
+        assertEquals(2, loadedList.size(), "Should have loaded 2 interviews");
+
+        // Check first interview mapped to SWE
+        assertEquals("Grab", loadedList.get(0).getInternship().getCompanyName());
+        assertEquals("Software Engineer", loadedList.get(0).getInternship().getTitle());
+        assertEquals(LocalDateTime.parse("2026-12-01T10:00"), loadedList.get(0).getDate());
+
+        // Check second interview mapped to Data Analyst (This would fail in the old code!)
+        assertEquals("Grab", loadedList.get(1).getInternship().getCompanyName());
+        assertEquals("Data Analyst", loadedList.get(1).getInternship().getTitle());
+        assertEquals(LocalDateTime.parse("2026-12-05T14:00"), loadedList.get(1).getDate());
     }
 
     @Test

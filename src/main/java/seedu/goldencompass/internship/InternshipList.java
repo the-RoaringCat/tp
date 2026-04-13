@@ -146,4 +146,18 @@ public class InternshipList {
         }
         return null;
     }
+
+    /**
+     * Finds an internship by both company name and role title.
+     * Required for accurately linking interviews upon app restart.
+     */
+    public Internship findInternshipByCompanyAndRole(String companyName, String title) {
+        for (Internship internship : internships) {
+            if (internship.getCompanyName().equalsIgnoreCase(companyName) &&
+                    internship.getTitle().equalsIgnoreCase(title)) {
+                return internship;
+            }
+        }
+        return null;
+    }
 }
