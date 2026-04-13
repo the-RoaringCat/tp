@@ -57,13 +57,13 @@ public class AddAliasCommand extends Command {
 
         //validate no default param
         String defaultParam = parser.getDefaultParam();
-        if(!defaultParam.isBlank()) {
+        if (!defaultParam.isBlank()) {
             logger.info("There are unexpected parameters.");
             throw new GoldenCompassException("Error: Need to provide a flag to the parameter: " + defaultParam);
         }
 
         //validate there are only two params excluding the default param
-        if(parser.getFlagToParamMap().size() != PARAM_LENGTH) {
+        if (parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             logger.info("There are unexpected parameters.");
             throw new GoldenCompassException("Error: This command takes 2 arguments");
         }

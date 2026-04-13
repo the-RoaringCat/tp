@@ -51,7 +51,7 @@ public class RemoveAliasCommand extends Command {
 
         if (parser.getFlagToParamMap().size() != PARAM_LENGTH) {
             logger.info("There are missing or unexpected parameters.");
-            throw new GoldenCompassException("Error: Expecting only one argument.");
+            throw new GoldenCompassException("Error: This command takes 1 argument");
         }
 
         String alias = parser.getDefaultParam();
