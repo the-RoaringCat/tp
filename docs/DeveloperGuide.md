@@ -1595,7 +1595,7 @@ or memory, which can become disorganized and error-prone as the number of applic
 | v1.0    | user     | add an interview linked to an internship                       | track my upcoming interviews alongside my applications                         |
 | v1.0    | user     | set a date and time for an interview                           | remember when each interview is scheduled                                      |
 | v1.0    | user     | add and remove short alias for commands                        | customize command words that are easy to remember                              |
-| v1.0    | user     | list all applications                                          | I can see my progress at a glance                                              |
+| v1.0    | user     | list all applications and interviews                           | I can see my progress at a glance                                              |
 | v2.0    | user     | search interviews by company, role, or date                    | quickly find specific interviews without scrolling the full list               |
 | v2.0    | user     | clear all rejected internships at once                         | declutter my list and focus on active applications                             |
 | v2.0    | user     | update the date of an existing interview                       | correct or reschedule an interview without deleting and re-adding it           |
