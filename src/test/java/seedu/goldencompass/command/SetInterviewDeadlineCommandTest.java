@@ -55,7 +55,8 @@ public class SetInterviewDeadlineCommandTest {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
-            assertEquals("Error: Index 99 is out of range. There are 1 interview(s).",
+            assertEquals("Error: Index 99 is out of range. There are 1 interview(s). "
+                            + "Use list-interview to see valid indexes.",
                     e.getMessage());
         }
     }
@@ -67,7 +68,8 @@ public class SetInterviewDeadlineCommandTest {
             setDeadlineCommand.execute();
             fail();
         } catch (GoldenCompassException e) {
-            assertEquals("Error: Index 0 is out of range. There are 1 interview(s).",
+            assertEquals("Error: Index 0 is out of range. There are 1 interview(s). "
+                            + "Use list-interview to see valid indexes.",
                     e.getMessage());
         }
     }
@@ -179,5 +181,19 @@ public class SetInterviewDeadlineCommandTest {
         assertEquals(LocalDateTime.parse("2027-10-10T11:00"), list.get(0).getDate());
         assertEquals("KFC", list.get(1).getInternship().getCompanyName());
         assertEquals(LocalDateTime.parse("2028-10-10T11:00"), list.get(1).getDate());
+    }
+
+    @Test
+    public void execute_noInterviewsScheduled_suggestsAddInterview() throws GoldenCompassException {
+        InterviewList emptyList = new InterviewList();
+        Parser p = new Parser();
+        p.parse("update-date 1 /d 2028-09-08 10:00");
+        try {
+            new SetInterviewDeadlineCommand(p, emptyList).execute();
+            fail();
+        } catch (GoldenCompassException e) {
+            assertEquals("Error: You have no interviews scheduled. "
+                    + "Use add-interview to schedule one first.", e.getMessage());
+        }
     }
 }

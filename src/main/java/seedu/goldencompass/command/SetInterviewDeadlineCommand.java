@@ -93,9 +93,15 @@ public class SetInterviewDeadlineCommand extends Command {
 
         if (!interviewList.isValidIndex(index)) {
             logger.log(Level.WARNING, "Failed to update date: index out of bounds.");
+            if (interviewList.size() == 0) {
+                throw new GoldenCompassException(
+                        "Error: You have no interviews scheduled. "
+                                + "Use add-interview to schedule one first.");
+            }
             throw new GoldenCompassException(
                     "Error: Index " + index + " is out of range. There are "
-                            + interviewList.size() + " interview(s).");
+                            + interviewList.size() + " interview(s). "
+                            + "Use list-interview to see valid indexes.");
         }
 
         assert interviewList.isValidIndex(index) : "Index should be valid after validation";
