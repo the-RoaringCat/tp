@@ -33,9 +33,24 @@ all from your terminal.
 > - Parameters can be in any order.
 > - Indexes are **1-based** and refer to the position shown in the most recent list.
 
+### Getting help
+Gets a help message on how to use a particular command with a special flag: `/help`.
+
+When `/help` is present, all other parameters are ignored.
+
+Format: `COMMAND /help`
+
+Example:
+
+To get help about the command `add`
+```
+add /help
+```
+
 ### Exiting the program: `bye`
 
-Exits the program.
+Exits the program regardless of any parameters supplied, including the help flag `/help`.
+
 
 **Format:** `bye`
 
@@ -270,6 +285,8 @@ Adds an alias to the commands. Alias **cannot** have alias, while a command can 
 
 A command is 
 considered as an alias to itself, except that it can have alias.
+
+**Note:** `bye` command cannot take an alias.
 
 Format: `alias /c COMMAND /a ALIAS`, where `COMMAND` is the command and `ALIAS` is the alias to add.
 

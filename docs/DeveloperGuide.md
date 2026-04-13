@@ -1764,6 +1764,40 @@ or memory, which can become disorganized and error-prone as the number of applic
 6. Test case: `mark`
    Expected: Error message asking to provide the index of the internship.
 
+### Adding an alias
+1. Test case: `alias /c add /a ad`
+
+   Expected: a message that says the alias is successfully added.
+2. Test case: `alias /c add /a ad` which should follow from above.
+
+    Expected: an error that says the alias is already added.
+3. Test case: `alias /c cs2113 /a cs`
+
+    Expected: an error that says the command does not exist.
+4. Test case: repeat [adding internship](#adding-an-internship) with the alias `ad` by the above manual testing.
+
+    Expected: same as those specified in [adding internship](#adding-an-internship).
+
+### Removing an alias
+1. Prerequisites: At least one command has an alias, assume in the following `add` has alias `ad`.
+2. Test case: `remove-alias ad`
+
+   Expected: a message that says the alias is successfully removed.
+3. Test case: `remove-alias ad` which should follow from above.
+
+   Expected: an error that says the alias does not exist.
+
+### Undoing and Redoing
+1.  You may insert an `undo` to any of the above test cases that modify the data.
+
+    Expected: the changes is undone.
+2.  You may insert a `redo` after any test cases that does not modify the data given you have undone something.
+    
+    Expected: the changes, which is undone, is redone(restored).
+3. You may insert a `redo` after any test cases that modify the data regardless of having undone anything.
+
+    Expected: an error messages that says there is no redo history for redoing (nothing would be redone).
+
 ### Saving and Loading Data (Storage)
 
 1. Prerequisites: Ensure the application is not running and delete the `data` folder in the project root directory if it exists. Start the application, add an internship (`add Grab /t SWE`), schedule an interview for it (`add-interview 1 /d 2026-05-10 10:00`), and create a custom alias (`alias /c list /a ls`).

@@ -38,11 +38,11 @@ public class ExampleCommand extends Command {
 
     @Override
     protected String getCommandDescription() {
-        return "";
+        return "I am command description";
     }
 
     @Override
     protected String getFlagDescription() {
-        return "";
+        return "I am flag description";
     }
 }
