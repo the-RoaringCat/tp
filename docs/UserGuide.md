@@ -389,11 +389,12 @@ Your internship applications are saved in the following format:
 
 **2. Interview Data (`data/interviews.txt`)**
 Your scheduled interviews are saved in the following format:
-`COMPANY_NAME | DATE_AND_TIME`
+`COMPANY_NAME | ROLE | DATE_AND_TIME`
 
-* **Date Format:** The date and time are saved in the standard ISO-8601 format (e.g., `2026-08-07T16:00`), where the `T` acts as a standard separator between the calendar date and the clock time.
+* **Date Format:** The date and time are saved in the standard ISO-8601 format (e.g., `2026-08-07T16:00`), where the `T` acts as a standard separator between the calendar date and the clock time. If an interview has no date set yet, it will be safely saved as `null` and displayed as "No date set" in the app.
+* **Automatic Sorting:** The application automatically sorts your interviews chronologically. The interview happening the soonest will always be stored and displayed at the top of the list. Any interviews marked as `null` ("No date set") are automatically sorted to the very bottom.
 * **Updating Dates:** If you use the `update-date` command to reschedule an interview, the new date and time will overwrite the old one on the exact same line. It will not create a new or duplicate entry.
-    * *Example:* If your file shows `Grab | 2026-08-07T16:00` and you postpone the interview to the next day, the line updates directly to `Grab | 2026-08-08T16:00`.
+    * *Example:* If your file shows `Grab | Software Engineer | 2026-08-07T16:00` and you postpone the interview to the next day, the line updates directly to `Grab | Software Engineer | 2026-08-08T16:00`.
 * **Deleting Data:** If you cancel an interview using the `delete-interview` command, that specific interview entry is completely erased from the text file.
 
 **3. Alias Data (`data/aliases.txt`)**
@@ -404,8 +405,7 @@ Your custom command shortcuts are saved in the following format:
     * *Example:* If you have `ls | list` and you add `l | list`, both will be saved as separate lines, allowing you to use either `ls` or `l` to view your internships.
 * **Deleting Data:** If you remove a shortcut using the `remove-alias` command, that specific alias mapping is completely erased from the text file.
 
-> ⚠️ **Caution:** While you can open and read these text files, it is highly recommended not to manually edit them. If you do, please ensure you strictly follow the exact formatting above. Incorrect formatting, missing data, or missing ` | ` separators will cause the application to skip loading those specific lines to prevent crashing.
-
+> **Caution:** While you can open and read these text files, it is highly recommended not to manually edit them. If you do, please ensure you strictly follow the exact formatting above. Incorrect formatting, missing data, or missing ` | ` separators will cause the application to skip loading those specific lines to prevent crashing.
 
 ## FAQ
 
