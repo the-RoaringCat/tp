@@ -16,7 +16,7 @@ CS2113 Course Website: For providing the guidelines on software engineering prin
 
 ### Architecture
 
-![Architecture](diagrams/Architecture-GoldenCompass.png)
+![Architecture](diagrams/Architecture.png)
 
 ### Parser component
 
@@ -114,7 +114,7 @@ of `flagToParamMap`. Thus, it is recommended to call the method `isFlagExist()` 
 in the user input. If it returns `false`, then the execution of a command should skip or throw a 
 `GoldenCompassException` depending on whether the flag is essential for the command.
 
-Below is the sequence diagram illustrating the `class Parser`:
+Below is the sequence diagram illustrating the methods of `Parser`:
 
 ![Parser Sequence Diagram](diagrams/ParserSequenceDiagram.png)
 
@@ -278,11 +278,11 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements defensive checks to ensure robustness:
 
-| Validation Layer | Description | Handling |
-|-----------------|-------------|----------|
-| **Null Check** | Verifies `internshipList` is not null | Throws `GoldenCompassException` if null |
-| **List Null Check** | Verifies `getInternships()` does not return null | Throws `GoldenCompassException` if null |
-| **Empty List Check** | Checks if the internship list is empty | Displays friendly message, returns early |
+| Validation Layer     | Description                                      | Handling                                 |
+|----------------------|--------------------------------------------------|------------------------------------------|
+| **Null Check**       | Verifies `internshipList` is not null            | Throws `GoldenCompassException` if null  |
+| **List Null Check**  | Verifies `getInternships()` does not return null | Throws `GoldenCompassException` if null  |
+| **Empty List Check** | Checks if the internship list is empty           | Displays friendly message, returns early |
 
 #### Defensive Programming Features
 
@@ -325,15 +325,15 @@ ui.print((i + 1) + ". " + intern);
 
 The feature is covered by comprehensive unit tests in `InternshipListTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `list_emptyList_printsNoInternshipsMessage` | Execute `list` with no internships | Prints "No internships in the list" |
-| `list_singleInternship_printsCorrectly` | Execute `list` with one internship | Shows header and single entry |
+| Test Case                                     | Description                              | Expected Outcome                       |
+|-----------------------------------------------|------------------------------------------|----------------------------------------|
+| `list_emptyList_printsNoInternshipsMessage`   | Execute `list` with no internships       | Prints "No internships in the list"    |
+| `list_singleInternship_printsCorrectly`       | Execute `list` with one internship       | Shows header and single entry          |
 | `list_multipleInternships_printsAllCorrectly` | Execute `list` with multiple internships | Shows all entries with correct indices |
-| `list_largeNumberOfInternships_printsAll` | Execute `list` with 10 internships | All 10 entries displayed correctly |
-| `add_internship_increasesListSize` | Add internship after list | List size increases by 1 |
-| `add_nullInternship_throwsException` | Attempt to add null internship | Throws `IllegalArgumentException` |
-| `getInternship_invalidIndex_throwsException` | Access index out of bounds | Throws `IndexOutOfBoundsException` |
+| `list_largeNumberOfInternships_printsAll`     | Execute `list` with 10 internships       | All 10 entries displayed correctly     |
+| `add_internship_increasesListSize`            | Add internship after list                | List size increases by 1               |
+| `add_nullInternship_throwsException`          | Attempt to add null internship           | Throws `IllegalArgumentException`      |
+| `getInternship_invalidIndex_throwsException`  | Access index out of bounds               | Throws `IndexOutOfBoundsException`     |
 
 ### Search Internship Command
 
@@ -389,10 +389,10 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
+| Validation Layer       | Description                                   | Example Error Message                          |
+|------------------------|-----------------------------------------------|------------------------------------------------|
 | **Criterion Presence** | Verifies at least one search flag is provided | "Please provide at least one search criteria!" |
-| **Null Handling** | Handles null parameters gracefully | Treats null as "skip this criterion" |
+| **Null Handling**      | Handles null parameters gracefully            | Treats null as "skip this criterion"           |
 
 #### Defensive Programming Features
 
@@ -448,20 +448,20 @@ String companySearch = (companyParams != null && !companyParams.isEmpty())
 
 The feature is covered by comprehensive unit tests in `SearchInternshipCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `execute_searchByCompany_findsMatches` | Search by company name | Returns matching internships |
-| `execute_searchByTitle_findsMatches` | Search by job title | Returns matching internships |
-| `execute_searchByCompanyAndTitle_findsMatches` | Combined search with AND logic | Returns internships matching both |
-| `execute_searchCaseInsensitive_findsMatches` | Case-insensitive search | Matches regardless of case |
-| `execute_searchPartialMatch_findsMatches` | Partial substring matching | "Soft" matches "Software Engineer" |
-| `execute_noMatches_printsNoResults` | No matching internships | Prints "No internships found" |
-| `execute_emptyList_printsNoResults` | Empty internship list | Prints "No internships found" |
-| `execute_noCriteria_throwsException` | No search flags provided | Throws `GoldenCompassException` |
-| `execute_emptyCompanyCriteria_throwsException` | Empty company flag | Throws `GoldenCompassException` |
-| `execute_emptyTitleCriteria_throwsException` | Empty title flag | Throws `GoldenCompassException` |
-| `execute_searchWithExtraWhitespace_worksCorrectly` | Extra whitespace in input | Trims and works correctly |
-| `execute_multipleInternshipsSameCompany_showsAll` | Multiple matches for same company | Shows all matching internships |
+| Test Case                                          | Description                       | Expected Outcome                   |
+|----------------------------------------------------|-----------------------------------|------------------------------------|
+| `execute_searchByCompany_findsMatches`             | Search by company name            | Returns matching internships       |
+| `execute_searchByTitle_findsMatches`               | Search by job title               | Returns matching internships       |
+| `execute_searchByCompanyAndTitle_findsMatches`     | Combined search with AND logic    | Returns internships matching both  |
+| `execute_searchCaseInsensitive_findsMatches`       | Case-insensitive search           | Matches regardless of case         |
+| `execute_searchPartialMatch_findsMatches`          | Partial substring matching        | "Soft" matches "Software Engineer" |
+| `execute_noMatches_printsNoResults`                | No matching internships           | Prints "No internships found"      |
+| `execute_emptyList_printsNoResults`                | Empty internship list             | Prints "No internships found"      |
+| `execute_noCriteria_throwsException`               | No search flags provided          | Throws `GoldenCompassException`    |
+| `execute_emptyCompanyCriteria_throwsException`     | Empty company flag                | Throws `GoldenCompassException`    |
+| `execute_emptyTitleCriteria_throwsException`       | Empty title flag                  | Throws `GoldenCompassException`    |
+| `execute_searchWithExtraWhitespace_worksCorrectly` | Extra whitespace in input         | Trims and works correctly          |
+| `execute_multipleInternshipsSameCompany_showsAll`  | Multiple matches for same company | Shows all matching internships     |
 
 ### Delete Internship Command
 
@@ -503,11 +503,11 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
-| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete! (e.g., delete 1)" |
-| **Type Check** | Ensures the index is a valid integer | "The index must be a number! (e.g., delete 1)" |
-| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
+| Validation Layer   | Description                                  | Example Error Message                                                    |
+|--------------------|----------------------------------------------|--------------------------------------------------------------------------|
+| **Presence Check** | Verifies that an index was provided          | "Please provide the index of the internship to delete! (e.g., delete 1)" |
+| **Type Check**     | Ensures the index is a valid integer         | "The index must be a number! (e.g., delete 1)"                           |
+| **Range Check**    | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X"                   |
 
 #### Defensive Programming Features
 
@@ -575,17 +575,17 @@ throw new GoldenCompassException("The index must be a number!");
 
 The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `delete_firstInternship_removesCorrectly` | Delete index 1 from list of 3 | List size decreases to 2, items shift left |
-| `delete_middleInternship_removesCorrectly` | Delete index 2 from list of 3 | List size decreases to 2, items reorder correctly |
-| `delete_lastInternship_removesCorrectly` | Delete index 3 from list of 3 | List size decreases to 2, last item removed |
-| `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws `IndexOutOfBoundsException` |
-| `delete_emptyList_throwsException` | Delete from empty list | Throws `IndexOutOfBoundsException` |
-| `delete_withAssociatedInterview_removesBoth` | Delete internship with existing interview | Both internship and interview are removed |
-| `delete_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
-| `delete_nonNumericIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
-| `delete_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
+| Test Case                                    | Description                               | Expected Outcome                                  |
+|----------------------------------------------|-------------------------------------------|---------------------------------------------------|
+| `delete_firstInternship_removesCorrectly`    | Delete index 1 from list of 3             | List size decreases to 2, items shift left        |
+| `delete_middleInternship_removesCorrectly`   | Delete index 2 from list of 3             | List size decreases to 2, items reorder correctly |
+| `delete_lastInternship_removesCorrectly`     | Delete index 3 from list of 3             | List size decreases to 2, last item removed       |
+| `delete_indexOutOfBounds_throwsException`    | Delete index larger than list size        | Throws `IndexOutOfBoundsException`                |
+| `delete_emptyList_throwsException`           | Delete from empty list                    | Throws `IndexOutOfBoundsException`                |
+| `delete_withAssociatedInterview_removesBoth` | Delete internship with existing interview | Both internship and interview are removed         |
+| `delete_negativeIndex_throwsException`       | Delete with negative index                | Throws `GoldenCompassException`                   |
+| `delete_nonNumericIndex_throwsException`     | Delete with non-numeric input             | Throws `GoldenCompassException`                   |
+| `delete_missingIndex_throwsException`        | Delete without index                      | Throws `GoldenCompassException`                   |
 
 
 ### Interview Management — Class Overview
@@ -1020,6 +1020,13 @@ This lists all upcoming interviews within the following `N` days if `N` is posit
 `|N|` days if `N` is negative. If the optional parameter `[N]` is omitted, a default 
 of `5` days will be used. That is, `upcoming` will list all upcoming interviews within the subsequent `5` days.
 
+Although a negative integer parameter `N` is allowed, it is unlikely the user will need to see what are the past
+interviews, and even if they do they could simply use `list-interview` to list all interviews in chronological 
+order. Thus, the supply of a negative integer `N` after `upcoming` is considered an exception, and just handled as such.
+In essence, a negative `N` is not the intended usage of the command, and listing interviews in the past
+`|N|` days if `N` is negative, is not a subfeature of the command, but an exception handling, which may happen to be
+useful for the user.
+
 #### Implementation
 
 The feature is implemented in `UpcomingCommand`, the relationship of which to other classes is shown in the following class diagram 
@@ -1038,7 +1045,7 @@ The `delete-interview` command removes an interview from an internship while pre
 
 **Command format:** `delete-interview INDEX`
 
-**Example:** `delete-interview 1` removes the interview from the 1st internship in the list.
+**Example:** `delete-interview 1` removes the 1st interview shown in list-interview.
 
 #### Implementation
 
@@ -1049,12 +1056,13 @@ When the user enters `delete-interview 1`, the execution flow is as follows:
 1. The `Parser` parses the user input, extracting the command word "delete-interview" and the argument "1".
 2. The system looks up the corresponding command and executes `DeleteInterviewCommand`.
 3. `DeleteInterviewCommand` retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
-4. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
-5. The command retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
-6. The command searches the `InterviewList` for an interview belonging to this internship by comparing company names.
-7. If no interview is found, an exception is thrown.
-8. If found, the interview is removed from `InterviewList` and the internship's interview reference is cleared using `internship.deleteInterview()`.
-9. The command prints a confirmation message to the user via the `Ui`.
+4. The command validates that the parameter is present and is a valid integer.
+5. The command checks if there are any interviews in the list. If none exist, an exception is thrown. 
+6. The command validates that the index is within the range [1, interviewList.size()]. 
+7. The command retrieves the Interview directly from InterviewList at the 0-based position (index - 1). 
+8. The command obtains the associated Internship from the retrieved Interview. 
+9. The interview is removed from InterviewList and the internship's interview reference is cleared using internship.deleteInterview(). 
+10. The command prints a confirmation message to the user via the Ui.
 
 The following class diagram shows the main components involved in the delete interview feature:
 
@@ -1068,12 +1076,12 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
-| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete interview from!" |
-| **Type Check** | Ensures the index is a valid integer | "The index must be a number!" |
-| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
-| **Interview Existence** | Checks if the internship actually has an interview | "This internship does not have an interview scheduled." |
+| Validation Layer        | Description                                        | Example Error Message                                                  |
+|-------------------------|----------------------------------------------------|------------------------------------------------------------------------|
+| **Presence Check**      | Verifies that an index was provided                | "Please provide the index of the internship to delete interview from!" |
+| **Type Check**          | Ensures the index is a valid integer               | "The index must be a number!"                                          |
+| **Empty List Check**    | Checks if thereb are any interviews to delete      | "These are no interviews to delete"                                    |
+| **Range Check**         | Confirms the index is within the list bounds       | "Invalid index! Please enter a number between 1 and X"                 |
 
 #### Defensive Programming Features
 
@@ -1098,40 +1106,41 @@ throw new GoldenCompassException("Please provide the index...");
 
 #### Design Considerations
 
-**Aspect: Finding the Interview to Delete**
+**Aspect: Finding the interview to delete**
 
-- **Alternative 1 (current choice):** Search by company name in InterviewList.
-  - **Pros:** Works even if bidirectional link is broken.
-  - **Cons:** Slightly slower for large lists (O(n) search).
+- **Alternative 1 (current choice):** Retrieve interview directly by index from `InterviewList` using the index shown in `list-interview`.
+    - **Pros:** Simple, direct access, O(1) lookup. Users can see exactly which interview will be deleted.
+    - **Cons:** Users must run `list-interview` first to know the index.
 
-- **Alternative 2:** Use `internship.getInterview()` reference.
-  - **Pros:** Faster, direct access (O(1)).
-  - **Cons:** Requires bidirectional link to be maintained.
+- **Alternative 2:** Search for interview by matching company name in `InterviewList`.
+    - **Pros:** Works even if bidirectional link is broken.
+    - **Cons:** O(n) search, slower for large lists. Ambiguous if multiple interviews share the same company name.
 
 **Aspect: What happens to the internship**
 
 - **Alternative 1 (current choice):** Only the interview is deleted; internship remains.
-  - **Pros:** Preserves application history, user can add another interview later.
-  - **Cons:** None significant.
+    - **Pros:** Preserves application history, user can add another interview later.
+    - **Cons:** None significant.
 
 - **Alternative 2:** Delete both internship and interview.
-  - **Pros:** Simpler.
-  - **Cons:** User loses the entire application record.
+    - **Pros:** Simpler.
+    - **Cons:** User loses the entire application record.
 
 #### Test Coverage
 
 The feature is covered by comprehensive unit tests in `DeleteInterviewCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `execute_validIndex_deletesInterviewSuccessfully` | Delete interview from valid internship | Interview removed, internship remains |
-| `execute_invalidIndexOutOfBounds_throwsException` | Delete with index too high | Throws `GoldenCompassException` |
-| `execute_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
-| `execute_nonIntegerIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
-| `execute_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
-| `execute_noInterviewForInternship_throwsException` | Delete from internship with no interview | Throws `GoldenCompassException` |
-| `execute_emptyInternshipList_throwsException` | Delete from empty list | Throws `GoldenCompassException` |
-| `execute_multipleInternships_deletesCorrectInterview` | Delete interview from correct internship among multiple | Only target interview removed |
+| Test Case                                         | Description                                | Expected Outcome                        |
+|---------------------------------------------------|--------------------------------------------|-----------------------------------------|
+| `execute_validIndex_deletesInterviewSuccessfully` | Delete interview at valid index            | Interview removed, internship remains   |
+| `execute_invalidIndexOutOfBounds_throwsException` | Delete with index too high                 | Throws `GoldenCompassException`         |
+| `execute_negativeIndex_throwsException`           | Delete with negative index                 | Throws `GoldenCompassException`         |
+| `execute_nonIntegerIndex_throwsException`         | Delete with non-numeric input              | Throws `GoldenCompassException`         |
+| `execute_missingIndex_throwsException`            | Delete without index                       | Throws `GoldenCompassException`         |
+| `execute_noInterviews_throwsException`            | Delete when no interviews exist            | Throws `GoldenCompassException`         |
+| `execute_deleteFirstInterview_deletesCorrectly`   | Delete index 1 from multiple interviews    | First interview removed, others remain  |
+| `execute_deleteMiddleInterview_deletesCorrectly`  | Delete index 2 from multiple interviews    | Middle interview removed, others remain |
+| `execute_deleteLastInterview_deletesCorrectly`    | Delete last index from multiple interviews | Last interview removed, others remain   |
 
 ### Mark Offer Command
 
@@ -1465,11 +1474,11 @@ The storage system is initialized inside the `GoldenCompass` main class.
 When the application starts, data is loaded in a strict sequence to resolve dependencies:
 1. `InternshipStorage.load()` is called first. It reads `data/internships.txt` line by line and splits the string using the `" | "` delimiter.
 2. If a third column (status) is present, the parser uses a `switch` statement on the parsed string (`OFFER`, `REJECTED`, or `PENDING`).
-  - `case "OFFER"`: Calls `loadedInternship.markAsOffer()`.
-  - `case "REJECTED"`: Calls `loadedInternship.markAsRejected()`.
-  - `case "PENDING"`: Leaves the internship in its default initialization state.
-  - `default`: Logs a warning for an unknown status to handle potential file corruption.
-3. `InterviewStorage.load()` is called next. Since interviews are tied to specific internships, this class parses `data/interviews.txt`, extracts the company name, and uses `internshipList.findInternshipByCompany(companyName)` to link the newly loaded `Interview` back to its parent `Internship` object in memory.
+- `case "OFFER"`: Calls `loadedInternship.markAsOffer()`.
+- `case "REJECTED"`: Calls `loadedInternship.markAsRejected()`.
+- `case "PENDING"`: Leaves the internship in its default initialization state.
+- `default`: Logs a warning for an unknown status to handle potential file corruption.
+3. `InterviewStorage.load()` is called next. Since interviews are tied to specific internships, this class parses `data/interviews.txt`, extracts the company name and role, and uses the composite key search `internshipList.findInternshipByCompanyAndRole(companyName, role)` to accurately link the newly loaded `Interview` back to its exact parent `Internship` object in memory.
 4. `AliasStorage.load()` reads `data/aliases.txt` and populates the `Executor`'s internal alias map.
 
 **Saving Data (Execution Loop):**
@@ -1486,14 +1495,15 @@ Format: `TITLE | COMPANY_NAME | STATUS`
 * Example: `Frontend Intern | Grab | PENDING`
 
 **2. Interviews (`data/interviews.txt`)**
-Format: `COMPANY_NAME | ISO_LOCAL_DATE_TIME`
-* Example: `Google | 2026-03-25T14:30:00`
-* Example: `Grab | null` *(If an interview is created but no date is set yet)*
+Format: `COMPANY_NAME | ROLE | ISO_LOCAL_DATE_TIME`
+* Example: `Google | Software Engineer | 2026-03-25T14:30:00`
+* Example: `Grab | Data Analyst | null` *(If an interview is created but no date is set yet)*
 
 **3. Aliases (`data/aliases.txt`)**
 Format: `ALIAS_TRIGGER | ORIGINAL_COMMAND`
 * Example: `ls | list`
 * Example: `mk | mark`
+
 The following class diagram shows the main structural components involved in the Storage feature:
 
 ![Storage Class Diagram](diagrams/StorageClassDiagram.png)
@@ -1511,6 +1521,7 @@ Instead of user input validation, the Storage component implements data validati
 | **Length Check** | Verifies a line splits into the correct number of parts via the `" | "` delimiter. | Skips the line and logs a warning if `parts.length` is invalid. |
 | **Empty Value Check** | Ensures parsed titles and company names are not empty strings. | Skips the line to prevent creating ghost internships. |
 | **Date Format Check** | Verifies interview dates conform to `LocalDateTime` ISO formatting. | Catches `DateTimeParseException`, logs a warning, but still loads the interview without a date. |
+| **Null Date Check** | Verifies if the saved date string is explicitly `"null"`. | Skips date parsing entirely and safely initializes the `Interview` without a date to be handled by `nullsLast` sorting. |
 
 #### Defensive Programming Features
 
@@ -1533,37 +1544,38 @@ logger.log(Level.WARNING, "Skipped corrupted line: " + line);
 **Aspect: Saving Strategy**
 
 * **Alternative 1 (Current Implementation): Eager Saving (Save on every loop)**
-  * **Description:** Inside `GoldenCompass.run()`, the application saves data to all three text files after every single command execution.
-  * **Pros:** Maximum data safety. If the user unexpectedly closes the terminal, experiences a power outage, or encounters a fatal runtime exception, no data is lost because the disk is always synchronized with the RAM.
-  * **Cons:** Higher disk I/O overhead, as the application rewrites the entire file even if a command didn't actually change any data (e.g., after a `list` command).
+    * **Description:** Inside `GoldenCompass.run()`, the application saves data to all three text files after every single command execution.
+    * **Pros:** Maximum data safety. If the user unexpectedly closes the terminal, experiences a power outage, or encounters a fatal runtime exception, no data is lost because the disk is always synchronized with the RAM.
+    * **Cons:** Higher disk I/O overhead, as the application rewrites the entire file even if a command didn't actually change any data (e.g., after a `list` command).
 
 * **Alternative 2: Lazy Saving (Save on exit)**
-  * **Description:** The `save()` methods are only called once when the user types the `bye` command.
-  * **Pros:** Better performance due to minimized file I/O operations.
-  * **Cons:** High risk of data loss. If the application terminates abnormally, all progress made during that session is wiped out.
+    * **Description:** The `save()` methods are only called once when the user types the `bye` command.
+    * **Pros:** Better performance due to minimized file I/O operations.
+    * **Cons:** High risk of data loss. If the application terminates abnormally, all progress made during that session is wiped out.
 
 **Aspect: Relational Data Mapping (Interviews to Internships)**
 
-* **Alternative 1 (Current Implementation): Foreign Key Reference by Company Name**
-  * **Description:** `InterviewStorage` saves only the Company Name and the Date. Upon loading, it searches the previously loaded `InternshipList` for an exact company name match (`findInternshipByCompany`) to rebuild the object reference in memory.
-  * **Pros:** Prevents data duplication. Keeps the `interviews.txt` file clean and concise, adhering to the Single Source of Truth principle.
-  * **Cons:** Requires `InternshipList` to be fully loaded *before* `InterviewList` can be loaded.
+* **Alternative 1 (Current Implementation): Composite Key Reference (Company Name + Role)**
+    * **Description:** `InterviewStorage` saves both the Company Name and Role alongside the interview date. Upon loading, it searches the previously loaded `InternshipList` for an exact match of *both* fields (`findInternshipByCompanyAndRole`) to rebuild the object reference in memory.
+    * **Pros:** Prevents data duplication while accurately mapping interviews even when a user applies to multiple distinct roles at the exact same company. Keeps `interviews.txt` clean and adheres to the Single Source of Truth principle.
+    * **Cons:** Requires `InternshipList` to be fully loaded *before* `InterviewList` can be loaded.
 
 * **Alternative 2: Deep Copy Storage**
-  * **Description:** `InterviewStorage` saves all details of the parent `Internship` alongside the interview date.
-  * **Pros:** Easier to parse since `InterviewStorage` wouldn't need access to `InternshipList`.
-  * **Cons:** Violates the DRY (Don't Repeat Yourself) principle. If an internship status is updated, it would have to be updated in both files.
+    * **Description:** `InterviewStorage` saves all details of the parent `Internship` alongside the interview date.
+    * **Pros:** Easier to parse since `InterviewStorage` wouldn't need access to `InternshipList`.
+    * **Cons:** Violates the DRY (Don't Repeat Yourself) principle. If an internship status is updated, it would have to be updated in both files.
 
 #### Test Coverage
 
 The storage components are covered by unit tests to ensure file I/O reliability:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `save_validList_writesCorrectly` | Save a list with one item, then read the file manually | File contains the exact formatted string |
-| `load_missingFile_returnsEmptyList` | Attempt to load when `data/` does not exist | Returns empty list, creates directory |
-| `load_corruptedFile_skipsLines` | Load a file with missing `|` delimiters | Skips bad lines, loads valid lines |
-| `load_invalidDate_handlesGracefully` | Load interview with date `abc` | Interview loaded, date remains null |
+| Test Case                            | Description                                                 | Expected Outcome |
+|--------------------------------------|-------------------------------------------------------------|------------------|
+| `save_validList_writesCorrectly`     | Save a list with one item, then read the file manually      | File contains the exact formatted string |
+| `save_multipleRoles_mapsCorrectly`   | Save two interviews for different roles at the same company | Both interviews are independently linked to the correct roles |
+| `load_missingFile_returnsEmptyList`  | Attempt to load when `data/` does not exist                 | Returns empty list, creates directory |
+| `load_corruptedFile_skipsLines` | Load a file with missing delimiters                         | Skips bad lines, loads valid lines |
+| `load_invalidDate_handlesGracefully` | Load interview with date `abc`                              | Interview loaded, date remains null |
 
 ## Product scope
 ### Target user profile
@@ -1588,7 +1600,7 @@ or memory, which can become disorganized and error-prone as the number of applic
 | v1.0    | user     | add an interview linked to an internship                       | track my upcoming interviews alongside my applications                         |
 | v1.0    | user     | set a date and time for an interview                           | remember when each interview is scheduled                                      |
 | v1.0    | user     | add and remove short alias for commands                        | customize command words that are easy to remember                              |
-| v1.0    | user     | list all applications                                          | I can see my progress at a glance                                              |
+| v1.0    | user     | list all applications and interviews                           | I can see my progress at a glance                                              |
 | v2.0    | user     | search interviews by company, role, or date                    | quickly find specific interviews without scrolling the full list               |
 | v2.0    | user     | clear all rejected internships at once                         | declutter my list and focus on active applications                             |
 | v2.0    | user     | update the date of an existing interview                       | correct or reschedule an interview without deleting and re-adding it           |
@@ -1676,6 +1688,31 @@ or memory, which can become disorganized and error-prone as the number of applic
    PE-D #192 fix — the index `update-date` sees always matches what `list-interview`
    just displayed.
 
+### Listing all interviews
+
+1. Test case: `list-interview`
+
+   Expected: If there are interviews added, it should list all interviews;
+   otherwise it should print "You don't have any interviews!"
+
+### Listing upcoming interviews
+
+1. Test case: `upcoming`
+
+   Expected: It should list all interviews within the upcoming 5 days (starting from and
+   including the present system time). If no such interview exist in the list, 
+   it should print "You don't have any interviews in the upcoming 5 day(s)."
+2. Test case: `upcoming N`, where `N` is a positive integer
+
+   Expected: It should list all interviews within the upcoming `N` days (starting from and
+   including the present system time). If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+3. Test case: `upcoming N`, where `N` is a negative integer
+
+   Expected: It should list all interviews within the past `|N|` days. 
+   If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+
 ### Searching interviews
 
 1. Prerequisites: Multiple interviews exist with different companies and dates.
@@ -1687,6 +1724,20 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: Message indicating no interviews found.
 5. Test case: `search-interview`
    Expected: Error message asking for at least one search flag.
+
+### Marking an internship as rejected
+
+1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
+2. Test case: `reject 1`
+   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
+3. Test case: `reject 0`
+   Expected: Error message indicating the index is invalid or out of bounds.
+4. Test case: `reject 999` (assuming your list has fewer than 999 items)
+   Expected: Error message indicating the index is invalid or out of bounds.
+5. Test case: `reject abc`
+   Expected: Error message indicating that the index must be a number.
+6. Test case: `reject`
+   Expected: Error message asking to provide the index of the internship.
 
 ### Clearing rejected internships
 
@@ -1712,20 +1763,6 @@ or memory, which can become disorganized and error-prone as the number of applic
 6. Test case: `mark`
    Expected: Error message asking to provide the index of the internship.
 
-### Marking an internship as rejected
-
-1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
-2. Test case: `reject 1`
-   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
-3. Test case: `reject 0`
-   Expected: Error message indicating the index is invalid or out of bounds.
-4. Test case: `reject 999` (assuming your list has fewer than 999 items)
-   Expected: Error message indicating the index is invalid or out of bounds.
-5. Test case: `reject abc`
-   Expected: Error message indicating that the index must be a number.
-6. Test case: `reject`
-   Expected: Error message asking to provide the index of the internship.
-
 ### Saving and Loading Data (Storage)
 
 1. Prerequisites: Ensure the application is not running and delete the `data` folder in the project root directory if it exists. Start the application, add an internship (`add Grab /t SWE`), schedule an interview for it (`add-interview 1 /d 2026-05-10 10:00`), and create a custom alias (`alias /c list /a ls`).
@@ -1733,24 +1770,3 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: The application exits successfully. A `data` folder is automatically created, containing `internships.txt`, `interviews.txt`, and `alias.txt`, with all your entered data safely stored inside.
 3. Test case: Restart the application. Run `list`, then `list-interview`, and finally type your custom alias `ls`.
    Expected: The application successfully loads all relational data. The Grab internship and its interview date appear correctly, and typing `ls` successfully triggers the list command.
-
-### Listing all interviews
-
-1. Test case: `list-interview`
-
-   Expected: If there are interviews added, it should list all interviews; 
-    otherwise it should print "You don't have any interviews!"
-
-### Listing upcoming interviews
-
-1. Test case: `upcoming`
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming 5 days (starting from and 
-    including the current system time); otherwise it should print "You don't have any upcoming interviews."
-2. Test case: `upcoming N`, where `N` is a strictly positive integer
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming `N` days (starting from and
-   including the current system time); otherwise it should print "You don't have any upcoming interviews."
-3. Test case: `upcoming N`, where `N` is a negative integer or `0`
-
-   Expected: It should always print "You don't have any upcoming interviews."

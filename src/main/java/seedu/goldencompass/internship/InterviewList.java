@@ -33,7 +33,7 @@ public class InterviewList {
     public void add(Interview x) {
         assert x != null : "Interview to add should not be null";
         interviews.add(x);
-        interviews.sort(Comparator.comparing(Interview::getDate));
+        sort();
     }
 
     /**
@@ -100,7 +100,11 @@ public class InterviewList {
         assert index >= 0 && index < interviews.size() : "Index should be within valid range";
         assert date != null : "Date should not be null";
         interviews.get(index).setDate(date);
-        interviews.sort(Comparator.comparing(Interview::getDate));
+        sort();
+    }
+
+    private void sort() {
+        this.interviews.sort(Comparator.comparing(Interview::getDate, Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
 }

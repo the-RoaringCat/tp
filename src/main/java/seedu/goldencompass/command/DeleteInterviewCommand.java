@@ -31,68 +31,68 @@ public class DeleteInterviewCommand extends Command {
 
         List<String> params = parser.getParamsOf(parser.getCommand());
 
+        // Check if index is provided
         if (params == null || params.isEmpty() || params.get(0).trim().isEmpty()) {
-            throw new GoldenCompassException("Please provide the index of the internship to delete interview from!");
+            throw new GoldenCompassException("Please provide the index of the interview to delete!");
         }
 
-        int internshipIndex;
+        int interviewIndex;
         try {
-            internshipIndex = Integer.parseInt(params.get(0).trim());
+            interviewIndex = Integer.parseInt(params.get(0).trim());
         } catch (NumberFormatException e) {
             throw new GoldenCompassException("The index must be a number!");
         }
 
-        if (internshipIndex < 1 || internshipIndex > internshipList.getSize()) {
+        // Check if there are any interviews
+        if (interviewList.size() == 0) {
+            throw new GoldenCompassException("There are no interviews to delete.");
+        }
+
+        // Validate interview index range (1-based to 0-based conversion)
+        if (interviewIndex < 1 || interviewIndex > interviewList.size()) {
             throw new GoldenCompassException("Invalid index! Please enter a number between 1 and "
-                    + internshipList.getSize());
+                    + interviewList.size());
         }
 
-        Internship internship = internshipList.get(internshipIndex - 1);
+        // Get the interview at the specified index from InterviewList (0-based)
+        Interview interviewToDelete = interviewList.get(interviewIndex - 1);
 
-        // Get interviews list with null check
-        List<Interview> interviews = interviewList.getInterviews();
-        if (interviews == null) {
-            logger.severe("getInterviews() returned null");
-            throw new GoldenCompassException("System error: Unable to retrieve interview list");
+        // Get the associated internship
+        Internship internship = interviewToDelete.getInternship();
+        if (internship == null) {
+            // Still delete the corrupted interview
+            interviewList.getInterviews().remove(interviewToDelete);
+            throw new GoldenCompassException("Associated internship not found. Corrupted interview has been removed.");
         }
 
-        // Find interview by searching InterviewList
-        Interview interviewToDelete = null;
-        for (Interview i : interviewList.getInterviews()) {
-            if (i.getInternship() != null && i.getInternship().getCompanyName().equals(internship.getCompanyName())) {
-                interviewToDelete = i;
-                break;
-            }
-        }
-
-        if (interviewToDelete == null) {
-            throw new GoldenCompassException("This internship does not have an interview scheduled.");
-        }
-
+        // Format the date for display
         String formattedDate = interviewToDelete.getDate() != null
                 ? interviewToDelete.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                 : "No date set";
 
-        // ONLY remove from InterviewList - DO NOT delete the internship!
+        // Remove from InterviewList
         interviewList.getInterviews().remove(interviewToDelete);
 
-        // Also clear the interview reference from the internship
+        // Clear the interview reference from the internship
         internship.deleteInterview();
 
-        // Make sure the message says "Deleted interview", not "Deleted internship"
+        // Print confirmation message
         ui.print("Deleted interview for " + internship.getCompanyName()
                 + " (scheduled on: " + formattedDate + ")");
+
+        logger.info("Deleted interview at index " + interviewIndex + " for internship: " + internship.getCompanyName());
     }
 
     @Override
     protected String getCommandDescription() {
-        return "Deletes an interview from an internship application.";
+        return "Deletes an interview from the interview list.";
     }
 
     @Override
     protected String getFlagDescription() {
         return "Format: delete-interview INDEX\n"
                 + "Example: delete-interview 1\n\n"
-                + "Note: Only the interview is deleted. The internship remains in your list.";
+                + "Note: INDEX refers to the position shown in 'list-interview' command.\n"
+                + "Only the interview is deleted. The internship remains in your list.";
     }
 }
