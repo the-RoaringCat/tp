@@ -266,7 +266,10 @@ NUS - Bus Driver @ 2026-03-25 11:00
 
 ### Adding Alias: `alias`
 
-Adds an alias to the commands. Alias cannot have alias, while a command can have multiple aliases.
+Adds an alias to the commands. Alias **cannot** have alias, while a command can have multiple aliases. 
+
+A command is 
+considered as an alias to itself, except that it can have alias.
 
 Format: `alias /c COMMAND /a ALIAS`, where `COMMAND` is the command and `ALIAS` is the alias to add.
 
@@ -279,7 +282,9 @@ alias /c list /a ls
 
 ### Removing Alias: `remove-alias`
 
-Removes an existing alias.
+Removes an existing alias. 
+
+However, although a command is considered as special alias to itself, it cannot be removed.
 
 Format: `remove-alias ALIAS`, where `ALIAS` is the alias to remove.
 
@@ -292,7 +297,7 @@ remove-alias ls
 
 ### Undoing commands: `undo`
 
-Undoes up to `10` commands that are undoable, i.e, that modify the data.
+Undoes up to `10` commands that are undoable, i.e, that modify the data, see [Command Summary](#command-summary).
 
 Format: `undo`
 
@@ -306,7 +311,7 @@ undo
 ### Redoing commands: `redo`
 
 Redoes the commands that have been undone. However, if there are new undoable commands, i.e, new changes to the data,
-redo history would be cleared.
+redo history would be cleared, see [Command Summary](#command-summary).
 
 Format: `redo`
 
