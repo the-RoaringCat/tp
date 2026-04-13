@@ -37,6 +37,9 @@ public class InterviewStorageTest {
         // Save to temp file
         storage.save(interviewList);
 
+        // ✨ FIX: Reset the internship state so the loader doesn't think it's a duplicate
+        google.setInterview(null);
+
         // 4. Load back into a fresh list
         InterviewList loadedList = new InterviewList();
         storage.load(loadedList, internshipList);
@@ -44,13 +47,12 @@ public class InterviewStorageTest {
         // 5. Assertions
         assertEquals(1, loadedList.size(), "Should have loaded 1 interview");
         assertEquals("Google", loadedList.get(0).getInternship().getCompanyName());
-        assertEquals("Software Engineer", loadedList.get(0).getInternship().getTitle()); // Added composite check
+        assertEquals("Software Engineer", loadedList.get(0).getInternship().getTitle());
         assertEquals(LocalDateTime.parse("2026-06-01T10:00"), loadedList.get(0).getDate());
     }
 
     @Test
     public void saveAndLoad_multipleRolesSameCompany_mapsCorrectly() {
-        // PROOF THAT BUGS #201 AND #202 ARE FIXED!
         String testPath = tempDir.resolve("testMultipleRoles.txt").toString();
         InterviewStorage storage = new InterviewStorage(testPath);
 
@@ -72,22 +74,24 @@ public class InterviewStorageTest {
         originalList.add(sweInterview);
         originalList.add(dataInterview);
 
-        // Save them using the new Composite Key format
+        // Save them
         storage.save(originalList);
+
+        // ✨ FIX: Reset state for both roles so they can be re-linked during load
+        swe.setInterview(null);
+        data.setInterview(null);
 
         // Load them back into a fresh list
         InterviewList loadedList = new InterviewList();
         storage.load(loadedList, internshipList);
 
-        // Assertions to ensure they mapped perfectly without ghosting the second role
+        // Assertions
         assertEquals(2, loadedList.size(), "Should have loaded 2 interviews");
 
-        // Check first interview mapped to SWE
         assertEquals("Grab", loadedList.get(0).getInternship().getCompanyName());
         assertEquals("Software Engineer", loadedList.get(0).getInternship().getTitle());
         assertEquals(LocalDateTime.parse("2026-12-01T10:00"), loadedList.get(0).getDate());
 
-        // Check second interview mapped to Data Analyst (This would fail in the old code!)
         assertEquals("Grab", loadedList.get(1).getInternship().getCompanyName());
         assertEquals("Data Analyst", loadedList.get(1).getInternship().getTitle());
         assertEquals(LocalDateTime.parse("2026-12-05T14:00"), loadedList.get(1).getDate());
