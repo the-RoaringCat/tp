@@ -278,11 +278,11 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements defensive checks to ensure robustness:
 
-| Validation Layer | Description | Handling |
-|-----------------|-------------|----------|
-| **Null Check** | Verifies `internshipList` is not null | Throws `GoldenCompassException` if null |
-| **List Null Check** | Verifies `getInternships()` does not return null | Throws `GoldenCompassException` if null |
-| **Empty List Check** | Checks if the internship list is empty | Displays friendly message, returns early |
+| Validation Layer     | Description                                      | Handling                                 |
+|----------------------|--------------------------------------------------|------------------------------------------|
+| **Null Check**       | Verifies `internshipList` is not null            | Throws `GoldenCompassException` if null  |
+| **List Null Check**  | Verifies `getInternships()` does not return null | Throws `GoldenCompassException` if null  |
+| **Empty List Check** | Checks if the internship list is empty           | Displays friendly message, returns early |
 
 #### Defensive Programming Features
 
@@ -325,15 +325,15 @@ ui.print((i + 1) + ". " + intern);
 
 The feature is covered by comprehensive unit tests in `InternshipListTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `list_emptyList_printsNoInternshipsMessage` | Execute `list` with no internships | Prints "No internships in the list" |
-| `list_singleInternship_printsCorrectly` | Execute `list` with one internship | Shows header and single entry |
+| Test Case                                     | Description                              | Expected Outcome                       |
+|-----------------------------------------------|------------------------------------------|----------------------------------------|
+| `list_emptyList_printsNoInternshipsMessage`   | Execute `list` with no internships       | Prints "No internships in the list"    |
+| `list_singleInternship_printsCorrectly`       | Execute `list` with one internship       | Shows header and single entry          |
 | `list_multipleInternships_printsAllCorrectly` | Execute `list` with multiple internships | Shows all entries with correct indices |
-| `list_largeNumberOfInternships_printsAll` | Execute `list` with 10 internships | All 10 entries displayed correctly |
-| `add_internship_increasesListSize` | Add internship after list | List size increases by 1 |
-| `add_nullInternship_throwsException` | Attempt to add null internship | Throws `IllegalArgumentException` |
-| `getInternship_invalidIndex_throwsException` | Access index out of bounds | Throws `IndexOutOfBoundsException` |
+| `list_largeNumberOfInternships_printsAll`     | Execute `list` with 10 internships       | All 10 entries displayed correctly     |
+| `add_internship_increasesListSize`            | Add internship after list                | List size increases by 1               |
+| `add_nullInternship_throwsException`          | Attempt to add null internship           | Throws `IllegalArgumentException`      |
+| `getInternship_invalidIndex_throwsException`  | Access index out of bounds               | Throws `IndexOutOfBoundsException`     |
 
 ### Search Internship Command
 
@@ -389,10 +389,10 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
+| Validation Layer       | Description                                   | Example Error Message                          |
+|------------------------|-----------------------------------------------|------------------------------------------------|
 | **Criterion Presence** | Verifies at least one search flag is provided | "Please provide at least one search criteria!" |
-| **Null Handling** | Handles null parameters gracefully | Treats null as "skip this criterion" |
+| **Null Handling**      | Handles null parameters gracefully            | Treats null as "skip this criterion"           |
 
 #### Defensive Programming Features
 
@@ -448,20 +448,20 @@ String companySearch = (companyParams != null && !companyParams.isEmpty())
 
 The feature is covered by comprehensive unit tests in `SearchInternshipCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `execute_searchByCompany_findsMatches` | Search by company name | Returns matching internships |
-| `execute_searchByTitle_findsMatches` | Search by job title | Returns matching internships |
-| `execute_searchByCompanyAndTitle_findsMatches` | Combined search with AND logic | Returns internships matching both |
-| `execute_searchCaseInsensitive_findsMatches` | Case-insensitive search | Matches regardless of case |
-| `execute_searchPartialMatch_findsMatches` | Partial substring matching | "Soft" matches "Software Engineer" |
-| `execute_noMatches_printsNoResults` | No matching internships | Prints "No internships found" |
-| `execute_emptyList_printsNoResults` | Empty internship list | Prints "No internships found" |
-| `execute_noCriteria_throwsException` | No search flags provided | Throws `GoldenCompassException` |
-| `execute_emptyCompanyCriteria_throwsException` | Empty company flag | Throws `GoldenCompassException` |
-| `execute_emptyTitleCriteria_throwsException` | Empty title flag | Throws `GoldenCompassException` |
-| `execute_searchWithExtraWhitespace_worksCorrectly` | Extra whitespace in input | Trims and works correctly |
-| `execute_multipleInternshipsSameCompany_showsAll` | Multiple matches for same company | Shows all matching internships |
+| Test Case                                          | Description                       | Expected Outcome                   |
+|----------------------------------------------------|-----------------------------------|------------------------------------|
+| `execute_searchByCompany_findsMatches`             | Search by company name            | Returns matching internships       |
+| `execute_searchByTitle_findsMatches`               | Search by job title               | Returns matching internships       |
+| `execute_searchByCompanyAndTitle_findsMatches`     | Combined search with AND logic    | Returns internships matching both  |
+| `execute_searchCaseInsensitive_findsMatches`       | Case-insensitive search           | Matches regardless of case         |
+| `execute_searchPartialMatch_findsMatches`          | Partial substring matching        | "Soft" matches "Software Engineer" |
+| `execute_noMatches_printsNoResults`                | No matching internships           | Prints "No internships found"      |
+| `execute_emptyList_printsNoResults`                | Empty internship list             | Prints "No internships found"      |
+| `execute_noCriteria_throwsException`               | No search flags provided          | Throws `GoldenCompassException`    |
+| `execute_emptyCompanyCriteria_throwsException`     | Empty company flag                | Throws `GoldenCompassException`    |
+| `execute_emptyTitleCriteria_throwsException`       | Empty title flag                  | Throws `GoldenCompassException`    |
+| `execute_searchWithExtraWhitespace_worksCorrectly` | Extra whitespace in input         | Trims and works correctly          |
+| `execute_multipleInternshipsSameCompany_showsAll`  | Multiple matches for same company | Shows all matching internships     |
 
 ### Delete Internship Command
 
@@ -503,11 +503,11 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
-| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete! (e.g., delete 1)" |
-| **Type Check** | Ensures the index is a valid integer | "The index must be a number! (e.g., delete 1)" |
-| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
+| Validation Layer   | Description                                  | Example Error Message                                                    |
+|--------------------|----------------------------------------------|--------------------------------------------------------------------------|
+| **Presence Check** | Verifies that an index was provided          | "Please provide the index of the internship to delete! (e.g., delete 1)" |
+| **Type Check**     | Ensures the index is a valid integer         | "The index must be a number! (e.g., delete 1)"                           |
+| **Range Check**    | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X"                   |
 
 #### Defensive Programming Features
 
@@ -575,17 +575,17 @@ throw new GoldenCompassException("The index must be a number!");
 
 The feature is covered by comprehensive unit tests in `DeleteInternshipCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `delete_firstInternship_removesCorrectly` | Delete index 1 from list of 3 | List size decreases to 2, items shift left |
-| `delete_middleInternship_removesCorrectly` | Delete index 2 from list of 3 | List size decreases to 2, items reorder correctly |
-| `delete_lastInternship_removesCorrectly` | Delete index 3 from list of 3 | List size decreases to 2, last item removed |
-| `delete_indexOutOfBounds_throwsException` | Delete index larger than list size | Throws `IndexOutOfBoundsException` |
-| `delete_emptyList_throwsException` | Delete from empty list | Throws `IndexOutOfBoundsException` |
-| `delete_withAssociatedInterview_removesBoth` | Delete internship with existing interview | Both internship and interview are removed |
-| `delete_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
-| `delete_nonNumericIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
-| `delete_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
+| Test Case                                    | Description                               | Expected Outcome                                  |
+|----------------------------------------------|-------------------------------------------|---------------------------------------------------|
+| `delete_firstInternship_removesCorrectly`    | Delete index 1 from list of 3             | List size decreases to 2, items shift left        |
+| `delete_middleInternship_removesCorrectly`   | Delete index 2 from list of 3             | List size decreases to 2, items reorder correctly |
+| `delete_lastInternship_removesCorrectly`     | Delete index 3 from list of 3             | List size decreases to 2, last item removed       |
+| `delete_indexOutOfBounds_throwsException`    | Delete index larger than list size        | Throws `IndexOutOfBoundsException`                |
+| `delete_emptyList_throwsException`           | Delete from empty list                    | Throws `IndexOutOfBoundsException`                |
+| `delete_withAssociatedInterview_removesBoth` | Delete internship with existing interview | Both internship and interview are removed         |
+| `delete_negativeIndex_throwsException`       | Delete with negative index                | Throws `GoldenCompassException`                   |
+| `delete_nonNumericIndex_throwsException`     | Delete with non-numeric input             | Throws `GoldenCompassException`                   |
+| `delete_missingIndex_throwsException`        | Delete without index                      | Throws `GoldenCompassException`                   |
 
 
 ### Interview Management — Class Overview
@@ -1038,7 +1038,7 @@ The `delete-interview` command removes an interview from an internship while pre
 
 **Command format:** `delete-interview INDEX`
 
-**Example:** `delete-interview 1` removes the interview from the 1st internship in the list.
+**Example:** `delete-interview 1` removes the 1st interview shown in list-interview.
 
 #### Implementation
 
@@ -1049,12 +1049,13 @@ When the user enters `delete-interview 1`, the execution flow is as follows:
 1. The `Parser` parses the user input, extracting the command word "delete-interview" and the argument "1".
 2. The system looks up the corresponding command and executes `DeleteInterviewCommand`.
 3. `DeleteInterviewCommand` retrieves the index parameter from the `Parser` using `getParamsOf(parser.getCommand())`.
-4. The command validates that the parameter is present, is a valid integer, and falls within the range `[1, internshipList.getSize()]`.
-5. The command retrieves the `Internship` at the 0-based position `(index - 1)` from `InternshipList`.
-6. The command searches the `InterviewList` for an interview belonging to this internship by comparing company names.
-7. If no interview is found, an exception is thrown.
-8. If found, the interview is removed from `InterviewList` and the internship's interview reference is cleared using `internship.deleteInterview()`.
-9. The command prints a confirmation message to the user via the `Ui`.
+4. The command validates that the parameter is present and is a valid integer.
+5. The command checks if there are any interviews in the list. If none exist, an exception is thrown. 
+6. The command validates that the index is within the range [1, interviewList.size()]. 
+7. The command retrieves the Interview directly from InterviewList at the 0-based position (index - 1). 
+8. The command obtains the associated Internship from the retrieved Interview. 
+9. The interview is removed from InterviewList and the internship's interview reference is cleared using internship.deleteInterview(). 
+10. The command prints a confirmation message to the user via the Ui.
 
 The following class diagram shows the main components involved in the delete interview feature:
 
@@ -1068,12 +1069,12 @@ The following sequence diagram illustrates the execution flow when the user ente
 
 The command implements multiple layers of validation to ensure robustness:
 
-| Validation Layer | Description | Example Error Message |
-|-----------------|-------------|----------------------|
-| **Presence Check** | Verifies that an index was provided | "Please provide the index of the internship to delete interview from!" |
-| **Type Check** | Ensures the index is a valid integer | "The index must be a number!" |
-| **Range Check** | Confirms the index is within the list bounds | "Invalid index! Please enter a number between 1 and X" |
-| **Interview Existence** | Checks if the internship actually has an interview | "This internship does not have an interview scheduled." |
+| Validation Layer        | Description                                        | Example Error Message                                                  |
+|-------------------------|----------------------------------------------------|------------------------------------------------------------------------|
+| **Presence Check**      | Verifies that an index was provided                | "Please provide the index of the internship to delete interview from!" |
+| **Type Check**          | Ensures the index is a valid integer               | "The index must be a number!"                                          |
+| **Empty List Check**    | Checks if thereb are any interviews to delete      | "These are no interviews to delete"                                    |
+| **Range Check**         | Confirms the index is within the list bounds       | "Invalid index! Please enter a number between 1 and X"                 |
 
 #### Defensive Programming Features
 
@@ -1098,40 +1099,41 @@ throw new GoldenCompassException("Please provide the index...");
 
 #### Design Considerations
 
-**Aspect: Finding the Interview to Delete**
+**Aspect: Finding the interview to delete**
 
-- **Alternative 1 (current choice):** Search by company name in InterviewList.
-  - **Pros:** Works even if bidirectional link is broken.
-  - **Cons:** Slightly slower for large lists (O(n) search).
+- **Alternative 1 (current choice):** Retrieve interview directly by index from `InterviewList` using the index shown in `list-interview`.
+    - **Pros:** Simple, direct access, O(1) lookup. Users can see exactly which interview will be deleted.
+    - **Cons:** Users must run `list-interview` first to know the index.
 
-- **Alternative 2:** Use `internship.getInterview()` reference.
-  - **Pros:** Faster, direct access (O(1)).
-  - **Cons:** Requires bidirectional link to be maintained.
+- **Alternative 2:** Search for interview by matching company name in `InterviewList`.
+    - **Pros:** Works even if bidirectional link is broken.
+    - **Cons:** O(n) search, slower for large lists. Ambiguous if multiple interviews share the same company name.
 
 **Aspect: What happens to the internship**
 
 - **Alternative 1 (current choice):** Only the interview is deleted; internship remains.
-  - **Pros:** Preserves application history, user can add another interview later.
-  - **Cons:** None significant.
+    - **Pros:** Preserves application history, user can add another interview later.
+    - **Cons:** None significant.
 
 - **Alternative 2:** Delete both internship and interview.
-  - **Pros:** Simpler.
-  - **Cons:** User loses the entire application record.
+    - **Pros:** Simpler.
+    - **Cons:** User loses the entire application record.
 
 #### Test Coverage
 
 The feature is covered by comprehensive unit tests in `DeleteInterviewCommandTest`:
 
-| Test Case | Description | Expected Outcome |
-|-----------|-------------|------------------|
-| `execute_validIndex_deletesInterviewSuccessfully` | Delete interview from valid internship | Interview removed, internship remains |
-| `execute_invalidIndexOutOfBounds_throwsException` | Delete with index too high | Throws `GoldenCompassException` |
-| `execute_negativeIndex_throwsException` | Delete with negative index | Throws `GoldenCompassException` |
-| `execute_nonIntegerIndex_throwsException` | Delete with non-numeric input | Throws `GoldenCompassException` |
-| `execute_missingIndex_throwsException` | Delete without index | Throws `GoldenCompassException` |
-| `execute_noInterviewForInternship_throwsException` | Delete from internship with no interview | Throws `GoldenCompassException` |
-| `execute_emptyInternshipList_throwsException` | Delete from empty list | Throws `GoldenCompassException` |
-| `execute_multipleInternships_deletesCorrectInterview` | Delete interview from correct internship among multiple | Only target interview removed |
+| Test Case                                         | Description                                | Expected Outcome                        |
+|---------------------------------------------------|--------------------------------------------|-----------------------------------------|
+| `execute_validIndex_deletesInterviewSuccessfully` | Delete interview at valid index            | Interview removed, internship remains   |
+| `execute_invalidIndexOutOfBounds_throwsException` | Delete with index too high                 | Throws `GoldenCompassException`         |
+| `execute_negativeIndex_throwsException`           | Delete with negative index                 | Throws `GoldenCompassException`         |
+| `execute_nonIntegerIndex_throwsException`         | Delete with non-numeric input              | Throws `GoldenCompassException`         |
+| `execute_missingIndex_throwsException`            | Delete without index                       | Throws `GoldenCompassException`         |
+| `execute_noInterviews_throwsException`            | Delete when no interviews exist            | Throws `GoldenCompassException`         |
+| `execute_deleteFirstInterview_deletesCorrectly`   | Delete index 1 from multiple interviews    | First interview removed, others remain  |
+| `execute_deleteMiddleInterview_deletesCorrectly`  | Delete index 2 from multiple interviews    | Middle interview removed, others remain |
+| `execute_deleteLastInterview_deletesCorrectly`    | Delete last index from multiple interviews | Last interview removed, others remain   |
 
 ### Mark Offer Command
 

@@ -148,15 +148,15 @@ Examples:
 
 ### Deleting an interview: `delete-interview`
 
-Removes an interview from an internship application.
+Removes an interview from the interview list.
 
 Format: `delete-interview INDEX`
 
-- `INDEX` is the 1-based index of the internship whose interview you want to delete.
+- `INDEX` is the 1-based index of the interview shown in `list-interview` command.
 - **Note:** Only the interview is deleted. The internship remains in your list.
 
 Example:
-- `delete-interview 1` - Deletes the interview for the 1st internship.
+- `delete-interview 1` - Deletes the first interview in the interview list.
 
 ### Searching internships: `search`
 
