@@ -16,7 +16,7 @@ CS2113 Course Website: For providing the guidelines on software engineering prin
 
 ### Architecture
 
-![Architecture](diagrams/Architecture-GoldenCompass.png)
+![Architecture](diagrams/Architecture.png)
 
 ### Parser component
 
@@ -114,7 +114,7 @@ of `flagToParamMap`. Thus, it is recommended to call the method `isFlagExist()` 
 in the user input. If it returns `false`, then the execution of a command should skip or throw a 
 `GoldenCompassException` depending on whether the flag is essential for the command.
 
-Below is the sequence diagram illustrating the `class Parser`:
+Below is the sequence diagram illustrating the methods of `Parser`:
 
 ![Parser Sequence Diagram](diagrams/ParserSequenceDiagram.png)
 
@@ -1020,6 +1020,13 @@ This lists all upcoming interviews within the following `N` days if `N` is posit
 `|N|` days if `N` is negative. If the optional parameter `[N]` is omitted, a default 
 of `5` days will be used. That is, `upcoming` will list all upcoming interviews within the subsequent `5` days.
 
+Although a negative integer parameter `N` is allowed, it is unlikely the user will need to see what are the past
+interviews, and even if they do they could simply use `list-interview` to list all interviews in chronological 
+order. Thus, the supply of a negative integer `N` after `upcoming` is considered an exception, and just handled as such.
+In essence, a negative `N` is not the intended usage of the command, and listing interviews in the past
+`|N|` days if `N` is negative, is not a subfeature of the command, but an exception handling, which may happen to be
+useful for the user.
+
 #### Implementation
 
 The feature is implemented in `UpcomingCommand`, the relationship of which to other classes is shown in the following class diagram 
@@ -1590,7 +1597,7 @@ or memory, which can become disorganized and error-prone as the number of applic
 | v1.0    | user     | add an interview linked to an internship                       | track my upcoming interviews alongside my applications                         |
 | v1.0    | user     | set a date and time for an interview                           | remember when each interview is scheduled                                      |
 | v1.0    | user     | add and remove short alias for commands                        | customize command words that are easy to remember                              |
-| v1.0    | user     | list all applications                                          | I can see my progress at a glance                                              |
+| v1.0    | user     | list all applications and interviews                           | I can see my progress at a glance                                              |
 | v2.0    | user     | search interviews by company, role, or date                    | quickly find specific interviews without scrolling the full list               |
 | v2.0    | user     | clear all rejected internships at once                         | declutter my list and focus on active applications                             |
 | v2.0    | user     | update the date of an existing interview                       | correct or reschedule an interview without deleting and re-adding it           |
@@ -1678,6 +1685,31 @@ or memory, which can become disorganized and error-prone as the number of applic
    PE-D #192 fix — the index `update-date` sees always matches what `list-interview`
    just displayed.
 
+### Listing all interviews
+
+1. Test case: `list-interview`
+
+   Expected: If there are interviews added, it should list all interviews;
+   otherwise it should print "You don't have any interviews!"
+
+### Listing upcoming interviews
+
+1. Test case: `upcoming`
+
+   Expected: It should list all interviews within the upcoming 5 days (starting from and
+   including the present system time). If no such interview exist in the list, 
+   it should print "You don't have any interviews in the upcoming 5 day(s)."
+2. Test case: `upcoming N`, where `N` is a positive integer
+
+   Expected: It should list all interviews within the upcoming `N` days (starting from and
+   including the present system time). If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+3. Test case: `upcoming N`, where `N` is a negative integer
+
+   Expected: It should list all interviews within the past `|N|` days. 
+   If no such interview exist in the list,
+   it should print "You don't have any interviews in the upcoming `N` day(s)."
+
 ### Searching interviews
 
 1. Prerequisites: Multiple interviews exist with different companies and dates.
@@ -1689,6 +1721,20 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: Message indicating no interviews found.
 5. Test case: `search-interview`
    Expected: Error message asking for at least one search flag.
+
+### Marking an internship as rejected
+
+1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
+2. Test case: `reject 1`
+   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
+3. Test case: `reject 0`
+   Expected: Error message indicating the index is invalid or out of bounds.
+4. Test case: `reject 999` (assuming your list has fewer than 999 items)
+   Expected: Error message indicating the index is invalid or out of bounds.
+5. Test case: `reject abc`
+   Expected: Error message indicating that the index must be a number.
+6. Test case: `reject`
+   Expected: Error message asking to provide the index of the internship.
 
 ### Clearing rejected internships
 
@@ -1714,20 +1760,6 @@ or memory, which can become disorganized and error-prone as the number of applic
 6. Test case: `mark`
    Expected: Error message asking to provide the index of the internship.
 
-### Marking an internship as rejected
-
-1. Prerequisites: At least one internship exists in the tracker. Run `add Google /t Data Analyst` if the list is empty, then use `list` to view it.
-2. Test case: `reject 1`
-   Expected: The 1st internship is updated, and a confirmation message is printed showing its new `[REJECTED]` status along with the "Rejection builds character!" quote.
-3. Test case: `reject 0`
-   Expected: Error message indicating the index is invalid or out of bounds.
-4. Test case: `reject 999` (assuming your list has fewer than 999 items)
-   Expected: Error message indicating the index is invalid or out of bounds.
-5. Test case: `reject abc`
-   Expected: Error message indicating that the index must be a number.
-6. Test case: `reject`
-   Expected: Error message asking to provide the index of the internship.
-
 ### Saving and Loading Data (Storage)
 
 1. Prerequisites: Ensure the application is not running and delete the `data` folder in the project root directory if it exists. Start the application, add an internship (`add Grab /t SWE`), schedule an interview for it (`add-interview 1 /d 2026-05-10 10:00`), and create a custom alias (`alias /c list /a ls`).
@@ -1735,24 +1767,3 @@ or memory, which can become disorganized and error-prone as the number of applic
    Expected: The application exits successfully. A `data` folder is automatically created, containing `internships.txt`, `interviews.txt`, and `alias.txt`, with all your entered data safely stored inside.
 3. Test case: Restart the application. Run `list`, then `list-interview`, and finally type your custom alias `ls`.
    Expected: The application successfully loads all relational data. The Grab internship and its interview date appear correctly, and typing `ls` successfully triggers the list command.
-
-### Listing all interviews
-
-1. Test case: `list-interview`
-
-   Expected: If there are interviews added, it should list all interviews; 
-    otherwise it should print "You don't have any interviews!"
-
-### Listing upcoming interviews
-
-1. Test case: `upcoming`
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming 5 days (starting from and 
-    including the current system time); otherwise it should print "You don't have any upcoming interviews."
-2. Test case: `upcoming N`, where `N` is a strictly positive integer
-
-   Expected: If there are interviews added, it should list all interviews in the upcoming `N` days (starting from and
-   including the current system time); otherwise it should print "You don't have any upcoming interviews."
-3. Test case: `upcoming N`, where `N` is a negative integer or `0`
-
-   Expected: It should always print "You don't have any upcoming interviews."

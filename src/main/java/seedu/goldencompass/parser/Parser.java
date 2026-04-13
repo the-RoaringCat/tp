@@ -150,11 +150,17 @@ public class Parser {
         return flagToParamMap.containsKey(flag);
     }
 
+    /**
+     * Gets the parameter after the command word
+     *
+     * @return the parameter string of the command
+     */
     public String getDefaultParam() {
         List<String> params = getParamsOf(command);
-        if(params == null) {
+        if (params == null) {
             return null;
         }
         return params.get(0);
     }
+
 }

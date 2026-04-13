@@ -236,7 +236,7 @@ Format: `upcoming [N]`, where `N` is an optional integer.
 
 - If no integer is supplied after `upcoming`, a default of `N=5` days will be used.
 - `N` can be negative, in which case, interviews of the past `|N|` days will be listed.
-- The filtering is inclusive of time boundaries for all integers `N`.
+- The filtering is **inclusive of time boundaries** for all integers `N`.
 
 Example:
 
